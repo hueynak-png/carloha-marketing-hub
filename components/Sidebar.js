@@ -22,7 +22,14 @@ export default function Sidebar() {
       <LanguageToggle />
       <nav>
         {nav.map(([href, en, cn]) => <Link key={href} href={href}><span className="en">{en}</span><span className="cn">{cn}</span></Link>)}
-        <a href={CARLOHA_WIKI_URL} target="_blank" rel="noreferrer">Carloha Wiki</a>
+ <a
+  href={CARLOHA_WIKI_URL}
+  target="_blank"
+  rel="noreferrer"
+  className="wiki-link"
+>
+  Carloha Wiki
+</a>
       </nav>
       <section className="sideCard">
         <h3><span className="en">How to Use</span><span className="cn">使用说明</span></h3>
