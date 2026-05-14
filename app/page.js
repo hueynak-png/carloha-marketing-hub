@@ -17,7 +17,13 @@ export default async function Home() {
           <p className="cn">统一管理车型资料、品牌素材和经销商市场支持内容。</p>
           <Link className="primaryLink" href="/vehicles">Browse Vehicle Materials</Link>
         </div>
-        <div className="heroVisual">Multi-vehicle banner placeholder</div>
+        <div className="heroVisual">
+  <img
+    src="/banner/multi-vehicle-banner.webp"
+    alt="Carloha multi-vehicle banner"
+    className="heroBannerImage"
+  />
+</div>
       </section>
       <SearchBox items={[...vehicleMaterials, ...generalMaterials]} />
       <div className="sectionHeader"><h2>Latest Updates</h2><Link href="/updates">View all</Link></div>
