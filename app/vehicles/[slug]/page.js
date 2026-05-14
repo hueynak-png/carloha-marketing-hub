@@ -10,7 +10,10 @@ export async function generateStaticParams() {
 export default async function VehicleDetail({ params }) {
   const materials = await getVehicleMaterials();
   const vehicle = groupByVehicle(materials).find(v => slugify(v.vehicle) === params.slug);
-  if (!vehicle) return <><h1>Vehicle not found</h1><Link href="/vehicles">Back to Vehicle Materials</Link></>;
+  if (!vehicle) return <><h1>Vehicle not found</h1><Link href="/vehicles" className="back-btn">
+  <span>←</span>
+  <span>Back to Vehicle Materials</span>
+</Link>;
   return <>
     <div className="detailHeader">
       <div>
