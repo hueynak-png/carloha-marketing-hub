@@ -66,3 +66,8 @@
   border-radius: inherit;
   clip-path: inset(0 round 2rem);
 }
+.small-btn {
+  padding: 0.55rem 0.95rem;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
