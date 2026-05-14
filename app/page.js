@@ -7,7 +7,7 @@ export default async function Home() {
   const vehicleMaterials = await getVehicleMaterials();
   const generalMaterials = await getGeneralMaterials();
   const vehicles = groupByVehicle(vehicleMaterials);
-  const updates = latestVehicleUpdates(vehicleMaterials, 5);
+  const updates = latestVehicleUpdates(vehicleMaterials, 4);
   return (
     <>
       <section className="hero">
