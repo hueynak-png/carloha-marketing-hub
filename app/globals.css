@@ -34,3 +34,19 @@
   border-color: #f08a4b;
   color: #c96b2c;
 }
+.vehicleImage {
+  height: 260px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vehicleImage img {
+  width: 92%;
+  height: 92%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
