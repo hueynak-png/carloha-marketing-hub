@@ -31,7 +31,7 @@ export default function Sidebar() {
   Carloha Wiki
 </a>
       </nav>
-      <section className="sideCard">
+      <section className="sideCard howToUseBox">
         <h3><span className="en">How to Use</span><span className="cn">使用说明</span></h3>
         <ul className="en">
           <li>Use search to find materials by vehicle or category.</li>
