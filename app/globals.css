@@ -80,3 +80,10 @@
     display: block;
   }
 }
+@media (min-width: 861px) {
+  .mainContent {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
