@@ -201,12 +201,12 @@
   color: #202020;
 }
 
-.support-section a {
+.support-section a:not(.primaryLink) {
   color: var(--orange-dark);
   font-weight: 700;
 }
 
-.support-section a:hover {
+.support-section a:not(.primaryLink):hover {
   color: var(--orange);
 }
 
