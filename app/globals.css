@@ -53,6 +53,8 @@
 .heroVisual {
   overflow: hidden;
   padding: 0;
+  border-radius: 2rem;
+  background: #ffffff;
 }
 
 .heroBannerImage {
@@ -61,5 +63,6 @@
   object-fit: cover;
   object-position: center;
   display: block;
-  border-radius: 2rem;
+  border-radius: inherit;
+  clip-path: inset(0 round 2rem);
 }
