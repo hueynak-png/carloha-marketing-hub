@@ -264,3 +264,64 @@
     gap: 4px;
   }
 }
+/* =========================
+   Usage Guidelines page
+   ========================= */
+
+.guidelines-section {
+  margin-top: 18px;
+}
+
+.guidelines-section h2 {
+  margin-bottom: 18px;
+}
+
+.guidelines-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.guidelines-list li {
+  position: relative;
+  padding: 16px 18px 16px 46px;
+  background: #fffaf7;
+  border: 1px solid #f3e2d8;
+  border-radius: 16px;
+  color: #4b5563;
+  line-height: 1.65;
+}
+
+.guidelines-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 16px;
+  top: 15px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #ffe7d8;
+  color: var(--orange-dark);
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guidelines-list li strong {
+  color: #1f2933;
+}
+
+@media (max-width: 860px) {
+  .guidelines-list li {
+    padding: 14px 14px 14px 42px;
+  }
+
+  .guidelines-list li::before {
+    left: 14px;
+    top: 14px;
+  }
+}
