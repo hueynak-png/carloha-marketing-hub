@@ -155,3 +155,98 @@
     padding: 22px;
   }
 }
+/* Request / Contact / FAQ page refinement */
+
+.infoBox,
+.card {
+  background: #ffffff;
+  border: 1px solid #f1e1d6;
+  border-radius: 26px;
+  box-shadow: 0 12px 32px rgba(80, 40, 15, 0.055);
+}
+
+.infoBox h1,
+.infoBox h2,
+.card h1,
+.card h2 {
+  color: #1f2933;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.infoBox h1::before,
+.infoBox h2::before,
+.card h1::before,
+.card h2::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 24px;
+  margin-right: 12px;
+  border-radius: 999px;
+  background: var(--orange);
+  vertical-align: -3px;
+}
+
+.infoBox p,
+.card p {
+  color: #4b5563;
+  line-height: 1.65;
+}
+
+.infoBox strong,
+.card strong {
+  color: #202020;
+}
+
+.infoBox a,
+.card a {
+  color: var(--orange-dark);
+  font-weight: 700;
+}
+
+.infoBox a:hover,
+.card a:hover {
+  color: var(--orange);
+}
+
+/* Make request form block slightly more branded */
+.support-card,
+.request-card {
+  background: linear-gradient(135deg, #fff7f1 0%, #ffffff 72%);
+}
+
+/* Contact information style */
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  background: #fff8f3;
+  border: 1px solid #f1e1d6;
+  border-radius: 14px;
+  color: #4b5563;
+}
+
+/* FAQ spacing */
+.faq-item {
+  padding: 18px 0;
+  border-bottom: 1px solid #f1e1d6;
+}
+
+.faq-item:last-child {
+  border-bottom: 0;
+}
+
+.faq-question {
+  margin: 0 0 8px;
+  color: #1f2933;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.faq-answer {
+  margin: 0;
+  color: #5f6b7a;
+}
