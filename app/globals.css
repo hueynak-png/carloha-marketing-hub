@@ -71,3 +71,8 @@
   font-size: 0.92rem;
   white-space: nowrap;
 }
+@media (max-width: 768px) {
+  .howToUseBox {
+    display: none;
+  }
+}
