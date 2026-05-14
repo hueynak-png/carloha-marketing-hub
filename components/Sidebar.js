@@ -10,7 +10,6 @@ const nav = [
   ["/", "Home", "首页"],
   ["/vehicles", "Vehicle Materials", "车型资料"],
   ["/general", "General Materials", "通用资料"],
-  ["/updates", "Latest Updates", "最新更新"],
   ["/request", "Q&A / Request", "问题与需求"],
   ["/guidelines", "Usage Guidelines", "使用规范"]
 ];
