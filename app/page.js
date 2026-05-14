@@ -19,7 +19,7 @@ export default async function Home() {
         </div>
         <div className="heroVisual">
   <img
-    src="/banner/multi-vehicle-banner.webp"
+    src="/banner/multi-vehicle-banner.webp.png"
     alt="Carloha multi-vehicle banner"
     className="heroBannerImage"
   />
