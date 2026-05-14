@@ -14,3 +14,23 @@
   color: #e85f12;
   background: #fff3ec;
 }
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid #f3c9b6;
+  border-radius: 999px;
+  background: #fffaf7;
+  color: #2a2a2a;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #ffe9dc;
+  border-color: #f08a4b;
+  color: #c96b2c;
+}
