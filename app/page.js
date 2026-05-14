@@ -26,9 +26,19 @@ export default async function Home() {
 </div>
       </section>
       <SearchBox items={[...vehicleMaterials, ...generalMaterials]} />
-      <div className="sectionHeader"><h2>Latest Updates</h2><Link href="/updates">View all</Link></div>
+      <div className="sectionHeader">
+  <h2>Latest Updates</h2>
+  <Link className="back-btn small-btn" href="/updates">
+    View all
+  </Link>
+</div>
       <div className="grid">{updates.map(v => <div className="card" key={v.vehicle}><div className="cardBody"><div className="eyebrow">Updated</div><h3>{v.vehicle}</h3><p>{v.vehicle} materials updated — {v.lastUpdated}</p><Link className="primaryLink" href={`/vehicles/${v.vehicle.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"")}`}>Open</Link></div></div>)}</div>
-      <div className="sectionHeader"><h2>Vehicle Materials</h2><Link href="/vehicles">View all</Link></div>
+      <div className="sectionHeader">
+  <h2>Vehicle Materials</h2>
+  <Link className="back-btn small-btn" href="/vehicles">
+    View all
+  </Link>
+</div>
       <div className="grid">{vehicles.slice(0, 4).map(vehicle => <VehicleCard key={vehicle.vehicle} vehicle={vehicle} />)}</div>
       <p className="footerNote">© Carloha. For internal sales and dealer marketing support only. Materials are for authorized Carloha sales and dealer use only. Please confirm product information before external communication.</p>
     </>
