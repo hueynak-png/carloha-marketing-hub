@@ -227,6 +227,22 @@ nav a:hover {
   padding: 18px;
 }
 
+.vehicleCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.vehicleCard .cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.vehicleCard .primaryLink {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
 .card h3 {
   margin: 6px 0 8px;
   font-size: 22px;
