@@ -498,29 +498,94 @@ nav a:hover {
   color: #4b5563;
 }
 
+.faqHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.faqHeader h2 {
+  margin-bottom: 6px;
+}
+
+.faqHeader .muted {
+  margin: 0;
+}
+
 .faq-list {
+  display: grid;
+  gap: 12px;
   margin-top: 12px;
 }
 
 .faq-item {
-  padding: 18px 0;
-  border-bottom: 1px solid #f1e1d6;
+  padding: 0;
+  background: #fffaf7;
+  border: 1px solid #f1e1d6;
+  border-radius: 18px;
+  overflow: hidden;
 }
 
-.faq-item:last-child {
-  border-bottom: 0;
+.faq-item summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 18px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: "+";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #ffffff;
+  border: 1px solid #f3d5c4;
+  border-radius: 999px;
+  color: var(--orange-dark);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.faq-item[open] summary::after {
+  content: "−";
+}
+
+.faqIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: #ffe7d8;
+  border-radius: 14px;
+  color: var(--orange-dark);
+  font-size: 13px;
+  font-weight: 900;
 }
 
 .faq-question {
-  margin: 0 0 8px;
   color: #1f2933;
   font-size: 18px;
   font-weight: 800;
+  line-height: 1.35;
 }
 
 .faq-answer {
   margin: 0;
+  padding: 0 20px 20px 76px;
   color: #5f6b7a;
+  line-height: 1.6;
 }
 
 .guidelines-section {
@@ -670,36 +735,4 @@ html[data-lang="CN"] ul.en {
   .howToUseBox.showOnMobile {
     display: block;
   }
-}
-
-.requestDropdown {
-  margin-top: 16px;
-}
-
-.requestDropdown summary {
-  list-style: none;
-}
-
-.requestDropdown summary::-webkit-details-marker {
-  display: none;
-}
-
-.requestToggle {
-  width: fit-content;
-  cursor: pointer;
-}
-
-.formEmbedBox {
-  margin-top: 18px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  overflow: hidden;
-  background: #ffffff;
-}
-
-.formEmbedBox iframe {
-  display: block;
-  width: 100%;
-  border: 0;
-  background: #ffffff;
 }

@@ -5,6 +5,7 @@ export default function LanguageToggle() {
   const [lang, setLang] = useState("EN");
   useEffect(() => {
     document.documentElement.dataset.lang = lang;
+    window.dispatchEvent(new CustomEvent("languagechange", { detail: lang }));
   }, [lang]);
   return (
     <div className="langToggle" aria-label="Language switch">

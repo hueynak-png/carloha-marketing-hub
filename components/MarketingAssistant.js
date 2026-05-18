@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./MarketingAssistant.module.css";
+import useLanguage from "./useLanguage";
 
 const welcomeMessage = {
   role: "assistant",
@@ -15,21 +16,89 @@ const quickPrompts = [
   "Report a broken link",
 ];
 
-function draftSummary(draft) {
+const copy = {
+  EN: {
+    launcherSmall: "Ask",
+    launcherTitle: "Marketing Assistant",
+    kicker: "Carloha AI",
+    title: "Marketing Assistant",
+    close: "Close assistant",
+    welcome:
+      "Hi, I am Marketing Assistant. Ask me about vehicle materials, broken links, or marketing support requests.",
+    quickPrompts,
+    thinking: "Thinking...",
+    confirm: "Confirm request",
+    submit: "Submit Request",
+    submitting: "Submitting...",
+    missingFields: "Please provide name, email, request type, and details before submitting.",
+    placeholder: "Ask Marketing Assistant...",
+    send: "Send",
+    fallback: "I could not prepare an answer yet.",
+    busy: "Marketing Assistant is temporarily busy. Please try again later or submit the request form.",
+    submitted: "Request submitted. The marketing team will review it soon.",
+    submitError: "The request could not be submitted. Please try again later.",
+    labels: {
+      requestType: "Request Type",
+      name: "Name",
+      email: "Email",
+      whatsapp: "WhatsApp",
+      market: "Market / Dealer",
+      vehicle: "Vehicle",
+      materialType: "Material Type",
+      urgency: "Urgency",
+      message: "Details",
+    },
+  },
+  CN: {
+    launcherSmall: "咨询",
+    launcherTitle: "市场助手",
+    kicker: "Carloha AI",
+    title: "市场助手",
+    close: "关闭助手",
+    welcome: "你好，我是市场助手。你可以询问车型资料、失效链接或市场支持需求。",
+    quickPrompts: ["Chery Q 有哪些资料？", "我需要 Tiggo 9 的手册", "反馈一个失效链接"],
+    thinking: "正在思考...",
+    confirm: "确认需求",
+    submit: "提交需求",
+    submitting: "提交中...",
+    missingFields: "提交前请补充姓名、邮箱、需求类型和需求详情。",
+    placeholder: "询问市场助手...",
+    send: "发送",
+    fallback: "我暂时还没有整理出答案。",
+    busy: "市场助手暂时忙碌，请稍后再试，或直接提交需求表。",
+    submitted: "需求已提交，市场团队会尽快查看。",
+    submitError: "需求提交失败，请稍后再试。",
+    labels: {
+      requestType: "需求类型",
+      name: "姓名",
+      email: "邮箱",
+      whatsapp: "WhatsApp",
+      market: "市场 / 经销商",
+      vehicle: "车型",
+      materialType: "资料类型",
+      urgency: "紧急程度",
+      message: "详情",
+    },
+  },
+};
+
+function draftSummary(draft, labels) {
   return [
-    ["Request Type", draft.requestType],
-    ["Name", draft.name],
-    ["Email", draft.email],
-    ["WhatsApp", draft.whatsapp],
-    ["Market / Dealer", draft.market],
-    ["Vehicle", draft.vehicle],
-    ["Material Type", draft.materialType],
-    ["Urgency", draft.urgency],
-    ["Details", draft.message],
+    [labels.requestType, draft.requestType],
+    [labels.name, draft.name],
+    [labels.email, draft.email],
+    [labels.whatsapp, draft.whatsapp],
+    [labels.market, draft.market],
+    [labels.vehicle, draft.vehicle],
+    [labels.materialType, draft.materialType],
+    [labels.urgency, draft.urgency],
+    [labels.message, draft.message],
   ].filter(([, value]) => String(value || "").trim());
 }
 
 export default function MarketingAssistant() {
+  const language = useLanguage();
+  const t = copy[language] || copy.EN;
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([welcomeMessage]);
   const [input, setInput] = useState("");
@@ -37,14 +106,14 @@ export default function MarketingAssistant() {
   const [requestDraft, setRequestDraft] = useState(null);
   const panelRef = useRef(null);
 
+  const showQuickPrompts = messages.every(message => message.role !== "user");
+
   const canSubmitDraft = useMemo(() => {
     if (!requestDraft) return false;
     return ["requestType", "name", "email", "message"].every(field =>
       String(requestDraft[field] || "").trim()
     );
   }, [requestDraft]);
-
-  const showQuickPrompts = messages.every(message => message.role !== "user");
 
   useEffect(() => {
     if (!isOpen) return;
@@ -81,7 +150,7 @@ export default function MarketingAssistant() {
         ...current,
         {
           role: "assistant",
-          content: result.reply || "I could not prepare an answer yet.",
+          content: result.reply || t.fallback,
         },
       ]);
       setRequestDraft(result.requestDraft || null);
@@ -91,8 +160,7 @@ export default function MarketingAssistant() {
         ...current,
         {
           role: "assistant",
-          content:
-            "Marketing Assistant is temporarily busy. Please try again later or submit the request form.",
+          content: t.busy,
         },
       ]);
       setStatus("idle");
@@ -129,7 +197,7 @@ export default function MarketingAssistant() {
         ...current,
         {
           role: "assistant",
-          content: "Request submitted. The marketing team will review it soon.",
+          content: t.submitted,
         },
       ]);
       setRequestDraft(null);
@@ -139,7 +207,7 @@ export default function MarketingAssistant() {
         ...current,
         {
           role: "assistant",
-          content: error.message || "The request could not be submitted. Please try again later.",
+          content: language === "CN" ? t.submitError : error.message || t.submitError,
         },
       ]);
       setStatus("idle");
@@ -153,19 +221,19 @@ export default function MarketingAssistant() {
 
   return (
     <div className={styles.assistant}>
-      <button className={styles.launcher} type="button" onClick={toggleAssistant} aria-label="Ask Marketing Assistant">
-        <span>Ask</span>
-        <strong>Marketing Assistant</strong>
+      <button className={styles.launcher} type="button" onClick={toggleAssistant} aria-label={t.launcherTitle}>
+        <span>{t.launcherSmall}</span>
+        <strong>{t.launcherTitle}</strong>
       </button>
 
       {isOpen ? (
-        <section className={styles.panel} ref={panelRef} aria-label="Marketing Assistant">
+        <section className={styles.panel} ref={panelRef} aria-label={t.launcherTitle}>
           <header className={styles.header}>
             <div>
-              <p className={styles.kicker}>Carloha AI</p>
-              <h2>Marketing Assistant</h2>
+              <p className={styles.kicker}>{t.kicker}</p>
+              <h2>{t.title}</h2>
             </div>
-            <button className={styles.closeButton} type="button" onClick={toggleAssistant} aria-label="Close assistant">
+            <button className={styles.closeButton} type="button" onClick={toggleAssistant} aria-label={t.close}>
               x
             </button>
           </header>
@@ -178,19 +246,19 @@ export default function MarketingAssistant() {
                 }`}
                 key={`${message.role}-${index}`}
               >
-                {message.content}
+                {index === 0 && message.role === "assistant" ? t.welcome : message.content}
               </div>
             ))}
 
             {status === "thinking" ? (
-              <div className={`${styles.message} ${styles.assistantMessage}`}>Thinking...</div>
+              <div className={`${styles.message} ${styles.assistantMessage}`}>{t.thinking}</div>
             ) : null}
 
             {requestDraft ? (
               <div className={styles.draftCard}>
-                <strong>Confirm request</strong>
+                <strong>{t.confirm}</strong>
                 <dl>
-                  {draftSummary(requestDraft).map(([label, value]) => (
+                  {draftSummary(requestDraft, t.labels).map(([label, value]) => (
                     <div key={label}>
                       <dt>{label}</dt>
                       <dd>{value}</dd>
@@ -203,10 +271,10 @@ export default function MarketingAssistant() {
                   onClick={submitDraft}
                   disabled={!canSubmitDraft || status === "submitting"}
                 >
-                  {status === "submitting" ? "Submitting..." : "Submit Request"}
+                  {status === "submitting" ? t.submitting : t.submit}
                 </button>
                 {!canSubmitDraft ? (
-                  <p>Please provide name, email, request type, and details before submitting.</p>
+                  <p>{t.missingFields}</p>
                 ) : null}
               </div>
             ) : null}
@@ -214,7 +282,7 @@ export default function MarketingAssistant() {
 
           {showQuickPrompts ? (
             <div className={styles.quickPrompts}>
-              {quickPrompts.map(prompt => (
+              {t.quickPrompts.map(prompt => (
                 <button key={prompt} type="button" onClick={() => sendMessage(prompt)}>
                   {prompt}
                 </button>
@@ -224,13 +292,13 @@ export default function MarketingAssistant() {
 
           <form className={styles.inputBar} onSubmit={handleSubmit}>
             <input
-              aria-label="Ask Marketing Assistant"
+              aria-label={t.launcherTitle}
               value={input}
               onChange={event => setInput(event.target.value)}
-              placeholder="Ask Marketing Assistant..."
+              placeholder={t.placeholder}
             />
             <button type="submit" disabled={status === "thinking"}>
-              Send
+              {t.send}
             </button>
           </form>
         </section>
