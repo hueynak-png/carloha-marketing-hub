@@ -61,6 +61,45 @@ function extractJson(text = "") {
   }
 }
 
+async function readGeminiError(response) {
+  try {
+    const data = await response.json();
+    return data.error?.message || response.statusText || "Unknown Gemini API error.";
+  } catch {
+    return response.statusText || "Unknown Gemini API error.";
+  }
+}
+
+function geminiErrorReply(status, detail, language) {
+  if (status === 400) {
+    return language === "zh"
+      ? `Marketing Assistant 配置需要调整：Gemini API 返回 400。请检查模型名 ${ASSISTANT_MODEL} 是否可用。`
+      : `Marketing Assistant needs a configuration check: Gemini API returned 400. Please verify that model ${ASSISTANT_MODEL} is available.`;
+  }
+
+  if (status === 401 || status === 403) {
+    return language === "zh"
+      ? "Marketing Assistant 的 Gemini API key 不能使用。请检查 Vercel 里的 GEMINI_API_KEY 是否正确，以及 Google AI Studio 里这个 key 有没有 API 限制。"
+      : "Marketing Assistant cannot use the Gemini API key. Please check GEMINI_API_KEY in Vercel and make sure the key is not blocked by API restrictions in Google AI Studio.";
+  }
+
+  if (status === 429) {
+    return language === "zh"
+      ? "Marketing Assistant 今天的免费额度可能用完了。你可以稍后再试，或直接使用 Request 页面提交需求。"
+      : "Marketing Assistant may have reached today's free quota. Please try again later or submit the Request form.";
+  }
+
+  if (status >= 500) {
+    return language === "zh"
+      ? "Gemini 服务暂时不可用。请稍后再试，或直接使用 Request 页面提交需求。"
+      : "Gemini is temporarily unavailable. Please try again later or use the Request form.";
+  }
+
+  return language === "zh"
+    ? `Marketing Assistant 暂时无法连接 Gemini。错误：${detail}`
+    : `Marketing Assistant cannot connect to Gemini right now. Error: ${detail}`;
+}
+
 export async function POST(request) {
   let payload;
   try {
@@ -144,12 +183,16 @@ ${formatGeneralContext(generalMaterials)}
     );
 
     if (!response.ok) {
+      const detail = await readGeminiError(response);
+      console.error("Gemini assistant request failed", {
+        status: response.status,
+        model: ASSISTANT_MODEL,
+        detail,
+      });
+
       return NextResponse.json(
         {
-          reply:
-            language === "zh"
-              ? "Marketing Assistant 暂时有点忙。你也可以直接使用 Request 页面提交需求。"
-              : "Marketing Assistant is temporarily busy. You can also submit your request from the Request page.",
+          reply: geminiErrorReply(response.status, detail, language),
           requestDraft: null,
         },
         { status: 200 }
