@@ -1,5 +1,6 @@
 import "./globals.css";
 import Sidebar from "../components/Sidebar";
+import MarketingAssistant from "../components/MarketingAssistant";
 
 export const metadata = {
   title: "Carloha Marketing Hub",
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
           <Sidebar />
           <main className="mainContent">{children}</main>
         </div>
+        <MarketingAssistant />
       </body>
     </html>
   );
