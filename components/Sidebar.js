@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LanguageToggle from "./LanguageToggle";
+import MarketingAssistant from "./MarketingAssistant";
 import { CARLOHA_WIKI_URL } from "../lib/config";
 
 const nav = [
@@ -65,6 +66,8 @@ export default function Sidebar() {
           <li>如需新资料或发现链接失效，请提交需求表单。</li>
         </ul>
       </section>
+
+      <MarketingAssistant />
     </aside>
   );
 }
