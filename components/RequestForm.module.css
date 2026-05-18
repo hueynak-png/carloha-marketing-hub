@@ -1,0 +1,75 @@
+.requestForm {
+  display: grid;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.requestForm label {
+  display: grid;
+  gap: 8px;
+  color: #1f2933;
+  font-weight: 800;
+}
+
+.requestForm input,
+.requestForm select,
+.requestForm textarea {
+  width: 100%;
+  padding: 13px 14px;
+  background: #ffffff;
+  border: 1px solid #efd9cd;
+  border-radius: 14px;
+  color: #202020;
+  font: inherit;
+  font-weight: 500;
+}
+
+.requestForm textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.requestForm input:focus,
+.requestForm select:focus,
+.requestForm textarea:focus {
+  outline: 3px solid #ffe1d1;
+  border-color: var(--orange);
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.submitButton:disabled {
+  background: #eeeeee;
+  color: #999999;
+  cursor: wait;
+}
+
+.formStatus {
+  margin: 0;
+  font-weight: 800;
+}
+
+.success {
+  color: #227a3a;
+}
+
+.error {
+  color: #b42318;
+}
+
+@media (max-width: 720px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
