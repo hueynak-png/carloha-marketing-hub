@@ -84,6 +84,7 @@
 .messages {
   display: grid;
   gap: 10px;
+  min-width: 0;
   max-height: 340px;
   overflow: auto;
   padding: 12px;
@@ -91,13 +92,16 @@
 }
 
 .message {
+  min-width: 0;
   max-width: 94%;
   padding: 11px 13px;
   border-radius: 16px;
   color: #24303d;
   font-size: 13px;
   line-height: 1.45;
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .assistantMessage {
@@ -115,6 +119,7 @@
 .draftCard {
   display: grid;
   gap: 10px;
+  min-width: 0;
   padding: 13px;
   background: #ffffff;
   border: 1px solid #f0ded3;
@@ -148,6 +153,8 @@
   color: #293644;
   font-size: 13px;
   line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .draftCard p {
@@ -191,7 +198,10 @@
   font-size: 12px;
   font-weight: 800;
   line-height: 1.25;
+  overflow-wrap: anywhere;
   text-align: left;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .inputBar {
