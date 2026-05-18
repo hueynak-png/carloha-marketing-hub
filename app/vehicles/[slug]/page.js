@@ -8,9 +8,10 @@ export async function generateStaticParams() {
 }
 
 export default async function VehicleDetail({ params }) {
+  const { slug } = await params;
   const materials = await getVehicleMaterials();
   const vehicle = groupByVehicle(materials).find(
-    v => slugify(v.vehicle) === params.slug
+    v => slugify(v.vehicle) === slug
   );
 
   if (!vehicle) {
