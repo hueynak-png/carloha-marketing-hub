@@ -44,6 +44,8 @@ export default function MarketingAssistant() {
     );
   }, [requestDraft]);
 
+  const showQuickPrompts = messages.every(message => message.role !== "user");
+
   useEffect(() => {
     if (!isOpen) return;
     panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -210,13 +212,15 @@ export default function MarketingAssistant() {
             ) : null}
           </div>
 
-          <div className={styles.quickPrompts}>
-            {quickPrompts.map(prompt => (
-              <button key={prompt} type="button" onClick={() => sendMessage(prompt)}>
-                {prompt}
-              </button>
-            ))}
-          </div>
+          {showQuickPrompts ? (
+            <div className={styles.quickPrompts}>
+              {quickPrompts.map(prompt => (
+                <button key={prompt} type="button" onClick={() => sendMessage(prompt)}>
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          ) : null}
 
           <form className={styles.inputBar} onSubmit={handleSubmit}>
             <input
