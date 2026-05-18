@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./MarketingAssistant.module.css";
 
 const welcomeMessage = {
@@ -35,7 +35,7 @@ export default function MarketingAssistant() {
   const [input, setInput] = useState("");
   const [status, setStatus] = useState("idle");
   const [requestDraft, setRequestDraft] = useState(null);
-  const formRef = useRef(null);
+  const panelRef = useRef(null);
 
   const canSubmitDraft = useMemo(() => {
     if (!requestDraft) return false;
@@ -43,6 +43,11 @@ export default function MarketingAssistant() {
       String(requestDraft[field] || "").trim()
     );
   }, [requestDraft]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [isOpen]);
 
   function toggleAssistant() {
     setIsOpen(current => !current);
@@ -146,8 +151,13 @@ export default function MarketingAssistant() {
 
   return (
     <div className={styles.assistant}>
+      <button className={styles.launcher} type="button" onClick={toggleAssistant} aria-label="Ask Marketing Assistant">
+        <span>Ask</span>
+        <strong>Marketing Assistant</strong>
+      </button>
+
       {isOpen ? (
-        <section className={styles.panel} aria-label="Marketing Assistant">
+        <section className={styles.panel} ref={panelRef} aria-label="Marketing Assistant">
           <header className={styles.header}>
             <div>
               <p className={styles.kicker}>Carloha AI</p>
@@ -208,7 +218,7 @@ export default function MarketingAssistant() {
             ))}
           </div>
 
-          <form className={styles.inputBar} ref={formRef} onSubmit={handleSubmit}>
+          <form className={styles.inputBar} onSubmit={handleSubmit}>
             <input
               aria-label="Ask Marketing Assistant"
               value={input}
@@ -221,11 +231,6 @@ export default function MarketingAssistant() {
           </form>
         </section>
       ) : null}
-
-      <button className={styles.launcher} type="button" onClick={toggleAssistant} aria-label="Ask Marketing Assistant">
-        <span>Ask</span>
-        <strong>Marketing Assistant</strong>
-      </button>
     </div>
   );
 }
