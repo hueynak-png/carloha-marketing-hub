@@ -4,6 +4,7 @@ import { getGeneralMaterials, getVehicleMaterials } from "../../../lib/data";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const MAX_MESSAGES = 12;
+const FALLBACK_MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash"];
 
 function isChinese(text = "") {
   return /[\u3400-\u9fff]/.test(text);
@@ -70,6 +71,10 @@ async function readGeminiError(response) {
   }
 }
 
+function uniqueModels() {
+  return [ASSISTANT_MODEL, ...FALLBACK_MODELS].filter((model, index, models) => model && models.indexOf(model) === index);
+}
+
 function geminiErrorReply(status, detail, language) {
   if (status === 400) {
     return language === "zh"
@@ -98,6 +103,43 @@ function geminiErrorReply(status, detail, language) {
   return language === "zh"
     ? `Marketing Assistant 暂时无法连接 Gemini。错误：${detail}`
     : `Marketing Assistant cannot connect to Gemini right now. Error: ${detail}`;
+}
+
+async function generateWithGemini(model, systemPrompt, conversationText) {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{ text: systemPrompt }],
+        },
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `${conversationText}\n\nReturn JSON only with this shape: {"reply":"...","requestDraft":null or {"requestType":"...","name":"...","email":"...","whatsapp":"...","market":"...","vehicle":"...","materialType":"...","urgency":"...","message":"..."}}`,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          responseMimeType: "application/json",
+          temperature: 0.35,
+          maxOutputTokens: 900,
+        },
+      }),
+    }
+  );
+
+  if (response.ok) {
+    return { response, model, detail: "" };
+  }
+
+  const detail = await readGeminiError(response);
+  return { response, model, detail };
 }
 
 export async function POST(request) {
@@ -154,39 +196,19 @@ ${formatGeneralContext(generalMaterials)}
     .join("\n");
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${ASSISTANT_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: systemPrompt }],
-          },
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: `${conversationText}\n\nReturn JSON only with this shape: {"reply":"...","requestDraft":null or {"requestType":"...","name":"...","email":"...","whatsapp":"...","market":"...","vehicle":"...","materialType":"...","urgency":"...","message":"..."}}`,
-                },
-              ],
-            },
-          ],
-          generationConfig: {
-            responseMimeType: "application/json",
-            temperature: 0.35,
-            maxOutputTokens: 900,
-          },
-        }),
-      }
-    );
+    let geminiResult;
+    for (const model of uniqueModels()) {
+      geminiResult = await generateWithGemini(model, systemPrompt, conversationText);
+      if (geminiResult.response.ok) break;
+      if (geminiResult.response.status !== 400) break;
+    }
+
+    const { response, model, detail } = geminiResult;
 
     if (!response.ok) {
-      const detail = await readGeminiError(response);
       console.error("Gemini assistant request failed", {
         status: response.status,
-        model: ASSISTANT_MODEL,
+        model,
         detail,
       });
 
