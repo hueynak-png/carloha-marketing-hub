@@ -123,10 +123,11 @@ function draftSummary(draft, labels) {
 
 export default function MarketingAssistant() {
   const language = useLanguage();
- const randomizedQuickPrompts = useMemo(
-  () => getRandomPrompts(t.quickPrompts, 3),
-  [language]
-);
+  const t = copy[language] || copy.EN;
+  const randomizedQuickPrompts = useMemo(
+    () => getRandomPrompts(t.quickPrompts, 3),
+    [language]
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([welcomeMessage]);
   const [input, setInput] = useState("");
