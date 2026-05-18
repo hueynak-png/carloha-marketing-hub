@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
-import { CONTACT, ASSISTANT_MODEL } from "../../../lib/config";
+import { CONTACT, ASSISTANT_MODEL, CARLOHA_WIKI_URL } from "../../../lib/config";
 import { getGeneralMaterials, getVehicleMaterials } from "../../../lib/data";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const MAX_MESSAGES = 12;
 const FALLBACK_MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-3-flash-preview"];
+const WIKI_CACHE_MS = 1000 * 60 * 15;
+const WIKI_CONTEXT_LIMIT = 16000;
+
+let wikiCache = {
+  loadedAt: 0,
+  entries: [],
+};
 
 function isChinese(text = "") {
   return /[\u3400-\u9fff]/.test(text);
@@ -38,6 +45,140 @@ function formatGeneralContext(materials) {
       return `- ${item.Category} | ${item.Title} | ${item.Status || "Ready"} | ${link}`;
     })
     .join("\n");
+}
+
+function wikiBaseUrl() {
+  return CARLOHA_WIKI_URL.replace(/\/$/, "");
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url, {
+    headers: { Accept: "application/json" },
+    next: { revalidate: 900 },
+  });
+  if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+  return response.json();
+}
+
+function stripContent(value = "") {
+  return String(value)
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[`*_#>|-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function textValue(value, lang) {
+  if (!value) return "";
+  if (typeof value === "string") return stripContent(value);
+  return stripContent(value[lang] || value.en || value.zh || "");
+}
+
+async function getWikiEntries() {
+  const now = Date.now();
+  if (wikiCache.entries.length && now - wikiCache.loadedAt < WIKI_CACHE_MS) {
+    return wikiCache.entries;
+  }
+
+  try {
+    const base = wikiBaseUrl();
+    const manifest = await fetchJson(`${base}/data/content/manifest.json`);
+    const files = [];
+
+    for (const [l1Id, l2List] of Object.entries(manifest.content || {})) {
+      for (const l2 of l2List || []) {
+        for (const l3Id of l2.L3_files || []) {
+          files.push({
+            l1Id,
+            l2Id: l2.L2_id,
+            l2Title: l2.L2_title,
+            url: `${base}/data/content/${l1Id}/${l2.L2_id}/${l3Id}.json`,
+          });
+        }
+      }
+    }
+
+    const loaded = await Promise.all(
+      files.map(file =>
+        fetchJson(file.url)
+          .then(entry => ({
+            ...entry,
+            L1_id: file.l1Id,
+            L2_id: file.l2Id,
+            L2_title: file.l2Title || entry.L2_title,
+          }))
+          .catch(() => null)
+      )
+    );
+
+    wikiCache = {
+      loadedAt: now,
+      entries: loaded.filter(Boolean),
+    };
+  } catch (error) {
+    console.error("Failed to load Carloha Wiki context", error);
+  }
+
+  return wikiCache.entries;
+}
+
+function tokenize(text = "") {
+  return String(text)
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .split(/\s+/)
+    .filter(token => token.length >= 2)
+    .slice(0, 24);
+}
+
+function scoreWikiEntry(entry, query) {
+  const terms = tokenize(query);
+  const haystack = [
+    textValue(entry.question, "en"),
+    textValue(entry.question, "zh"),
+    textValue(entry.short_answer, "en"),
+    textValue(entry.short_answer, "zh"),
+    textValue(entry.detailed_content, "en"),
+    textValue(entry.detailed_content, "zh"),
+    ...(entry.tags || []),
+  ].join(" ").toLowerCase();
+
+  let score = entry.featured ? 2 : 0;
+  for (const term of terms) {
+    if (haystack.includes(term)) score += term.length > 3 ? 3 : 1;
+  }
+
+  return score;
+}
+
+function formatWikiContext(entries, query) {
+  if (!entries.length) return "Carloha Wiki context could not be loaded.";
+
+  const ranked = entries
+    .map(entry => ({ entry, score: scoreWikiEntry(entry, query) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 24);
+
+  let output = "";
+  for (const { entry } of ranked) {
+    const block = [
+      `- Wiki category: ${textValue(entry.L2_title, "en")}`,
+      `  Question EN: ${textValue(entry.question, "en")}`,
+      `  Answer EN: ${textValue(entry.short_answer, "en")}`,
+      `  Question ZH: ${textValue(entry.question, "zh")}`,
+      `  Answer ZH: ${textValue(entry.short_answer, "zh")}`,
+      `  Detail EN: ${textValue(entry.detailed_content, "en").slice(0, 650)}`,
+      `  Detail ZH: ${textValue(entry.detailed_content, "zh").slice(0, 650)}`,
+      `  Tags: ${(entry.tags || []).join(", ")}`,
+    ].join("\n");
+
+    if ((output + "\n" + block).length > WIKI_CONTEXT_LIMIT) break;
+    output += `${block}\n`;
+  }
+
+  return output.trim() || "No relevant Carloha Wiki entries found.";
 }
 
 function fallbackReply(language) {
@@ -165,9 +306,10 @@ export async function POST(request) {
     return NextResponse.json({ reply: fallbackReply(language), requestDraft: null });
   }
 
-  const [vehicleMaterials, generalMaterials] = await Promise.all([
+  const [vehicleMaterials, generalMaterials, wikiEntries] = await Promise.all([
     getVehicleMaterials(),
     getGeneralMaterials(),
+    getWikiEntries(),
   ]);
 
   const systemPrompt = `
@@ -178,6 +320,7 @@ Be concise, friendly, and practical.
 When a user wants to submit a request, collect useful fields and create requestDraft. Never say it has been submitted until the user confirms.
 If information is missing for a request, ask for the missing details.
 Use only the site context below for material links and status. If a link is "Coming Soon", say the material is not ready yet and offer to create a request.
+Use Carloha Wiki context for company, brand, product, service, sales, fleet, and industry knowledge questions.
 
 Contact:
 - Name: ${CONTACT.name}
@@ -192,6 +335,9 @@ ${formatVehicleContext(vehicleMaterials)}
 
 General materials:
 ${formatGeneralContext(generalMaterials)}
+
+Carloha Wiki context:
+${formatWikiContext(wikiEntries, lastUserMessage)}
 `;
 
   const conversationText = messages
