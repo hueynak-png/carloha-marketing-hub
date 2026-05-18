@@ -671,3 +671,35 @@ html[data-lang="CN"] ul.en {
     display: block;
   }
 }
+
+.requestDropdown {
+  margin-top: 16px;
+}
+
+.requestDropdown summary {
+  list-style: none;
+}
+
+.requestDropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.requestToggle {
+  width: fit-content;
+  cursor: pointer;
+}
+
+.formEmbedBox {
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.formEmbedBox iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: #ffffff;
+}
