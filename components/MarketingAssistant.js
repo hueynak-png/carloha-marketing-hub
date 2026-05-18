@@ -308,16 +308,15 @@ export default function MarketingAssistant() {
             ) : null}
           </div>
 
-          {showQuickPrompts ? (
-            <div className={styles.quickPrompts}>
-              {t.quickPrompts.map(prompt => (
-                {randomizedQuickPrompts.map(prompt => (
-                  <button key={prompt} type="button" onClick={() => sendMessage(prompt)}>
-                    {prompt}
-                  </button>
-                ))}
-            </div>
-          ) : null}
+{showQuickPrompts ? (
+  <div className={styles.quickPrompts}>
+    {randomizedQuickPrompts.map(prompt => (
+      <button key={prompt} type="button" onClick={() => sendMessage(prompt)}>
+        {prompt}
+      </button>
+    ))}
+  </div>
+) : null}
 
           <form className={styles.inputBar} onSubmit={handleSubmit}>
             <input
