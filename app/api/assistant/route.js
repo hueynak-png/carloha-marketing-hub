@@ -4,7 +4,7 @@ import { getGeneralMaterials, getVehicleMaterials } from "../../../lib/data";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const MAX_MESSAGES = 12;
-const FALLBACK_MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash"];
+const FALLBACK_MODELS = ["gemini-3-flash-preview", "gemini-3.1-flash-lite", "gemini-2.5-flash-lite", "gemini-2.5-flash"];
 
 function isChinese(text = "") {
   return /[\u3400-\u9fff]/.test(text);
@@ -75,11 +75,13 @@ function uniqueModels() {
   return [ASSISTANT_MODEL, ...FALLBACK_MODELS].filter((model, index, models) => model && models.indexOf(model) === index);
 }
 
-function geminiErrorReply(status, detail, language) {
+function geminiErrorReply(status, detail, language, attemptedModels = []) {
+  const modelText = attemptedModels.length ? attemptedModels.join(", ") : ASSISTANT_MODEL;
+
   if (status === 400) {
     return language === "zh"
-      ? `Marketing Assistant 配置需要调整：Gemini API 返回 400。请检查模型名 ${ASSISTANT_MODEL} 是否可用。`
-      : `Marketing Assistant needs a configuration check: Gemini API returned 400. Please verify that model ${ASSISTANT_MODEL} is available.`;
+      ? `Marketing Assistant 配置需要调整：Gemini API 返回 400。已尝试模型：${modelText}。请确认 Vercel 里的 ASSISTANT_MODEL 没有填成不可用模型。`
+      : `Marketing Assistant needs a configuration check: Gemini API returned 400. Tried models: ${modelText}. Please make sure ASSISTANT_MODEL in Vercel is not set to an unavailable model.`;
   }
 
   if (status === 401 || status === 403) {
@@ -197,7 +199,9 @@ ${formatGeneralContext(generalMaterials)}
 
   try {
     let geminiResult;
+    const attemptedModels = [];
     for (const model of uniqueModels()) {
+      attemptedModels.push(model);
       geminiResult = await generateWithGemini(model, systemPrompt, conversationText);
       if (geminiResult.response.ok) break;
       if (geminiResult.response.status !== 400) break;
@@ -214,7 +218,7 @@ ${formatGeneralContext(generalMaterials)}
 
       return NextResponse.json(
         {
-          reply: geminiErrorReply(response.status, detail, language),
+          reply: geminiErrorReply(response.status, detail, language, attemptedModels),
           requestDraft: null,
         },
         { status: 200 }
