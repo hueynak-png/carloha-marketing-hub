@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import styles from "./RequestForm.module.css";
 
 const initialState = {
   requestType: "New material request",
@@ -51,8 +52,8 @@ export default function RequestForm() {
   }
 
   return (
-    <form className="requestForm" onSubmit={submitRequest}>
-      <div className="formGrid">
+    <form className={styles.requestForm} onSubmit={submitRequest}>
+      <div className={styles.formGrid}>
         <label>
           Request Type
           <select name="requestType" value={form.requestType} onChange={updateField}>
@@ -116,12 +117,12 @@ export default function RequestForm() {
         />
       </label>
 
-      <div className="formActions">
-        <button className="primaryLink" type="submit" disabled={status === "submitting"}>
+      <div className={styles.formActions}>
+        <button className={`primaryLink ${styles.submitButton}`} type="submit" disabled={status === "submitting"}>
           {status === "submitting" ? "Submitting..." : "Submit Request"}
         </button>
         {feedback ? (
-          <p className={`formStatus ${status === "error" ? "error" : "success"}`}>
+          <p className={`${styles.formStatus} ${status === "error" ? styles.error : styles.success}`}>
             {feedback}
           </p>
         ) : null}
