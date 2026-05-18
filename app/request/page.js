@@ -48,38 +48,53 @@ export default function RequestPage() {
       </section>
 
       <section className="support-section">
-        <h2>FAQ</h2>
+        <div className="faqHeader">
+          <div>
+            <h2>FAQ</h2>
+            <p className="muted">Quick answers for common marketing hub questions.</p>
+          </div>
+        </div>
 
         <div className="faq-list">
-          <div className="faq-item">
-            <h3 className="faq-question">How do I download files?</h3>
+          <details className="faq-item" open>
+            <summary>
+              <span className="faqIndex">01</span>
+              <span className="faq-question">How do I download files?</span>
+            </summary>
             <p className="faq-answer">
               Open the related Google Drive folder and download the files you need.
             </p>
-          </div>
+          </details>
 
-          <div className="faq-item">
-            <h3 className="faq-question">What if a link does not open?</h3>
+          <details className="faq-item">
+            <summary>
+              <span className="faqIndex">02</span>
+              <span className="faq-question">What if a link does not open?</span>
+            </summary>
             <p className="faq-answer">
               Submit the request form and choose “Report broken links”.
             </p>
-          </div>
+          </details>
 
-          <div className="faq-item">
-            <h3 className="faq-question">How often are materials updated?</h3>
+          <details className="faq-item">
+            <summary>
+              <span className="faqIndex">03</span>
+              <span className="faq-question">How often are materials updated?</span>
+            </summary>
             <p className="faq-answer">
               Materials are expected to be reviewed monthly.
             </p>
-          </div>
+          </details>
 
-          <div className="faq-item">
-            <h3 className="faq-question">
-              Can dealers use these materials for social media?
-            </h3>
+          <details className="faq-item">
+            <summary>
+              <span className="faqIndex">04</span>
+              <span className="faq-question">Can dealers use these materials for social media?</span>
+            </summary>
             <p className="faq-answer">
               Dealers may use approved materials for local marketing and social media promotion.
             </p>
-          </div>
+          </details>
         </div>
       </section>
     </>
