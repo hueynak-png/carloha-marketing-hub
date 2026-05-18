@@ -10,11 +10,36 @@ const welcomeMessage = {
     "Hi, I am Marketing Assistant. Ask me about vehicle materials, broken links, or marketing support requests.",
 };
 
-const quickPrompts = [
-  "Which Chery Q materials are available?",
-  "I need a brochure for Tiggo 9",
-  "Report a broken link",
-];
+const quickPromptPool = {
+  EN: [
+    "Which Tiggo 9 materials are available?",
+    "I need a brochure for Tiggo 9",
+    "Where can I find Himla materials?",
+    "Where can I find iCAUR V23 videos?",
+    "Which materials are available for Tiggo 4?",
+    "Where can I find official vehicle photos?",
+    "How do I report a broken link?",
+    "How can I request new materials?",
+    "The Google Drive link does not open",
+    "Where can I find dealer guidelines?"
+  ],
+  CN: [
+    "Tiggo 9 有哪些资料？",
+    "我需要 Tiggo 9 的手册",
+    "在哪里找 Himla 的资料？",
+    "iCAUR V23 的视频在哪里？",
+    "Tiggo 4 有哪些资料？",
+    "在哪里找官方车型图片？",
+    "如何反馈失效链接？",
+    "如何申请新资料？",
+    "Google Drive 链接打不开怎么办？",
+    "经销商指引在哪里？"
+  ]
+};
+
+function getRandomPrompts(pool = [], count = 3) {
+  return [...pool].sort(() => Math.random() - 0.5).slice(0, count);
+}
 
 const copy = {
   EN: {
@@ -25,7 +50,7 @@ const copy = {
     close: "Close assistant",
     welcome:
       "Hi, I am Marketing Assistant. Ask me about vehicle materials, broken links, or marketing support requests.",
-    quickPrompts,
+    quickPrompts: quickPromptPool.EN,
     thinking: "Thinking...",
     confirm: "Confirm request",
     submit: "Submit Request",
@@ -56,7 +81,7 @@ const copy = {
     title: "市场助手",
     close: "关闭助手",
     welcome: "你好，我是市场助手。你可以询问车型资料、失效链接或市场支持需求。",
-    quickPrompts: ["Chery Q 有哪些资料？", "我需要 Tiggo 9 的手册", "反馈一个失效链接"],
+    quickPrompts: quickPromptPool.CN,
     thinking: "正在思考...",
     confirm: "确认需求",
     submit: "提交需求",
@@ -98,7 +123,10 @@ function draftSummary(draft, labels) {
 
 export default function MarketingAssistant() {
   const language = useLanguage();
-  const t = copy[language] || copy.EN;
+ const randomizedQuickPrompts = useMemo(
+  () => getRandomPrompts(t.quickPrompts, 3),
+  [language]
+);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([welcomeMessage]);
   const [input, setInput] = useState("");
@@ -283,10 +311,11 @@ export default function MarketingAssistant() {
           {showQuickPrompts ? (
             <div className={styles.quickPrompts}>
               {t.quickPrompts.map(prompt => (
-                <button key={prompt} type="button" onClick={() => sendMessage(prompt)}>
-                  {prompt}
-                </button>
-              ))}
+                {randomizedQuickPrompts.map(prompt => (
+                  <button key={prompt} type="button" onClick={() => sendMessage(prompt)}>
+                    {prompt}
+                  </button>
+                ))}
             </div>
           ) : null}
 
