@@ -1,4 +1,5 @@
-import { CONTACT, REQUEST_FORM_EMBED_URL } from "../../lib/config";
+import RequestForm from "../../components/RequestForm";
+import { CONTACT } from "../../lib/config";
 
 export default function RequestPage() {
   return (
@@ -23,24 +24,7 @@ export default function RequestPage() {
           The marketing team will review your request and follow up if needed.
         </p>
 
-        <details className="requestDropdown">
-          <summary className="primaryLink requestToggle">
-            Submit a Request
-          </summary>
-
-          <div className="formEmbedBox">
-            <iframe
-              src={REQUEST_FORM_EMBED_URL}
-              width="100%"
-              height="950"
-              frameBorder="0"
-              marginHeight={0}
-              marginWidth={0}
-            >
-              Loading...
-            </iframe>
-          </div>
-        </details>
+        <RequestForm />
       </section>
 
       <section className="support-section">
