@@ -5,11 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LanguageToggle from "./LanguageToggle";
 import MarketingAssistant from "./MarketingAssistant";
+import useLanguage from "./useLanguage";
 import { CARLOHA_WIKI_URL } from "../lib/config";
 import { siteCopy } from "../lib/siteCopy";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const language = useLanguage();
   const showHowToUseOnMobile = pathname === "/";
 
   return (
@@ -23,8 +25,7 @@ export default function Sidebar() {
 
       <nav className="sidebarNav">
         <p className="sidebarNavLabel">
-          <span className="en">{siteCopy.sidebar.navLabel.EN}</span>
-          <span className="cn">{siteCopy.sidebar.navLabel.CN}</span>
+          {siteCopy.sidebar.navLabel[language]}
         </p>
 
         {siteCopy.sidebar.nav.map((item, index) => (
@@ -35,10 +36,8 @@ export default function Sidebar() {
           >
             <span className="sidebarNavIndex">{String(index + 1).padStart(2, "0")}</span>
             <span className="sidebarNavCopy">
-              <strong className="en">{item.EN}</strong>
-              <strong className="cn">{item.CN}</strong>
-              <small className="en">{item.EN_HINT}</small>
-              <small className="cn">{item.CN_HINT}</small>
+              <strong>{item[language]}</strong>
+              {item.href === "/" ? null : <small>{item[`${language}_HINT`]}</small>}
             </span>
           </Link>
         ))}
@@ -51,10 +50,12 @@ export default function Sidebar() {
         >
           <span className="sidebarNavIndex">WK</span>
           <span className="sidebarNavCopy">
-            <strong className="en">{siteCopy.common.EN.wiki}</strong>
-            <strong className="cn">{siteCopy.common.CN.wiki}</strong>
-            <small className="en">Open the full Carloha knowledge base in a new tab.</small>
-            <small className="cn">在新标签页中打开完整 Carloha Wiki 知识库。</small>
+            <strong>{siteCopy.common[language].wiki}</strong>
+            <small>
+              {language === "CN"
+                ? "在新标签页中打开完整 Carloha Wiki 知识库。"
+                : "Open the full Carloha knowledge base in a new tab."}
+            </small>
           </span>
         </a>
       </nav>
