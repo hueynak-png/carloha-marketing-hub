@@ -434,6 +434,16 @@ body {
   margin-top: 14px;
 }
 
+.searchAssistantRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.searchAssistantWrap {
+  width: min(440px, 100%);
+}
+
 .searchFilters label {
   display: grid;
   gap: 6px;
@@ -981,6 +991,10 @@ html[data-lang="CN"] ul.en {
 
   .searchFilters {
     grid-template-columns: 1fr;
+  }
+
+  .searchAssistantWrap {
+    width: 100%;
   }
 
   .searchResultsHeader {
