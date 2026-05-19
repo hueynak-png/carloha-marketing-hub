@@ -1,18 +1,13 @@
 import { NextResponse } from "next/server.js";
-import { CONTACT, ASSISTANT_MODEL, CARLOHA_WIKI_URL } from "../../../lib/config.js";
+import { CONTACT, ASSISTANT_MODEL } from "../../../lib/config.js";
+import { buildAssistantIndex, getWikiEntries, retrieveAssistantContext } from "../../../lib/assistantIndex.js";
+import { recordAnalyticsEvent } from "../../../lib/analyticsStore.js";
 import { getGeneralMaterials, getVehicleMaterials } from "../../../lib/data.js";
 import { logError } from "../../../lib/logger.js";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const MAX_MESSAGES = 12;
 const FALLBACK_MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-3-flash-preview"];
-const WIKI_CACHE_MS = 1000 * 60 * 15;
-const WIKI_CONTEXT_LIMIT = 16000;
-
-let wikiCache = {
-  loadedAt: 0,
-  entries: [],
-};
 
 function isChinese(text = "") {
   return /[\u3400-\u9fff]/.test(text);
@@ -26,220 +21,6 @@ function cleanMessages(messages = []) {
       role: message.role,
       content: String(message.content).slice(0, 1200),
     }));
-}
-
-function formatVehicleContext(materials) {
-  return materials
-    .map(item => {
-      const title = item.Title || `${item.Vehicle} ${item["Material Type"]}`;
-      const link = item["Google Drive Link"] || "Coming Soon";
-      const status = item.Status || "Ready";
-      return `- ${item.Vehicle} | ${item["Material Type"]} | ${title} | ${status} | ${link}`;
-    })
-    .join("\n");
-}
-
-function formatGeneralContext(materials) {
-  return materials
-    .map(item => {
-      const link = item["Google Drive Link"] || "Coming Soon";
-      return `- ${item.Category} | ${item.Title} | ${item.Status || "Ready"} | ${link}`;
-    })
-    .join("\n");
-}
-
-function wikiBaseUrl() {
-  return CARLOHA_WIKI_URL.replace(/\/$/, "");
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url, {
-    headers: { Accept: "application/json" },
-    next: { revalidate: 900 },
-  });
-  if (!response.ok) throw new Error(`Failed to fetch ${url}`);
-  return response.json();
-}
-
-function stripContent(value = "") {
-  return String(value)
-    .replace(/<script[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/[`*_#>|-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function textValue(value, lang) {
-  if (!value) return "";
-  if (typeof value === "string") return stripContent(value);
-  return stripContent(value[lang] || value.en || value.zh || "");
-}
-
-async function getWikiEntries() {
-  const now = Date.now();
-  if (wikiCache.entries.length && now - wikiCache.loadedAt < WIKI_CACHE_MS) {
-    return wikiCache.entries;
-  }
-
-  try {
-    const base = wikiBaseUrl();
-    const manifest = await fetchJson(`${base}/data/content/manifest.json`);
-    const files = [];
-
-    for (const [l1Id, l2List] of Object.entries(manifest.content || {})) {
-      for (const l2 of l2List || []) {
-        for (const l3Id of l2.L3_files || []) {
-          files.push({
-            l1Id,
-            l2Id: l2.L2_id,
-            l2Title: l2.L2_title,
-            url: `${base}/data/content/${l1Id}/${l2.L2_id}/${l3Id}.json`,
-          });
-        }
-      }
-    }
-
-    const loaded = await Promise.all(
-      files.map(file =>
-        fetchJson(file.url)
-          .then(entry => ({
-            ...entry,
-            L1_id: file.l1Id,
-            L2_id: file.l2Id,
-            L2_title: file.l2Title || entry.L2_title,
-          }))
-          .catch(() => null)
-      )
-    );
-
-    wikiCache = {
-      loadedAt: now,
-      entries: loaded.filter(Boolean),
-    };
-  } catch (error) {
-    console.error("Failed to load Carloha Wiki context", error);
-  }
-
-  return wikiCache.entries;
-}
-
-function tokenize(text = "") {
-  return String(text)
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .split(/\s+/)
-    .filter(token => token.length >= 2)
-    .slice(0, 24);
-}
-
-function scoreWikiEntry(entry, query) {
-  const terms = tokenize(query);
-  const haystack = [
-    textValue(entry.question, "en"),
-    textValue(entry.question, "zh"),
-    textValue(entry.short_answer, "en"),
-    textValue(entry.short_answer, "zh"),
-    textValue(entry.detailed_content, "en"),
-    textValue(entry.detailed_content, "zh"),
-    ...(entry.tags || []),
-  ].join(" ").toLowerCase();
-
-  let score = entry.featured ? 2 : 0;
-  for (const term of terms) {
-    if (haystack.includes(term)) score += term.length > 3 ? 3 : 1;
-  }
-
-  return score;
-}
-
-function scoreMaterialEntry(item, query) {
-  const terms = tokenize(query);
-  const haystack = [
-    item.Vehicle,
-    item.Category,
-    item.Title,
-    item.Description,
-    item["Material Type"],
-    item.Status,
-  ].filter(Boolean).join(" ").toLowerCase();
-
-  let score = 0;
-  for (const term of terms) {
-    if (haystack.includes(term)) score += term.length > 3 ? 3 : 1;
-  }
-
-  if (item.Status === "Ready") score += 1;
-  return score;
-}
-
-function buildAssistantSources(query, vehicleMaterials, generalMaterials, wikiEntries) {
-  const vehicleSources = vehicleMaterials
-    .map(item => ({
-      kind: "vehicle",
-      title: item.Title || `${item.Vehicle} ${item["Material Type"]}`,
-      subtitle: [item.Vehicle, item["Material Type"], item.Status].filter(Boolean).join(" · "),
-      url: item["Google Drive Link"] && item["Google Drive Link"] !== "Coming Soon" ? item["Google Drive Link"] : "",
-      score: scoreMaterialEntry(item, query),
-    }))
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 2);
-
-  const generalSources = generalMaterials
-    .map(item => ({
-      kind: "general",
-      title: item.Title || item.Category,
-      subtitle: [item.Category, item.Status].filter(Boolean).join(" · "),
-      url: item["Google Drive Link"] && item["Google Drive Link"] !== "Coming Soon" ? item["Google Drive Link"] : "",
-      score: scoreMaterialEntry(item, query),
-    }))
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 1);
-
-  const wikiSources = wikiEntries
-    .map(entry => ({
-      kind: "wiki",
-      title: textValue(entry.question, "en") || textValue(entry.question, "zh") || "Carloha Wiki",
-      subtitle: textValue(entry.L2_title, "en") || textValue(entry.L2_title, "zh") || "Carloha Wiki",
-      url: CARLOHA_WIKI_URL,
-      score: scoreWikiEntry(entry, query),
-    }))
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 1);
-
-  return [...vehicleSources, ...generalSources, ...wikiSources].slice(0, 4);
-}
-
-function formatWikiContext(entries, query) {
-  if (!entries.length) return "Carloha Wiki context could not be loaded.";
-
-  const ranked = entries
-    .map(entry => ({ entry, score: scoreWikiEntry(entry, query) }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 24);
-
-  let output = "";
-  for (const { entry } of ranked) {
-    const block = [
-      `- Wiki category: ${textValue(entry.L2_title, "en")}`,
-      `  Question EN: ${textValue(entry.question, "en")}`,
-      `  Answer EN: ${textValue(entry.short_answer, "en")}`,
-      `  Question ZH: ${textValue(entry.question, "zh")}`,
-      `  Answer ZH: ${textValue(entry.short_answer, "zh")}`,
-      `  Detail EN: ${textValue(entry.detailed_content, "en").slice(0, 650)}`,
-      `  Detail ZH: ${textValue(entry.detailed_content, "zh").slice(0, 650)}`,
-      `  Tags: ${(entry.tags || []).join(", ")}`,
-    ].join("\n");
-
-    if ((output + "\n" + block).length > WIKI_CONTEXT_LIMIT) break;
-    output += `${block}\n`;
-  }
-
-  return output.trim() || "No relevant Carloha Wiki entries found.";
 }
 
 function fallbackReply(language) {
@@ -364,7 +145,7 @@ export async function POST(request) {
   }
 
   if (!GEMINI_API_KEY) {
-    return NextResponse.json({ reply: fallbackReply(language), requestDraft: null });
+    return NextResponse.json({ reply: fallbackReply(language), requestDraft: null, sources: [] });
   }
 
   const [vehicleMaterials, generalMaterials, wikiEntries] = await Promise.all([
@@ -372,7 +153,15 @@ export async function POST(request) {
     getGeneralMaterials(),
     getWikiEntries(),
   ]);
-  const sources = buildAssistantSources(lastUserMessage, vehicleMaterials, generalMaterials, wikiEntries);
+  const assistantIndex = buildAssistantIndex(vehicleMaterials, generalMaterials, wikiEntries);
+  const retrieval = retrieveAssistantContext(assistantIndex, lastUserMessage);
+
+  recordAnalyticsEvent({
+    type: "assistant_question",
+    query: lastUserMessage,
+    topic: retrieval.sources[0]?.title || lastUserMessage.slice(0, 80),
+    language,
+  });
 
   const systemPrompt = `
 You are Marketing Assistant for Carloha Marketing Hub.
@@ -381,8 +170,7 @@ If the user asks in Chinese, reply in Chinese. If the user asks in English, repl
 Be concise, friendly, and practical.
 When a user wants to submit a request, collect useful fields and create requestDraft. Never say it has been submitted until the user confirms.
 If information is missing for a request, ask for the missing details.
-Use only the site context below for material links and status. If a link is "Coming Soon", say the material is not ready yet and offer to create a request.
-Use Carloha Wiki context for company, brand, product, service, sales, fleet, and industry knowledge questions.
+Use only the indexed site context below for material links and status. If a link is "Coming Soon", say the material is not ready yet and offer to create a request.
 
 Contact:
 - Name: ${CONTACT.name}
@@ -392,14 +180,8 @@ Contact:
 Request draft fields:
 requestType, name, email, whatsapp, market, vehicle, materialType, urgency, message.
 
-Vehicle materials:
-${formatVehicleContext(vehicleMaterials)}
-
-General materials:
-${formatGeneralContext(generalMaterials)}
-
-Carloha Wiki context:
-${formatWikiContext(wikiEntries, lastUserMessage)}
+Indexed Carloha knowledge context:
+${retrieval.context || "No strongly relevant indexed context found."}
 `;
 
   const conversationText = messages
@@ -424,11 +206,17 @@ ${formatWikiContext(wikiEntries, lastUserMessage)}
         model,
         detail,
       });
+      recordAnalyticsEvent({
+        type: "assistant_poor_answer",
+        query: lastUserMessage,
+        reason: `gemini_${response.status}`,
+        language,
+      });
 
       return NextResponse.json(
         {
           reply: geminiErrorReply(response.status, detail, language, attemptedModels),
-          sources,
+          sources: retrieval.sources,
           requestDraft: null,
         },
         { status: 200 }
@@ -440,31 +228,52 @@ ${formatWikiContext(wikiEntries, lastUserMessage)}
     const parsed = extractJson(text);
 
     if (!parsed?.reply) {
+      recordAnalyticsEvent({
+        type: "assistant_poor_answer",
+        query: lastUserMessage,
+        reason: "missing_reply",
+        language,
+      });
       return NextResponse.json({
         reply:
           language === "zh"
             ? "我暂时没能整理出可靠回答。你可以换一种方式再问我。"
             : "I could not prepare a reliable answer yet. Please try asking another way.",
-        sources,
+        sources: retrieval.sources,
         requestDraft: null,
+      });
+    }
+
+    if (!retrieval.sources.length) {
+      recordAnalyticsEvent({
+        type: "assistant_poor_answer",
+        query: lastUserMessage,
+        reason: "no_sources",
+        language,
       });
     }
 
     return NextResponse.json({
       reply: parsed.reply,
-      sources,
+      sources: retrieval.sources,
       requestDraft: parsed.requestDraft || null,
     });
   } catch (error) {
     logError("Assistant route failed", {
       error: error instanceof Error ? error.message : String(error),
     });
+    recordAnalyticsEvent({
+      type: "assistant_poor_answer",
+      query: lastUserMessage,
+      reason: "exception",
+      language,
+    });
     return NextResponse.json({
       reply:
         language === "zh"
-          ? "Marketing Assistant 暂时无法连接。请稍后再试，或直接提交 Request 表单。"
+          ? "Marketing Assistant 暂时无法连接。请稍后再试，或直接使用 Request 表单。"
           : "Marketing Assistant cannot connect right now. Please try again later or use the Request form.",
-      sources,
+      sources: retrieval.sources,
       requestDraft: null,
     });
   }

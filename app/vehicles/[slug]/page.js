@@ -70,6 +70,11 @@ export default async function VehicleDetail({ params }) {
               status={item.Status}
               label={item["Material Type"]}
               cnLabel={translateValue(item["Material Type"])}
+              analyticsMeta={{
+                vehicle: vehicle.vehicle,
+                materialType: item["Material Type"],
+                title: item.Title || `${vehicle.vehicle} ${item["Material Type"]}`,
+              }}
             />
           ))}
         </div>

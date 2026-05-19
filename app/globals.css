@@ -518,6 +518,51 @@ nav a:hover {
   color: var(--muted);
 }
 
+.insightGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.insightPanel {
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 10px 30px rgba(80, 40, 15, 0.05);
+}
+
+.insightPanel h2 {
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+.insightList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.insightList li {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  background: #fffaf7;
+  border: 1px solid #f1e1d6;
+  border-radius: 14px;
+}
+
+.insightList strong {
+  color: #1f2933;
+}
+
+.insightList span,
+.insightList small {
+  color: #6b7280;
+}
+
 .detailHeader {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) 420px;
@@ -879,6 +924,10 @@ html[data-lang="CN"] ul.en {
   .supportCallout {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .insightGrid {
+    grid-template-columns: 1fr;
   }
 
   .guidelines-list li {

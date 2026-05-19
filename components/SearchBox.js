@@ -154,7 +154,18 @@ export default function SearchBox({ items }) {
                     {item["Last Updated"] ? <span>{item["Last Updated"]}</span> : null}
                   </div>
                 </div>
-                <MaterialButton link={item["Google Drive Link"]} status={item.Status} label={t.open} cnLabel="打开" />
+                <MaterialButton
+                  link={item["Google Drive Link"]}
+                  status={item.Status}
+                  label={t.open}
+                  cnLabel="打开"
+                  analyticsMeta={{
+                    vehicle: item.Vehicle || "",
+                    category: item.Category || "",
+                    materialType: item["Material Type"] || item["File Format"] || "",
+                    title: item.Title || item.Category || item.Vehicle || "",
+                  }}
+                />
               </div>
             );
           }) : <p>{t.noResults}</p>}

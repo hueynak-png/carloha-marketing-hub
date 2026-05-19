@@ -12,7 +12,7 @@ export default async function GeneralPage() {
     <p className="muted cn">{siteCopy.general.intro.CN}</p>
     <SearchBox items={materials} />
     <div className="grid">
-      {materials.map(item => <article className="card" key={item.Category}><div className="cardBody"><div className="eyebrow"><span className="en">{item.Status}</span><span className="cn">{translateValue(item.Status)}</span></div><h3><span className="en">{item.Category}</span><span className="cn">{translateValue(item.Category)}</span></h3><p><span className="en">{item.Description}</span><span className="cn">{generalDescriptions[item.Category] || item.Description}</span></p><MaterialButton link={item["Google Drive Link"]} status={item.Status} label={siteCopy.general.openFolder.EN} cnLabel={siteCopy.general.openFolder.CN} /></div></article>)}
+      {materials.map(item => <article className="card" key={item.Category}><div className="cardBody"><div className="eyebrow"><span className="en">{item.Status}</span><span className="cn">{translateValue(item.Status)}</span></div><h3><span className="en">{item.Category}</span><span className="cn">{translateValue(item.Category)}</span></h3><p><span className="en">{item.Description}</span><span className="cn">{generalDescriptions[item.Category] || item.Description}</span></p><MaterialButton link={item["Google Drive Link"]} status={item.Status} label={siteCopy.general.openFolder.EN} cnLabel={siteCopy.general.openFolder.CN} analyticsMeta={{ category: item.Category, materialType: item["File Format"] || "Folder", title: item.Title || item.Category }} /></div></article>)}
     </div>
   </>;
 }

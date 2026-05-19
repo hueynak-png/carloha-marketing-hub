@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server.js";
 import { REQUEST_FORM_SUBMIT_URL } from "../../../lib/config.js";
+import { recordAnalyticsEvent } from "../../../lib/analyticsStore.js";
 import { logError, logWarn } from "../../../lib/logger.js";
 import { checkRateLimit, getClientIp } from "../../../lib/rateLimit.js";
 import { getRequestMessages, validateRequestPayload } from "../../../lib/requestValidation.js";
@@ -69,6 +70,13 @@ export async function POST(request) {
         { status: 502 }
       );
     }
+
+    recordAnalyticsEvent({
+      type: "request_submit",
+      requestType: submission.requestType,
+      vehicle: submission.vehicle,
+      market: submission.market,
+    });
 
     return NextResponse.json({ ok: true });
   } catch {

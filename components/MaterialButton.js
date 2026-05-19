@@ -1,4 +1,25 @@
-export default function MaterialButton({ link, status, label, cnLabel }) {
+"use client";
+
+function trackMaterialOpen(meta) {
+  const payload = JSON.stringify({
+    type: "material_open",
+    ...meta,
+  });
+
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon("/api/analytics", new Blob([payload], { type: "application/json" }));
+    return;
+  }
+
+  fetch("/api/analytics", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: payload,
+    keepalive: true,
+  }).catch(() => {});
+}
+
+export default function MaterialButton({ link, status, label, cnLabel, analyticsMeta = null }) {
   const disabled = status === "Coming Soon" || !link || link === "Coming Soon";
   const content = (
     <>
@@ -15,5 +36,17 @@ export default function MaterialButton({ link, status, label, cnLabel }) {
       </button>
     );
   }
-  return <a className="materialButton" href={link} target="_blank" rel="noreferrer">{content}</a>;
+  return (
+    <a
+      className="materialButton"
+      href={link}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() => {
+        if (analyticsMeta) trackMaterialOpen(analyticsMeta);
+      }}
+    >
+      {content}
+    </a>
+  );
 }

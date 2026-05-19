@@ -1,4 +1,5 @@
 import "./globals.css";
+import PageTracker from "../components/PageTracker";
 import Sidebar from "../components/Sidebar";
 
 export const metadata = {
@@ -10,6 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <PageTracker />
         <div className="appShell">
           <Sidebar />
           <main className="mainContent">{children}</main>
