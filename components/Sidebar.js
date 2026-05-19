@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,8 +16,7 @@ export default function Sidebar() {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const showHowToUseOnMobile = pathname === "/";
   const [homeItem, ...navItems] = siteCopy.sidebar.nav;
-  const allNavItems = useMemo(() => [homeItem, ...navItems], [homeItem, navItems]);
-  const activeItem = allNavItems.find(item => {
+  const activeItem = [homeItem, ...navItems].find(item => {
     if (item.href === "/") return pathname === "/";
     return pathname === item.href || pathname.startsWith(`${item.href}/`);
   }) || homeItem;
@@ -30,6 +29,17 @@ export default function Sidebar() {
     if (item.href === "/") return pathname === "/";
     return pathname === item.href || pathname.startsWith(`${item.href}/`);
   }
+
+  function handleHomeClick() {
+    setIsMobileNavOpen(false);
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  const mobileToggleLabel = pathname === "/"
+    ? (language === "CN" ? "页面选项" : "Pages")
+    : activeItem[language];
 
   return (
     <aside className="sidebar">
@@ -45,6 +55,14 @@ export default function Sidebar() {
           {siteCopy.sidebar.navLabel[language]}
         </p>
 
+        <Link
+          href={homeItem.href}
+          className={`mobileHomeShortcut ${isActive(homeItem) ? "active" : ""}`}
+          onClick={handleHomeClick}
+        >
+          <span>{homeItem[language]}</span>
+        </Link>
+
         <button
           className="mobileNavToggle"
           type="button"
@@ -53,7 +71,7 @@ export default function Sidebar() {
         >
           <span>
             <small>{language === "CN" ? "当前页面" : "Current page"}</small>
-            <strong>{activeItem[language]}</strong>
+            <strong>{mobileToggleLabel}</strong>
           </span>
           <b>{isMobileNavOpen ? "-" : "+"}</b>
         </button>
@@ -62,6 +80,7 @@ export default function Sidebar() {
           <Link
             href={homeItem.href}
             className={`sidebarNavItem sidebarHomeLink ${isActive(homeItem) ? "active" : ""}`}
+            onClick={handleHomeClick}
           >
             <span className="sidebarNavCopy">
               <strong>{homeItem[language]}</strong>
