@@ -25,10 +25,10 @@ function cleanMessages(messages = []) {
 
 function fallbackReply(language) {
   if (language === "zh") {
-    return "Marketing Assistant 还没有配置 AI API key。请先在 Vercel 环境变量里添加 GEMINI_API_KEY，然后重新部署。";
+    return "Carloha AI 还没有配置 AI API key。请先在 Vercel 环境变量里添加 GEMINI_API_KEY，然后重新部署。";
   }
 
-  return "Marketing Assistant is not configured yet. Please add GEMINI_API_KEY in Vercel environment variables and redeploy.";
+  return "Carloha AI is not configured yet. Please add GEMINI_API_KEY in Vercel environment variables and redeploy.";
 }
 
 function extractJson(text = "") {
@@ -64,20 +64,20 @@ function geminiErrorReply(status, detail, language, attemptedModels = []) {
 
   if (status === 400) {
     return language === "zh"
-      ? `Marketing Assistant 配置需要调整：Gemini API 返回 400。已尝试模型：${modelText}。错误详情：${detail || "未返回具体原因"}`
-      : `Marketing Assistant needs a configuration check: Gemini API returned 400. Tried models: ${modelText}.${detailText}`;
+      ? `Carloha AI 配置需要调整：Gemini API 返回 400。已尝试模型：${modelText}。错误详情：${detail || "未返回具体原因"}`
+      : `Carloha AI needs a configuration check: Gemini API returned 400. Tried models: ${modelText}.${detailText}`;
   }
 
   if (status === 401 || status === 403) {
     return language === "zh"
-      ? "Marketing Assistant 的 Gemini API key 不能使用。请检查 Vercel 里的 GEMINI_API_KEY 是否正确，以及 Google AI Studio 里这个 key 有没有 API 限制。"
-      : "Marketing Assistant cannot use the Gemini API key. Please check GEMINI_API_KEY in Vercel and make sure the key is not blocked by API restrictions in Google AI Studio.";
+      ? "Carloha AI 的 Gemini API key 不能使用。请检查 Vercel 里的 GEMINI_API_KEY 是否正确，以及 Google AI Studio 里这个 key 有没有 API 限制。"
+      : "Carloha AI cannot use the Gemini API key. Please check GEMINI_API_KEY in Vercel and make sure the key is not blocked by API restrictions in Google AI Studio.";
   }
 
   if (status === 429) {
     return language === "zh"
-      ? "Marketing Assistant 今天的免费额度可能用完了。你可以稍后再试，或直接使用 Request 页面提交需求。"
-      : "Marketing Assistant may have reached today's free quota. Please try again later or submit the Request form.";
+      ? "Carloha AI 今天的免费额度可能用完了。你可以稍后再试，或直接使用 Request 页面提交需求。"
+      : "Carloha AI may have reached today's free quota. Please try again later or submit the Request form.";
   }
 
   if (status >= 500) {
@@ -87,8 +87,8 @@ function geminiErrorReply(status, detail, language, attemptedModels = []) {
   }
 
   return language === "zh"
-    ? `Marketing Assistant 暂时无法连接 Gemini。错误：${detail}`
-    : `Marketing Assistant cannot connect to Gemini right now. Error: ${detail}`;
+    ? `Carloha AI 暂时无法连接 Gemini。错误：${detail}`
+    : `Carloha AI cannot connect to Gemini right now. Error: ${detail}`;
 }
 
 async function generateWithGemini(model, systemPrompt, conversationText) {
@@ -164,7 +164,7 @@ export async function POST(request) {
   });
 
   const systemPrompt = `
-You are Marketing Assistant for Carloha Marketing Hub.
+You are Carloha AI for Carloha Marketing Hub.
 Answer only questions related to Carloha Marketing Hub, vehicle marketing materials, dealer support, FAQ, broken links, and request submission.
 If the user asks in Chinese, reply in Chinese. If the user asks in English, reply in English.
 Be concise, friendly, and practical.
@@ -271,8 +271,8 @@ ${retrieval.context || "No strongly relevant indexed context found."}
     return NextResponse.json({
       reply:
         language === "zh"
-          ? "Marketing Assistant 暂时无法连接。请稍后再试，或直接使用 Request 表单。"
-          : "Marketing Assistant cannot connect right now. Please try again later or use the Request form.",
+          ? "Carloha AI 暂时无法连接。请稍后再试，或直接使用 Request 表单。"
+          : "Carloha AI cannot connect right now. Please try again later or use the Request form.",
       sources: retrieval.sources,
       requestDraft: null,
     });
