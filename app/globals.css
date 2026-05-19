@@ -86,38 +86,95 @@ body {
   font-weight: 700;
 }
 
-nav {
+.sidebarNav {
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin: 12px 0 20px;
 }
 
-nav a {
-  padding: 11px 12px;
-  border-radius: 14px;
+.sidebarNavLabel {
+  margin: 0 0 6px;
+  padding: 0 8px;
+  color: #8a766a;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sidebarNavItem {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 12px 12px 13px;
+  border: 1px solid transparent;
+  border-radius: 16px;
   color: var(--text);
-  font-weight: 600;
   text-decoration: none;
+  transition: all 0.18s ease;
 }
 
-nav a:hover {
-  background: #fff0e8;
-  color: var(--orange-dark);
+.sidebarNavItem:hover {
+  background: #fff6ef;
+  border-color: #f1d7c8;
+  transform: translateX(2px);
 }
 
-.sidebar nav .wiki-link {
+.sidebarNavItem.active {
+  background: linear-gradient(135deg, #fff4ec, #ffffff);
+  border-color: #f1c9b1;
+  box-shadow: 0 10px 24px rgba(148, 65, 20, 0.08);
+}
+
+.sidebarNavIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 8px;
+  background: #fff5ee;
+  border: 1px solid #f2ddd0;
+  border-radius: 12px;
+  color: #b46c3d;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sidebarNavItem.active .sidebarNavIndex {
+  background: #ff6b1a;
+  border-color: #ff6b1a;
+  color: #ffffff;
+}
+
+.sidebarNavCopy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.sidebarNavCopy strong {
+  display: block;
+  color: #1f2933;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.sidebarNavCopy small {
+  display: block;
+  color: #7a8794;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.sidebarWikiLink strong {
   color: var(--orange);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.08rem;
   font-style: italic;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-}
-
-.sidebar nav .wiki-link:hover {
-  background: #fff3ec;
-  color: #e85f12;
 }
 
 .sideCard {
@@ -853,7 +910,7 @@ html[data-lang="CN"] ul.en {
     height: auto;
   }
 
-  .sidebar nav {
+  .sidebarNav {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }

@@ -21,11 +21,25 @@ export default function Sidebar() {
 
       <LanguageToggle />
 
-      <nav>
-        {siteCopy.sidebar.nav.map(item => (
-          <Link key={item.href} href={item.href}>
-            <span className="en">{item.EN}</span>
-            <span className="cn">{item.CN}</span>
+      <nav className="sidebarNav">
+        <p className="sidebarNavLabel">
+          <span className="en">{siteCopy.sidebar.navLabel.EN}</span>
+          <span className="cn">{siteCopy.sidebar.navLabel.CN}</span>
+        </p>
+
+        {siteCopy.sidebar.nav.map((item, index) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`sidebarNavItem ${pathname === item.href ? "active" : ""}`}
+          >
+            <span className="sidebarNavIndex">{String(index + 1).padStart(2, "0")}</span>
+            <span className="sidebarNavCopy">
+              <strong className="en">{item.EN}</strong>
+              <strong className="cn">{item.CN}</strong>
+              <small className="en">{item.EN_HINT}</small>
+              <small className="cn">{item.CN_HINT}</small>
+            </span>
           </Link>
         ))}
 
@@ -33,9 +47,14 @@ export default function Sidebar() {
           href={CARLOHA_WIKI_URL}
           target="_blank"
           rel="noreferrer"
-          className="wiki-link"
+          className="wiki-link sidebarNavItem sidebarWikiLink"
         >
-          {siteCopy.common.EN.wiki}
+          <span className="sidebarNavIndex">WK</span>
+          <span className="sidebarNavCopy">
+            <strong>{siteCopy.common.EN.wiki}</strong>
+            <small className="en">Open the full Carloha knowledge base in a new tab.</small>
+            <small className="cn">在新标签页中打开完整 Carloha Wiki 知识库。</small>
+          </span>
         </a>
       </nav>
 

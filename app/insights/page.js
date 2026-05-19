@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { summarizeAnalytics } from "../../lib/analyticsStore.js";
 
 export const dynamic = "force-dynamic";
@@ -24,8 +25,14 @@ function SectionList({ title, items = [], empty }) {
   );
 }
 
-export default function InsightsPage() {
+export default function InsightsPage({ searchParams }) {
+  const accessKey = process.env.INSIGHTS_ACCESS_KEY || "";
   const summary = summarizeAnalytics();
+  const providedKey = typeof searchParams?.key === "string" ? searchParams.key : "";
+
+  if (!accessKey || providedKey !== accessKey) {
+    notFound();
+  }
 
   return (
     <>
