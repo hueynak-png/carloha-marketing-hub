@@ -13,6 +13,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const language = useLanguage();
   const showHowToUseOnMobile = pathname === "/";
+  const [homeItem, ...navItems] = siteCopy.sidebar.nav;
 
   return (
     <aside className="sidebar">
@@ -28,7 +29,16 @@ export default function Sidebar() {
           {siteCopy.sidebar.navLabel[language]}
         </p>
 
-        {siteCopy.sidebar.nav.map((item, index) => (
+        <Link
+          href={homeItem.href}
+          className={`sidebarNavItem sidebarHomeLink ${pathname === homeItem.href ? "active" : ""}`}
+        >
+          <span className="sidebarNavCopy">
+            <strong>{homeItem[language]}</strong>
+          </span>
+        </Link>
+
+        {navItems.map((item, index) => (
           <Link
             key={item.href}
             href={item.href}
@@ -37,7 +47,7 @@ export default function Sidebar() {
             <span className="sidebarNavIndex">{String(index + 1).padStart(2, "0")}</span>
             <span className="sidebarNavCopy">
               <strong>{item[language]}</strong>
-              {item.href === "/" ? null : <small>{item[`${language}_HINT`]}</small>}
+              <small>{item[`${language}_HINT`]}</small>
             </span>
           </Link>
         ))}

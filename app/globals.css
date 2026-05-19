@@ -116,6 +116,21 @@ body {
   transition: all 0.18s ease;
 }
 
+.sidebarHomeLink {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  min-height: 68px;
+  padding: 14px 18px;
+}
+
+.sidebarHomeLink .sidebarNavCopy {
+  gap: 0;
+}
+
+.sidebarHomeLink .sidebarNavCopy strong {
+  font-size: 17px;
+}
+
 .sidebarNavItem:hover {
   background: #fff6ef;
   border-color: #f1d7c8;
