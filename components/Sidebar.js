@@ -51,7 +51,8 @@ export default function Sidebar() {
         >
           <span className="sidebarNavIndex">WK</span>
           <span className="sidebarNavCopy">
-            <strong>{siteCopy.common.EN.wiki}</strong>
+            <strong className="en">{siteCopy.common.EN.wiki}</strong>
+            <strong className="cn">{siteCopy.common.CN.wiki}</strong>
             <small className="en">Open the full Carloha knowledge base in a new tab.</small>
             <small className="cn">在新标签页中打开完整 Carloha Wiki 知识库。</small>
           </span>
