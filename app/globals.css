@@ -117,18 +117,58 @@ body {
 }
 
 .sidebarHomeLink {
+  position: relative;
   grid-template-columns: minmax(0, 1fr);
   align-items: center;
   min-height: 68px;
   padding: 14px 18px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fff8f3, #ffffff);
+  border-color: #f1d7c8;
+  box-shadow: 0 10px 22px rgba(148, 65, 20, 0.05);
+}
+
+.sidebarHomeLink::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  width: 4px;
+  height: 30px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ff8b47, #ff6b1a);
+  transform: translateY(-50%);
+}
+
+.sidebarHomeLink::after {
+  content: "";
+  position: absolute;
+  right: -18px;
+  top: -18px;
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 107, 26, 0.18) 0%, rgba(255, 107, 26, 0) 72%);
+  pointer-events: none;
 }
 
 .sidebarHomeLink .sidebarNavCopy {
   gap: 0;
+  padding-left: 16px;
 }
 
 .sidebarHomeLink .sidebarNavCopy strong {
   font-size: 17px;
+}
+
+.sidebarHomeLink:hover {
+  box-shadow: 0 14px 28px rgba(148, 65, 20, 0.09);
+}
+
+.sidebarHomeLink.active {
+  background: linear-gradient(135deg, #fff3ea, #ffffff);
+  border-color: #f1c9b1;
+  box-shadow: 0 16px 30px rgba(148, 65, 20, 0.1);
 }
 
 .sidebarNavItem:hover {
