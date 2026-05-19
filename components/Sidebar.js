@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,8 +13,23 @@ import { siteCopy } from "../lib/siteCopy";
 export default function Sidebar() {
   const pathname = usePathname();
   const language = useLanguage();
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const showHowToUseOnMobile = pathname === "/";
   const [homeItem, ...navItems] = siteCopy.sidebar.nav;
+  const allNavItems = useMemo(() => [homeItem, ...navItems], [homeItem, navItems]);
+  const activeItem = allNavItems.find(item => {
+    if (item.href === "/") return pathname === "/";
+    return pathname === item.href || pathname.startsWith(`${item.href}/`);
+  }) || homeItem;
+
+  useEffect(() => {
+    setIsMobileNavOpen(false);
+  }, [pathname]);
+
+  function isActive(item) {
+    if (item.href === "/") return pathname === "/";
+    return pathname === item.href || pathname.startsWith(`${item.href}/`);
+  }
 
   return (
     <aside className="sidebar">
@@ -29,45 +45,60 @@ export default function Sidebar() {
           {siteCopy.sidebar.navLabel[language]}
         </p>
 
-        <Link
-          href={homeItem.href}
-          className={`sidebarNavItem sidebarHomeLink ${pathname === homeItem.href ? "active" : ""}`}
+        <button
+          className="mobileNavToggle"
+          type="button"
+          aria-expanded={isMobileNavOpen}
+          onClick={() => setIsMobileNavOpen(current => !current)}
         >
-          <span className="sidebarNavCopy">
-            <strong>{homeItem[language]}</strong>
+          <span>
+            <small>{language === "CN" ? "当前页面" : "Current page"}</small>
+            <strong>{activeItem[language]}</strong>
           </span>
-        </Link>
+          <b>{isMobileNavOpen ? "-" : "+"}</b>
+        </button>
 
-        {navItems.map((item, index) => (
+        <div className={`sidebarNavMenu ${isMobileNavOpen ? "open" : ""}`}>
           <Link
-            key={item.href}
-            href={item.href}
-            className={`sidebarNavItem ${pathname === item.href ? "active" : ""}`}
+            href={homeItem.href}
+            className={`sidebarNavItem sidebarHomeLink ${isActive(homeItem) ? "active" : ""}`}
           >
-            <span className="sidebarNavIndex">{String(index + 1).padStart(2, "0")}</span>
             <span className="sidebarNavCopy">
-              <strong>{item[language]}</strong>
-              <small>{item[`${language}_HINT`]}</small>
+              <strong>{homeItem[language]}</strong>
             </span>
           </Link>
-        ))}
 
-        <a
-          href={CARLOHA_WIKI_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="wiki-link sidebarNavItem sidebarWikiLink"
-        >
-          <span className="sidebarNavIndex">WK</span>
-          <span className="sidebarNavCopy">
-            <strong>{siteCopy.common[language].wiki}</strong>
-            <small>
-              {language === "CN"
-                ? "在新标签页中打开完整 Carloha Wiki 知识库。"
-                : "Open the full Carloha knowledge base in a new tab."}
-            </small>
-          </span>
-        </a>
+          {navItems.map((item, index) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`sidebarNavItem ${isActive(item) ? "active" : ""}`}
+            >
+              <span className="sidebarNavIndex">{String(index + 1).padStart(2, "0")}</span>
+              <span className="sidebarNavCopy">
+                <strong>{item[language]}</strong>
+                <small>{item[`${language}_HINT`]}</small>
+              </span>
+            </Link>
+          ))}
+
+          <a
+            href={CARLOHA_WIKI_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="wiki-link sidebarNavItem sidebarWikiLink"
+          >
+            <span className="sidebarNavIndex">WK</span>
+            <span className="sidebarNavCopy">
+              <strong>{siteCopy.common[language].wiki}</strong>
+              <small>
+                {language === "CN"
+                  ? "在新标签页中打开完整 Carloha Wiki 知识库。"
+                  : "Open the full Carloha knowledge base in a new tab."}
+              </small>
+            </span>
+          </a>
+        </div>
       </nav>
 
       <section className={`sideCard howToUseBox ${showHowToUseOnMobile ? "showOnMobile" : ""}`}>
