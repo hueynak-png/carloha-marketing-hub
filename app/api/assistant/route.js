@@ -154,6 +154,66 @@ function scoreWikiEntry(entry, query) {
   return score;
 }
 
+function scoreMaterialEntry(item, query) {
+  const terms = tokenize(query);
+  const haystack = [
+    item.Vehicle,
+    item.Category,
+    item.Title,
+    item.Description,
+    item["Material Type"],
+    item.Status,
+  ].filter(Boolean).join(" ").toLowerCase();
+
+  let score = 0;
+  for (const term of terms) {
+    if (haystack.includes(term)) score += term.length > 3 ? 3 : 1;
+  }
+
+  if (item.Status === "Ready") score += 1;
+  return score;
+}
+
+function buildAssistantSources(query, vehicleMaterials, generalMaterials, wikiEntries) {
+  const vehicleSources = vehicleMaterials
+    .map(item => ({
+      kind: "vehicle",
+      title: item.Title || `${item.Vehicle} ${item["Material Type"]}`,
+      subtitle: [item.Vehicle, item["Material Type"], item.Status].filter(Boolean).join(" · "),
+      url: item["Google Drive Link"] && item["Google Drive Link"] !== "Coming Soon" ? item["Google Drive Link"] : "",
+      score: scoreMaterialEntry(item, query),
+    }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 2);
+
+  const generalSources = generalMaterials
+    .map(item => ({
+      kind: "general",
+      title: item.Title || item.Category,
+      subtitle: [item.Category, item.Status].filter(Boolean).join(" · "),
+      url: item["Google Drive Link"] && item["Google Drive Link"] !== "Coming Soon" ? item["Google Drive Link"] : "",
+      score: scoreMaterialEntry(item, query),
+    }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 1);
+
+  const wikiSources = wikiEntries
+    .map(entry => ({
+      kind: "wiki",
+      title: textValue(entry.question, "en") || textValue(entry.question, "zh") || "Carloha Wiki",
+      subtitle: textValue(entry.L2_title, "en") || textValue(entry.L2_title, "zh") || "Carloha Wiki",
+      url: CARLOHA_WIKI_URL,
+      score: scoreWikiEntry(entry, query),
+    }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 1);
+
+  return [...vehicleSources, ...generalSources, ...wikiSources].slice(0, 4);
+}
+
 function formatWikiContext(entries, query) {
   if (!entries.length) return "Carloha Wiki context could not be loaded.";
 
@@ -265,7 +325,7 @@ async function generateWithGemini(model, systemPrompt, conversationText) {
             role: "user",
             parts: [
               {
-                text: `${conversationText}\n\nReturn JSON only with this shape: {"reply":"...","requestDraft":null or {"requestType":"...","name":"...","email":"...","whatsapp":"...","market":"...","vehicle":"...","materialType":"...","urgency":"...","message":"..."}}`,
+                text: `${conversationText}\n\nReturn JSON only with this shape: {"reply":"...","requestDraft":null or {"requestType":"...","name":"...","email":"...","whatsapp":"...","market":"...","vehicle":"...","materialType":"...","urgency":"...","message":"..."}}. Do not include markdown code fences.`,
               },
             ],
           },
@@ -312,6 +372,7 @@ export async function POST(request) {
     getGeneralMaterials(),
     getWikiEntries(),
   ]);
+  const sources = buildAssistantSources(lastUserMessage, vehicleMaterials, generalMaterials, wikiEntries);
 
   const systemPrompt = `
 You are Marketing Assistant for Carloha Marketing Hub.
@@ -367,6 +428,7 @@ ${formatWikiContext(wikiEntries, lastUserMessage)}
       return NextResponse.json(
         {
           reply: geminiErrorReply(response.status, detail, language, attemptedModels),
+          sources,
           requestDraft: null,
         },
         { status: 200 }
@@ -383,12 +445,14 @@ ${formatWikiContext(wikiEntries, lastUserMessage)}
           language === "zh"
             ? "我暂时没能整理出可靠回答。你可以换一种方式再问我。"
             : "I could not prepare a reliable answer yet. Please try asking another way.",
+        sources,
         requestDraft: null,
       });
     }
 
     return NextResponse.json({
       reply: parsed.reply,
+      sources,
       requestDraft: parsed.requestDraft || null,
     });
   } catch (error) {
@@ -400,6 +464,7 @@ ${formatWikiContext(wikiEntries, lastUserMessage)}
         language === "zh"
           ? "Marketing Assistant 暂时无法连接。请稍后再试，或直接提交 Request 表单。"
           : "Marketing Assistant cannot connect right now. Please try again later or use the Request form.",
+      sources,
       requestDraft: null,
     });
   }

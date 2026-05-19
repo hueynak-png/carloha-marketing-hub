@@ -18,7 +18,7 @@ const initialState = {
   website: "",
 };
 
-export default function RequestForm() {
+export default function RequestForm({ vehicles = [], materialTypes = [] }) {
   const language = useLanguage();
   const t = getLocalizedCopy("requestForm", language);
   const [form, setForm] = useState(initialState);
@@ -58,6 +58,8 @@ export default function RequestForm() {
 
   return (
     <form className={styles.requestForm} onSubmit={submitRequest}>
+      <p className={styles.helperText}>{t.requestHelper}</p>
+
       <div className={styles.formGrid}>
         <label>
           {t.requestType}
@@ -99,14 +101,37 @@ export default function RequestForm() {
 
         <label>
           {t.vehicle}
-          <input name="vehicle" value={form.vehicle} onChange={updateField} placeholder={t.vehiclePlaceholder} maxLength={80} />
+          <input
+            name="vehicle"
+            value={form.vehicle}
+            onChange={updateField}
+            placeholder={t.vehiclePlaceholder}
+            maxLength={80}
+            list="vehicle-options"
+          />
+          <small>{t.vehicleHint}</small>
         </label>
 
         <label>
           {t.materialType}
-          <input name="materialType" value={form.materialType} onChange={updateField} placeholder={t.materialPlaceholder} maxLength={120} />
+          <input
+            name="materialType"
+            value={form.materialType}
+            onChange={updateField}
+            placeholder={t.materialPlaceholder}
+            maxLength={120}
+            list="material-type-options"
+          />
+          <small>{t.materialHint}</small>
         </label>
       </div>
+
+      <datalist id="vehicle-options">
+        {vehicles.map(vehicle => <option key={vehicle} value={vehicle} />)}
+      </datalist>
+      <datalist id="material-type-options">
+        {materialTypes.map(type => <option key={type} value={type} />)}
+      </datalist>
 
       <div className={styles.honeypot} aria-hidden="true">
         <label>

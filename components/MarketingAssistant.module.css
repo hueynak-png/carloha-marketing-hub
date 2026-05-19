@@ -91,6 +91,11 @@
   background: #fffaf7;
 }
 
+.messageBlock {
+  display: grid;
+  gap: 8px;
+}
+
 .message {
   min-width: 0;
   max-width: 94%;
@@ -114,6 +119,57 @@
   justify-self: end;
   background: #ff6b1a;
   color: #ffffff;
+}
+
+.sourcesCard {
+  display: grid;
+  gap: 8px;
+  max-width: 94%;
+  padding: 10px 12px;
+  background: #fff5ee;
+  border: 1px solid #f1d7c8;
+  border-radius: 14px;
+}
+
+.sourcesCard strong {
+  color: #9a3412;
+  font-size: 12px;
+}
+
+.sourcesCard ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sourcesCard li {
+  display: grid;
+  gap: 3px;
+}
+
+.sourcesCard span {
+  color: #9a3412;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.sourcesCard a,
+.sourcesCard em {
+  color: #24303d;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+.sourcesCard small {
+  color: #6b7280;
+  font-size: 11px;
+  overflow-wrap: anywhere;
 }
 
 .draftCard {

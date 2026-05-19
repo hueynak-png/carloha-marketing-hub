@@ -1,9 +1,14 @@
 import FaqSection from "../../components/FaqSection";
 import RequestForm from "../../components/RequestForm";
 import { CONTACT } from "../../lib/config";
+import { getVehicleMaterials } from "../../lib/data.js";
 import { siteCopy } from "../../lib/siteCopy";
 
-export default function RequestPage() {
+export default async function RequestPage() {
+  const materials = await getVehicleMaterials();
+  const vehicles = [...new Set(materials.map(item => item.Vehicle).filter(Boolean))];
+  const materialTypes = [...new Set(materials.map(item => item["Material Type"]).filter(Boolean))];
+
   return (
     <>
       <h1 className="pageTitle">
@@ -24,7 +29,7 @@ export default function RequestPage() {
         <p className="en">{siteCopy.requestPage.formIntro.EN}</p>
         <p className="cn">{siteCopy.requestPage.formIntro.CN}</p>
 
-        <RequestForm />
+        <RequestForm vehicles={vehicles} materialTypes={materialTypes} />
       </section>
 
       <section className="support-section">

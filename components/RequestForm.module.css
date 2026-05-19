@@ -4,6 +4,12 @@
   margin-top: 22px;
 }
 
+.helperText {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -15,6 +21,12 @@
   gap: 8px;
   color: #1f2933;
   font-weight: 800;
+}
+
+.requestForm label small {
+  color: #7a8794;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .requestForm input,

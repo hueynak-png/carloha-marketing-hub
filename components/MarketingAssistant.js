@@ -23,6 +23,10 @@ function draftSummary(draft, labels) {
   ].filter(([, value]) => String(value || "").trim());
 }
 
+function sourceLabel(source, labels) {
+  return labels[source.kind] || source.kind;
+}
+
 export default function MarketingAssistant() {
   const language = useLanguage();
   const t = getLocalizedCopy("marketingAssistant", language);
@@ -96,6 +100,7 @@ export default function MarketingAssistant() {
         {
           role: "assistant",
           content: result.reply || t.fallback,
+          sources: result.sources || [],
         },
       ]);
       setRequestDraft(result.requestDraft || null);
@@ -106,6 +111,7 @@ export default function MarketingAssistant() {
         {
           role: "assistant",
           content: t.busy,
+          sources: [],
         },
       ]);
       setStatus("idle");
@@ -144,6 +150,7 @@ export default function MarketingAssistant() {
         {
           role: "assistant",
           content: t.submitted,
+          sources: [],
         },
       ]);
       setRequestDraft(null);
@@ -154,6 +161,7 @@ export default function MarketingAssistant() {
         {
           role: "assistant",
           content: error.message || t.submitError,
+          sources: [],
         },
       ]);
       setStatus("idle");
@@ -186,13 +194,32 @@ export default function MarketingAssistant() {
 
           <div className={styles.messages}>
             {messages.map((message, index) => (
-              <div
-                className={`${styles.message} ${
-                  message.role === "user" ? styles.userMessage : styles.assistantMessage
-                }`}
-                key={`${message.role}-${index}`}
-              >
-                {index === 0 && message.role === "assistant" ? t.welcome : message.content}
+              <div key={`${message.role}-${index}`} className={styles.messageBlock}>
+                <div
+                  className={`${styles.message} ${
+                    message.role === "user" ? styles.userMessage : styles.assistantMessage
+                  }`}
+                >
+                  {index === 0 && message.role === "assistant" ? t.welcome : message.content}
+                </div>
+                {message.role === "assistant" && message.sources?.length ? (
+                  <div className={styles.sourcesCard}>
+                    <strong>{t.sources}</strong>
+                    <ul>
+                      {message.sources.map((source, sourceIndex) => (
+                        <li key={`${source.title}-${sourceIndex}`}>
+                          <span>{sourceLabel(source, t.sourceLabels)}</span>
+                          {source.url ? (
+                            <a href={source.url} target="_blank" rel="noreferrer">{source.title}</a>
+                          ) : (
+                            <em>{source.title}</em>
+                          )}
+                          {source.subtitle ? <small>{source.subtitle}</small> : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
               </div>
             ))}
 

@@ -1,43 +1,165 @@
 "use client";
+
 import { useMemo, useState } from "react";
 import MaterialButton from "./MaterialButton";
 import useLanguage from "./useLanguage";
-import { getLocalizedCopy } from "../lib/siteCopy";
-import { translateValue } from "../lib/translations";
+import { buildSearchOptions } from "../lib/data.js";
+import { getLocalizedCopy } from "../lib/siteCopy.js";
+import { translateValue } from "../lib/translations.js";
+
+function normalizeSearchTerm(value = "") {
+  const raw = String(value || "").trim().toLowerCase();
+  if (!raw) return "";
+  if (raw === "q3" || raw === "qq3") return "chery q";
+  return raw;
+}
+
+function highlightText(text = "", query = "") {
+  if (!query) return text;
+  const source = String(text || "");
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escaped})`, "ig");
+  const parts = source.split(regex);
+
+  if (parts.length === 1) return source;
+
+  return parts.map((part, index) =>
+    index % 2 === 1 ? <mark key={`${part}-${index}`}>{part}</mark> : <span key={`${part}-${index}`}>{part}</span>
+  );
+}
 
 export default function SearchBox({ items }) {
   const language = useLanguage();
   const t = getLocalizedCopy("searchBox", language);
   const [q, setQ] = useState("");
+  const [scope, setScope] = useState("");
+  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+
+  const options = useMemo(() => buildSearchOptions(items), [items]);
+  const normalizedQuery = normalizeSearchTerm(q);
+  const hasActiveFilters = Boolean(normalizedQuery || scope || type || status);
+
   const results = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    if (!s) return [];
-    return items.filter(item => [item.Vehicle, item.Category, item["Material Type"], item.Title, item.Status]
-      .filter(Boolean).join(" ").toLowerCase().includes(s)).slice(0, 12);
-  }, [q, items]);
+    if (!hasActiveFilters) return [];
+
+    return items
+      .filter(item => {
+        const itemScope = item.Vehicle || item.Category || "";
+        const itemType = item["Material Type"] || item["File Format"] || "";
+        const itemStatus = item.Status || "";
+        const aliasSource = [item.Vehicle, item.Category, item["Material Type"], item.Title, item.Status, item.Description]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        const matchesQuery = !normalizedQuery || aliasSource.includes(normalizedQuery);
+        const matchesScope = !scope || itemScope === scope;
+        const matchesType = !type || itemType === type;
+        const matchesStatus = !status || itemStatus === status;
+        return matchesQuery && matchesScope && matchesType && matchesStatus;
+      })
+      .slice(0, 12);
+  }, [hasActiveFilters, items, normalizedQuery, scope, status, type]);
+
+  function clearFilters() {
+    setQ("");
+    setScope("");
+    setType("");
+    setStatus("");
+  }
+
   return (
     <section className="searchPanel">
-      <input value={q} onChange={e => setQ(e.target.value)} placeholder={t.placeholder} />
-      {q && (
+      <div className="searchInputWrap">
+        <label className="searchLabel" htmlFor="material-search">{t.searchLabel}</label>
+        <input
+          id="material-search"
+          value={q}
+          onChange={event => setQ(event.target.value)}
+          placeholder={t.placeholder}
+        />
+      </div>
+
+      <div className="searchFilters">
+        <label>
+          <span>{t.filterVehicle}</span>
+          <select value={scope} onChange={event => setScope(event.target.value)}>
+            <option value="">{t.allVehicles}</option>
+            {options.scopes.map(option => (
+              <option key={option} value={option}>
+                {language === "CN" ? translateValue(option, option) : option}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          <span>{t.filterType}</span>
+          <select value={type} onChange={event => setType(event.target.value)}>
+            <option value="">{t.allTypes}</option>
+            {options.types.map(option => (
+              <option key={option} value={option}>
+                {language === "CN" ? translateValue(option, option) : option}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          <span>{t.filterStatus}</span>
+          <select value={status} onChange={event => setStatus(event.target.value)}>
+            <option value="">{t.allStatuses}</option>
+            {options.statuses.map(option => (
+              <option key={option} value={option}>
+                {language === "CN" ? translateValue(option, option) : option}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      {hasActiveFilters ? (
         <div className="searchResults">
-          <h3>{t.results}</h3>
-          {results.length ? results.map((item, idx) => (
-            <div className="resultRow" key={`${item.Title}-${idx}`}>
-              <div>
-                <strong>{item.Title || item.Category}</strong>
-                <p>
-                  {language === "CN" ? translateValue(item.Vehicle || item.Category) : item.Vehicle || item.Category}
-                  {" · "}
-                  {language === "CN"
-                    ? translateValue(item["Material Type"] || item["File Format"], t.material)
-                    : item["Material Type"] || item["File Format"] || t.material}
-                </p>
-              </div>
-              <MaterialButton link={item["Google Drive Link"]} status={item.Status} label={t.open} cnLabel="打开" />
+          <div className="searchResultsHeader">
+            <div>
+              <h3>{t.results}</h3>
+              <p>
+                {results.length} {t.resultsSummary}
+                {scope || type || status ? ` · ${t.filtersActive}` : ""}
+              </p>
             </div>
-          )) : <p>{t.noResults}</p>}
+            <button type="button" className="searchClearButton" onClick={clearFilters}>
+              {t.clearFilters}
+            </button>
+          </div>
+
+          {results.length ? results.map((item, idx) => {
+            const itemScope = item.Vehicle || item.Category;
+            const itemType = item["Material Type"] || item["File Format"] || t.material;
+            const localizedScope = language === "CN" ? translateValue(itemScope, itemScope) : itemScope;
+            const localizedType = language === "CN" ? translateValue(itemType, itemType) : itemType;
+            const statusLabel = language === "CN" ? translateValue(item.Status, item.Status) : item.Status;
+
+            return (
+              <div className="resultRow" key={`${item.Title || itemScope}-${idx}`}>
+                <div className="resultMeta">
+                  <strong>{highlightText(item.Title || itemScope, normalizedQuery)}</strong>
+                  <p>
+                    {highlightText(localizedScope, normalizedQuery)}
+                    {" · "}
+                    {highlightText(localizedType, normalizedQuery)}
+                  </p>
+                  <div className="resultTags">
+                    <span>{statusLabel}</span>
+                    {item["Last Updated"] ? <span>{item["Last Updated"]}</span> : null}
+                  </div>
+                </div>
+                <MaterialButton link={item["Google Drive Link"]} status={item.Status} label={t.open} cnLabel="打开" />
+              </div>
+            );
+          }) : <p>{t.noResults}</p>}
         </div>
-      )}
+      ) : null}
     </section>
   );
 }
