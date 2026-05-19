@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Carloha Marketing Hub 用户使用指南</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: #172033;
+      background: #ffffff;
+      font-family: "PingFang SC", "STHeiti", "Songti SC", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.65;
+      font-size: 12.5pt;
+    }
+
+    .cover {
+      min-height: 245mm;
+      padding: 24mm 16mm;
+      background: linear-gradient(135deg, #101827 0%, #172033 44%, #f97316 100%);
+      color: #ffffff;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand img {
+      width: 150px;
+      height: auto;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .brand span {
+      font-size: 14pt;
+      letter-spacing: 0;
+      opacity: 0.9;
+    }
+
+    .cover h1 {
+      margin: 28mm 0 8mm;
+      font-size: 34pt;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .cover p {
+      width: 88%;
+      margin: 0;
+      font-size: 15pt;
+      opacity: 0.9;
+    }
+
+    .cover .meta {
+      padding-top: 18mm;
+      border-top: 1px solid rgba(255, 255, 255, 0.28);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10mm;
+      font-size: 11pt;
+    }
+
+    .meta strong {
+      display: block;
+      margin-bottom: 2mm;
+      color: #ffffff;
+    }
+
+    h2 {
+      margin: 0 0 8mm;
+      padding-bottom: 3mm;
+      border-bottom: 2px solid #f97316;
+      color: #111827;
+      font-size: 22pt;
+      line-height: 1.25;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      margin: 9mm 0 3mm;
+      color: #c2410c;
+      font-size: 15pt;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin: 0 0 4mm;
+    }
+
+    ul, ol {
+      margin: 0 0 5mm 6mm;
+      padding-left: 5mm;
+    }
+
+    li {
+      margin-bottom: 2mm;
+    }
+
+    .page {
+      page-break-after: always;
+    }
+
+    .section {
+      margin-bottom: 8mm;
+      page-break-inside: avoid;
+    }
+
+    .note {
+      margin: 5mm 0;
+      padding: 4mm 5mm;
+      border-left: 4px solid #f97316;
+      background: #fff7ed;
+      border-radius: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+      margin: 5mm 0 7mm;
+    }
+
+    .card {
+      padding: 5mm;
+      border: 1px solid #d9dee8;
+      border-radius: 8px;
+      background: #fbfcff;
+      page-break-inside: avoid;
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 2mm;
+      color: #111827;
+      font-size: 13.5pt;
+    }
+
+    .steps {
+      counter-reset: step;
+      margin: 5mm 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      min-height: 10mm;
+      margin: 0 0 4mm;
+      padding-left: 13mm;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 8mm;
+      height: 8mm;
+      border-radius: 50%;
+      background: #f97316;
+      color: #ffffff;
+      text-align: center;
+      line-height: 8mm;
+      font-size: 10pt;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 5mm 0 7mm;
+      font-size: 11.5pt;
+    }
+
+    th, td {
+      padding: 3mm;
+      border: 1px solid #d9dee8;
+      vertical-align: top;
+    }
+
+    th {
+      background: #172033;
+      color: #ffffff;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .tag {
+      display: inline-block;
+      margin: 0 1mm 1.5mm 0;
+      padding: 1mm 2.5mm;
+      border-radius: 999px;
+      background: #edf1f7;
+      color: #172033;
+      font-size: 10.5pt;
+    }
+
+    .footer {
+      margin-top: 12mm;
+      padding-top: 4mm;
+      border-top: 1px solid #d9dee8;
+      color: #667085;
+      font-size: 10.5pt;
+    }
+
+    .checklist li {
+      list-style: none;
+      position: relative;
+      padding-left: 7mm;
+    }
+
+    .checklist li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #c2410c;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div>
+      <div class="brand">
+        <img src="../public/logo.png" alt="Carloha logo">
+        <span>Marketing Hub</span>
+      </div>
+      <h1>Carloha Marketing Hub<br>用户使用指南</h1>
+      <p>一份面向销售团队、经销商和市场支持人员的快速上手说明，帮助用户查找车型资料、打开 Google Drive 文件、提交需求，并正确使用 Carloha 官方市场素材。</p>
+    </div>
+    <div class="meta">
+      <div>
+        <strong>适用对象</strong>
+        内部销售、经销商、市场团队、需要获取 Carloha 市场资料的授权用户
+      </div>
+      <div>
+        <strong>文档用途</strong>
+        教会用户独立完成资料搜索、资料打开、需求提交和基础问题咨询
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>1. 这个网站能做什么</h2>
+    <p>Carloha Marketing Hub 是 Carloha 的市场资料入口。你可以把它理解为一个统一的资料导航站：文件继续存放在 Google Drive，网站负责把资料按车型、分类、状态和更新时间整理好，让用户更容易找到并使用。</p>
+
+    <div class="grid">
+      <div class="card">
+        <strong>查找车型资料</strong>
+        查看 Tiggo 9、Himla、iCAUR V23、Tiggo 2 Pro、Tiggo 4、Tiggo 8 Pro、Arrizo 5、Chery Q 等车型资料。
+      </div>
+      <div class="card">
+        <strong>打开通用资料</strong>
+        获取品牌素材、Logo、经销商指南、展厅物料、活动物料、节日活动和 PR 文章。
+      </div>
+      <div class="card">
+        <strong>提交资料需求</strong>
+        当资料缺失、链接失效或需要市场支持时，可以直接提交需求表单。
+      </div>
+      <div class="card">
+        <strong>询问 Carloha AI</strong>
+        使用侧边栏 AI 助手询问资料位置、资料状态、链接问题或需求提交流程。
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>重要提示：</strong>网站上的资料仅供授权 Carloha 销售团队和经销商使用。对外沟通前，请确认资料版本、车型配置、价格信息和市场适用性。
+    </div>
+
+    <h3>推荐使用路径</h3>
+    <ol class="steps">
+      <li>进入网站首页。</li>
+      <li>使用左侧语言切换按钮选择中文或英文。</li>
+      <li>在首页搜索框输入车型名或资料类型。</li>
+      <li>点击搜索结果、车型卡片或资料按钮。</li>
+      <li>在 Google Drive 中查看或下载资料。</li>
+      <li>如果资料未上线或链接打不开，进入 “问题与需求”页面提交需求。</li>
+    </ol>
+  </section>
+
+  <section class="page">
+    <h2>2. 认识网站导航</h2>
+    <p>网站左侧是主要导航栏。移动端会显示折叠菜单，点击当前页面区域即可展开其它页面。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>导航名称</th>
+          <th>用途</th>
+          <th>什么时候使用</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>首页</td>
+          <td>查看资料概览、最新更新、全站搜索和快捷入口。</td>
+          <td>刚进入网站、不确定资料在哪时。</td>
+        </tr>
+        <tr>
+          <td>车型资料</td>
+          <td>按车型查找手册、图片、视频、培训资料等。</td>
+          <td>明确知道要找某个车型资料时。</td>
+        </tr>
+        <tr>
+          <td>通用资料</td>
+          <td>查找品牌素材、Logo、经销商指南、活动和展厅物料。</td>
+          <td>资料不属于某个具体车型时。</td>
+        </tr>
+        <tr>
+          <td>问题与需求</td>
+          <td>提交新资料需求、失效链接反馈、产品资料问题或市场执行问题。</td>
+          <td>找不到资料、链接打不开、需要市场团队支持时。</td>
+        </tr>
+        <tr>
+          <td>使用规范</td>
+          <td>查看资料、Logo、产品信息和经销商推广内容的使用规则。</td>
+          <td>准备对外使用资料前。</td>
+        </tr>
+        <tr>
+          <td>Carloha Wiki</td>
+          <td>打开完整 Carloha 知识库。</td>
+          <td>需要查看更完整的知识内容时。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>语言切换</h3>
+    <p>左侧栏顶部可以切换中文和英文。切换后，导航、按钮、提示语、表单和 AI 界面会随之变化。资料名称本身以网站数据源中的内容为准。</p>
+  </section>
+
+  <section class="page">
+    <h2>3. 如何搜索资料</h2>
+    <p>首页搜索框适合做全站查找。你可以输入车型、资料类型、分类或状态，也可以使用筛选项缩小范围。</p>
+
+    <h3>可以搜索什么</h3>
+    <p>
+      <span class="tag">Tiggo 9</span>
+      <span class="tag">Himla</span>
+      <span class="tag">iCAUR V23</span>
+      <span class="tag">手册</span>
+      <span class="tag">官方图片</span>
+      <span class="tag">培训资料</span>
+      <span class="tag">品牌素材</span>
+      <span class="tag">经销商指南</span>
+      <span class="tag">可用</span>
+      <span class="tag">即将上线</span>
+    </p>
+    <p class="note">“可用”和“即将上线”是资料状态，可在“状态”筛选中使用；“手册”“官方图片”等是资料类型，可在“资料类型”筛选中使用。</p>
+
+    <ol class="steps">
+      <li>回到“首页”。</li>
+      <li>在 “关键词” 输入框中输入车型或资料类型。</li>
+      <li>如果结果太多，可使用 “车型 / 分类”“资料类型”“状态” 三个筛选项。</li>
+      <li>查看搜索结果中的标题、车型/分类、资料类型、状态和更新时间。</li>
+      <li>点击 “打开” 按钮进入资料链接。</li>
+      <li>需要重新搜索时，点击 “清空筛选”。</li>
+    </ol>
+
+    <div class="note">
+      如果你输入 `Q3` 或 `QQ3`，系统会按 `Chery Q` 进行匹配，方便查找相关资料。
+    </div>
+
+    <h3>搜索不到资料怎么办</h3>
+    <ul class="checklist">
+      <li>尝试只输入车型名，不输入完整资料标题。</li>
+      <li>尝试使用中文资料类型，例如“手册”“官方图片”“官方视频”。</li>
+      <li>检查是否启用了过多筛选条件。</li>
+      <li>如果仍找不到，进入“问题与需求”页面提交新资料需求。</li>
+    </ul>
+  </section>
+
+  <section class="page">
+    <h2>4. 如何使用车型资料</h2>
+    <p>“车型资料”页面按车型组织资料。每个车型有独立详情页，详情页中会列出该车型可用或待上线的资料类型。</p>
+
+    <h3>操作步骤</h3>
+    <ol class="steps">
+      <li>点击左侧导航的“车型资料”。</li>
+      <li>在页面顶部搜索框输入车型名或资料类型。</li>
+      <li>点击目标车型卡片。</li>
+      <li>进入车型详情页后，查看车辆图片、最后更新时间和资料按钮。</li>
+      <li>点击需要的资料，例如 “配置表”“手册”“官方图片”“官方视频”或“培训资料”。</li>
+      <li>资料会在新标签页中打开 Google Drive。</li>
+    </ol>
+
+    <h3>常见资料类型</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>资料类型</th>
+          <th>用途</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>配置表</td>
+          <td>查看官方配置表和基础产品参数。</td>
+        </tr>
+        <tr>
+          <td>手册</td>
+          <td>用于产品介绍、客户沟通和销售材料准备。</td>
+        </tr>
+        <tr>
+          <td>单页</td>
+          <td>用于简短宣传、活动派发或本地营销。</td>
+        </tr>
+        <tr>
+          <td>官方图片</td>
+          <td>获取官方车辆图片，用于宣传物料或社媒内容。</td>
+        </tr>
+        <tr>
+          <td>官方视频</td>
+          <td>获取官方视频素材。</td>
+        </tr>
+        <tr>
+          <td>社媒视频</td>
+          <td>获取适合社交媒体发布的视频素材。</td>
+        </tr>
+        <tr>
+          <td>培训资料</td>
+          <td>用于销售培训、经销商培训和内部学习。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      如果 Google Drive 打不开，通常是权限或链接问题。请不要反复刷新，可直接进入“问题与需求”页面选择“失效链接反馈”。
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>5. 如何使用通用资料</h2>
+    <p>“通用资料”页面用于查找不绑定具体车型的资料，例如品牌素材、Logo、经销商指南、活动物料和展厅物料。</p>
+
+    <ol class="steps">
+      <li>点击左侧导航的“通用资料”。</li>
+      <li>在搜索框输入分类或资料关键词，例如 Logo、品牌素材、经销商指南。</li>
+      <li>查看资料卡片中的状态和说明。</li>
+      <li>点击 “打开文件夹”。</li>
+      <li>在 Google Drive 中查看或下载需要的文件。</li>
+    </ol>
+
+    <h3>通用资料包含什么</h3>
+    <div class="grid">
+      <div class="card"><strong>经销商指南</strong>经销商市场使用规范资料。</div>
+      <div class="card"><strong>品牌素材</strong>品牌视觉、基础品牌素材和相关资源。</div>
+      <div class="card"><strong>Logo</strong>Carloha Logo 文件和使用相关素材。</div>
+      <div class="card"><strong>活动物料</strong>活动执行和市场活动相关物料。</div>
+      <div class="card"><strong>展厅物料</strong>展厅布置、陈列和展示相关资料。</div>
+      <div class="card"><strong>节日活动</strong>节日营销活动和推广素材。</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>6. 资料状态是什么意思</h2>
+    <p>网站会用按钮状态告诉你资料是否可以立即打开。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>状态</th>
+          <th>含义</th>
+          <th>用户应该怎么做</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>可用</td>
+          <td>资料已经可用，并且通常已经配置了 Google Drive 链接。</td>
+          <td>点击 “打开” 或资料按钮，在新标签页中访问 Google Drive。</td>
+        </tr>
+        <tr>
+          <td>即将上线</td>
+          <td>资料暂未上线，或当前没有可用链接。</td>
+          <td>点击 “即将上线”，系统会跳转到需求页面并自动带入相关信息。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>遇到“即将上线”怎么办</h3>
+    <ol class="steps">
+      <li>点击 “即将上线” 按钮。</li>
+      <li>网站会自动打开“问题与需求”页面。</li>
+      <li>检查系统自动填入的车型和资料类型是否正确。</li>
+      <li>补充姓名、邮箱、市场/经销商、用途和截止时间。</li>
+      <li>提交需求后等待市场团队处理。</li>
+    </ol>
+  </section>
+
+  <section class="page">
+    <h2>7. 如何提交问题或资料需求</h2>
+    <p>当你需要新资料、发现链接打不开、对产品资料有疑问，或需要市场执行支持时，请使用“问题与需求”页面。</p>
+
+    <h3>需求类型怎么选</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>需求类型</th>
+          <th>适用场景</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>新资料需求</td>
+          <td>网站上没有你需要的资料，或“即将上线”资料需要优先处理。</td>
+        </tr>
+        <tr>
+          <td>失效链接反馈</td>
+          <td>Google Drive 链接打不开、权限错误或跳转到错误文件。</td>
+        </tr>
+        <tr>
+          <td>产品资料问题</td>
+          <td>对配置、图片、视频、手册内容有疑问。</td>
+        </tr>
+        <tr>
+          <td>市场执行问题</td>
+          <td>需要活动、展厅、社媒或本地推广执行建议。</td>
+        </tr>
+        <tr>
+          <td>其他</td>
+          <td>以上类型都不适用的其它问题。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>提交步骤</h3>
+    <p>如果你是从“即将上线”按钮进入此页面，部分车型和资料类型可能已经自动填好；如果是从左侧导航直接进入，则需要手动填写相关信息。</p>
+    <ol class="steps">
+      <li>点击左侧导航的“问题与需求”。</li>
+      <li>选择 “需求类型”。</li>
+      <li>选择 “紧急程度”。</li>
+      <li>填写 “姓名” 和 “邮箱”。</li>
+      <li>填写 WhatsApp、“市场 / 经销商”“车型”和“资料类型”，帮助团队判断需求。</li>
+      <li>在 “需求详情” 中写清楚需要什么、用途是什么、是否有截止时间。</li>
+      <li>点击 “提交需求”。</li>
+    </ol>
+
+    <div class="note">
+      建议在需求详情中写清楚“使用场景 + 目标资料 + 截止时间”。例如：尼日利亚经销商需要 Tiggo 9 英文版社媒视频，用于本周五 Facebook 发布。
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>8. 如何使用 Carloha AI</h2>
+    <p>Carloha AI 是网站侧边栏中的资料助手。它可以根据车型资料、通用资料和 Carloha Wiki 内容进行回答，帮助你快速找到方向。</p>
+
+    <h3>你可以问它什么</h3>
+    <ul>
+      <li>Tiggo 9 有哪些资料？</li>
+      <li>在哪里找 Himla 的资料？</li>
+      <li>iCAUR V23 的视频在哪里？</li>
+      <li>Google Drive 链接打不开怎么办？</li>
+      <li>如何申请新资料？</li>
+      <li>经销商指南在哪里？</li>
+    </ul>
+
+    <h3>操作步骤</h3>
+    <ol class="steps">
+      <li>点击左侧栏底部的 Carloha AI。</li>
+      <li>选择一个推荐问题，或直接输入你的问题。</li>
+      <li>查看 AI 回答和参考来源。</li>
+      <li>如果 AI 帮你生成需求草稿，请检查内容是否准确。</li>
+      <li>在 AI 侧边栏的草稿卡片中补齐姓名、邮箱、需求类型和需求详情后，再点击确认提交。</li>
+    </ol>
+
+    <div class="note">
+      Carloha AI 是辅助工具。涉及价格、配置、上市节奏和对外承诺时，请以最新官方资料和市场团队确认为准。
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>9. 使用规范</h2>
+    <p>在下载或分享资料前，请先阅读“使用规范”页面。以下是最重要的规则：</p>
+
+    <ul class="checklist">
+      <li>始终使用网站上的最新版本资料。</li>
+      <li>未经批准，不得修改 Logo、品牌视觉或官方产品信息。</li>
+      <li>对外分享前，请确认产品配置和价格信息。</li>
+      <li>经销商可以使用已批准资料进行本地市场推广和社交媒体宣传。</li>
+      <li>如不确定资料是否可对外使用，请先提交需求或联系市场团队确认。</li>
+    </ul>
+
+    <h3>资料使用前检查</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>检查项</th>
+          <th>确认内容</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>版本</td>
+          <td>是否为网站上显示的最新资料。</td>
+        </tr>
+        <tr>
+          <td>市场</td>
+          <td>是否适用于当前国家、地区或经销商场景。</td>
+        </tr>
+        <tr>
+          <td>内容</td>
+          <td>车型配置、价格、图片、视频和卖点是否准确。</td>
+        </tr>
+        <tr>
+          <td>授权</td>
+          <td>资料是否允许对外传播或用于社交媒体。</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>10. 快速故障处理</h2>
+
+    <h3>我找不到资料</h3>
+    <ul>
+      <li>先用首页搜索框搜索车型名。</li>
+      <li>再去“车型资料”或“通用资料”页面查找。</li>
+      <li>清空筛选条件后重新搜索。</li>
+      <li>仍找不到时，提交“新资料需求”。</li>
+    </ul>
+
+    <h3>Google Drive 链接打不开</h3>
+    <ul>
+      <li>确认你使用的是有权限的 Google 账号。</li>
+      <li>检查网络环境是否能访问 Google Drive。</li>
+      <li>进入“问题与需求”，提交“失效链接反馈”。</li>
+    </ul>
+
+    <h3>资料显示“即将上线”</h3>
+    <ul>
+      <li>说明资料暂未上线或暂时没有可用链接。</li>
+      <li>点击“即将上线”按钮，提交需求让市场团队跟进。</li>
+    </ul>
+
+    <h3>表单提交失败</h3>
+    <ul>
+      <li>检查必填项：姓名、邮箱、需求类型、需求详情。</li>
+      <li>确认邮箱格式正确。</li>
+      <li>如果短时间内多次提交，请等待一会儿再试。</li>
+      <li>仍无法提交时，可联系市场团队：Brad Hu，邮箱 brad.hu@carloha.com.cn，WhatsApp +86 178 3066 5219。</li>
+    </ul>
+
+    <div class="footer">
+      Carloha Marketing Hub 用户使用指南。此文档用于帮助授权用户正确查找、打开和申请 Carloha 市场资料。
+    </div>
+  </section>
+</body>
+</html>

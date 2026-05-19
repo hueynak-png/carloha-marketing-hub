@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Carloha Marketing Hub User Guide</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: #172033;
+      background: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.58;
+      font-size: 12pt;
+    }
+
+    .cover {
+      min-height: 245mm;
+      padding: 24mm 16mm;
+      background: linear-gradient(135deg, #101827 0%, #172033 44%, #f97316 100%);
+      color: #ffffff;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand img {
+      width: 150px;
+      height: auto;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .brand span {
+      font-size: 14pt;
+      opacity: 0.9;
+    }
+
+    .cover h1 {
+      margin: 28mm 0 8mm;
+      font-size: 34pt;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .cover p {
+      width: 88%;
+      margin: 0;
+      font-size: 15pt;
+      opacity: 0.9;
+    }
+
+    .cover .meta {
+      padding-top: 18mm;
+      border-top: 1px solid rgba(255, 255, 255, 0.28);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10mm;
+      font-size: 11pt;
+    }
+
+    .meta strong {
+      display: block;
+      margin-bottom: 2mm;
+      color: #ffffff;
+    }
+
+    h2 {
+      margin: 0 0 8mm;
+      padding-bottom: 3mm;
+      border-bottom: 2px solid #f97316;
+      color: #111827;
+      font-size: 22pt;
+      line-height: 1.25;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      margin: 9mm 0 3mm;
+      color: #c2410c;
+      font-size: 15pt;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin: 0 0 4mm;
+    }
+
+    ul, ol {
+      margin: 0 0 5mm 6mm;
+      padding-left: 5mm;
+    }
+
+    li {
+      margin-bottom: 2mm;
+    }
+
+    .page {
+      page-break-after: always;
+    }
+
+    .note {
+      margin: 5mm 0;
+      padding: 4mm 5mm;
+      border-left: 4px solid #f97316;
+      background: #fff7ed;
+      border-radius: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5mm;
+      margin: 5mm 0 7mm;
+    }
+
+    .card {
+      padding: 5mm;
+      border: 1px solid #d9dee8;
+      border-radius: 8px;
+      background: #fbfcff;
+      page-break-inside: avoid;
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 2mm;
+      color: #111827;
+      font-size: 13.5pt;
+    }
+
+    .steps {
+      counter-reset: step;
+      margin: 5mm 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      min-height: 10mm;
+      margin: 0 0 4mm;
+      padding-left: 13mm;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 8mm;
+      height: 8mm;
+      border-radius: 50%;
+      background: #f97316;
+      color: #ffffff;
+      text-align: center;
+      line-height: 8mm;
+      font-size: 10pt;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 5mm 0 7mm;
+      font-size: 11.3pt;
+    }
+
+    th, td {
+      padding: 3mm;
+      border: 1px solid #d9dee8;
+      vertical-align: top;
+    }
+
+    th {
+      background: #172033;
+      color: #ffffff;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .tag {
+      display: inline-block;
+      margin: 0 1mm 1.5mm 0;
+      padding: 1mm 2.5mm;
+      border-radius: 999px;
+      background: #edf1f7;
+      color: #172033;
+      font-size: 10.5pt;
+    }
+
+    .footer {
+      margin-top: 12mm;
+      padding-top: 4mm;
+      border-top: 1px solid #d9dee8;
+      color: #667085;
+      font-size: 10.5pt;
+    }
+
+    .checklist li {
+      list-style: none;
+      position: relative;
+      padding-left: 7mm;
+    }
+
+    .checklist li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #c2410c;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div>
+      <div class="brand">
+        <img src="../public/logo.png" alt="Carloha logo">
+        <span>Marketing Hub</span>
+      </div>
+      <h1>Carloha Marketing Hub<br>User Guide</h1>
+      <p>A practical guide for sales teams, dealers, and marketing support users. Learn how to find materials, open Google Drive folders, submit requests, and use official Carloha marketing assets correctly.</p>
+    </div>
+    <div class="meta">
+      <div>
+        <strong>Audience</strong>
+        Internal sales teams, dealers, marketing teams, and authorized users who need Carloha marketing materials.
+      </div>
+      <div>
+        <strong>Purpose</strong>
+        Help users independently search, open, request, and use Carloha marketing resources.
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>1. What This Website Is For</h2>
+    <p>Carloha Marketing Hub is the central access point for Carloha marketing resources. Files are hosted in Google Drive, while the website organizes them by vehicle, category, status, and update date so users can find the right materials faster.</p>
+
+    <div class="grid">
+      <div class="card">
+        <strong>Find Vehicle Materials</strong>
+        Access materials for Tiggo 9, Himla, iCAUR V23, Tiggo 2 Pro, Tiggo 4, Tiggo 8 Pro, Arrizo 5, Chery Q, and other listed vehicles.
+      </div>
+      <div class="card">
+        <strong>Open General Materials</strong>
+        Find brand assets, logos, dealer guidelines, showroom materials, event materials, holiday campaigns, and PR articles.
+      </div>
+      <div class="card">
+        <strong>Submit Requests</strong>
+        Request missing materials, report broken links, ask product questions, or submit marketing execution questions.
+      </div>
+      <div class="card">
+        <strong>Ask Carloha AI</strong>
+        Use the assistant in the sidebar to ask where materials are, how to report issues, or how to submit a request.
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Important:</strong> Materials are for authorized Carloha sales and dealer use only. Before external communication, confirm the latest version, vehicle specifications, pricing, and market suitability.
+    </div>
+
+    <h3>Recommended Workflow</h3>
+    <ol class="steps">
+      <li>Open the website home page.</li>
+      <li>Use the language toggle in the sidebar to choose English or Chinese.</li>
+      <li>Search by vehicle name or material type from the home page.</li>
+      <li>Open a search result, vehicle card, or material button.</li>
+      <li>View or download the file in Google Drive.</li>
+      <li>If a material is not available or a link does not work, submit a request from the Q&A / Request page.</li>
+    </ol>
+  </section>
+
+  <section class="page">
+    <h2>2. Website Navigation</h2>
+    <p>The main navigation is in the left sidebar. On mobile, the menu may be collapsed; tap the current page area to open other pages.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>What It Does</th>
+          <th>When To Use It</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Home</td>
+          <td>Shows library overview, latest updates, global search, and quick links.</td>
+          <td>When you first enter the site or are not sure where a material is.</td>
+        </tr>
+        <tr>
+          <td>Vehicle Materials</td>
+          <td>Browse brochures, photos, videos, specifications, and training files by vehicle.</td>
+          <td>When you know which vehicle you need materials for.</td>
+        </tr>
+        <tr>
+          <td>General Materials</td>
+          <td>Access brand assets, logos, dealer guidelines, showroom files, event materials, and campaigns.</td>
+          <td>When the material is not tied to one specific vehicle.</td>
+        </tr>
+        <tr>
+          <td>Q&A / Request</td>
+          <td>Submit new material requests, broken link reports, product questions, and marketing execution questions.</td>
+          <td>When something is missing, unavailable, unclear, or not working.</td>
+        </tr>
+        <tr>
+          <td>Usage Guidelines</td>
+          <td>Review the rules for using official materials, logos, product information, and dealer content.</td>
+          <td>Before using materials externally.</td>
+        </tr>
+        <tr>
+          <td>Carloha Wiki</td>
+          <td>Opens the full Carloha knowledge base in a new tab.</td>
+          <td>When you need broader Carloha knowledge beyond marketing files.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Language Toggle</h3>
+    <p>The language toggle is at the top of the sidebar. It changes navigation, buttons, helper text, forms, FAQ, and Carloha AI interface copy. Material names and file titles still depend on the website data source.</p>
+  </section>
+
+  <section class="page">
+    <h2>3. How To Search For Materials</h2>
+    <p>The home page search is the fastest way to find materials across the whole site. You can search by vehicle, material type, category, or status, then narrow results with filters.</p>
+
+    <h3>Useful Search Examples</h3>
+    <p>
+      <span class="tag">Tiggo 9</span>
+      <span class="tag">Himla</span>
+      <span class="tag">iCAUR V23</span>
+      <span class="tag">Brochures</span>
+      <span class="tag">Official Photos</span>
+      <span class="tag">Training Materials</span>
+      <span class="tag">Brand Assets</span>
+      <span class="tag">Dealer Guidelines</span>
+      <span class="tag">Ready</span>
+      <span class="tag">Coming Soon</span>
+    </p>
+    <p class="note">Ready and Coming Soon are status filters. Brochures, Official Photos, and similar labels are material types.</p>
+
+    <ol class="steps">
+      <li>Go to the Home page.</li>
+      <li>Enter a vehicle name or material type in the Keyword search box.</li>
+      <li>If there are too many results, use Vehicle / Category, Material Type, and Status filters.</li>
+      <li>Review the title, vehicle/category, material type, status, and last updated date.</li>
+      <li>Click Open to access the material link.</li>
+      <li>Click Clear filters when you want to start over.</li>
+    </ol>
+
+    <div class="note">
+      If you search for `Q3` or `QQ3`, the site treats it as `Chery Q` to help users find the right materials.
+    </div>
+
+    <h3>If You Cannot Find A Material</h3>
+    <ul class="checklist">
+      <li>Try searching only the vehicle name instead of the full file title.</li>
+      <li>Try English material types such as Brochures, Official Photos, or Official Videos.</li>
+      <li>Clear filters in case the search is too narrow.</li>
+      <li>If the material is still missing, submit a New material request.</li>
+    </ul>
+  </section>
+
+  <section class="page">
+    <h2>4. How To Use Vehicle Materials</h2>
+    <p>The Vehicle Materials page organizes resources by vehicle. Each vehicle has a detail page with available and upcoming material types.</p>
+
+    <h3>Steps</h3>
+    <ol class="steps">
+      <li>Click Vehicle Materials in the sidebar.</li>
+      <li>Search by vehicle name or material type at the top of the page.</li>
+      <li>Click the vehicle card you need.</li>
+      <li>On the vehicle detail page, review the image, last updated date, and material buttons.</li>
+      <li>Select the needed material type, such as Specification Sheet, Brochures, Official Photos, Official Videos, or Training Materials.</li>
+      <li>The material opens in Google Drive in a new tab.</li>
+    </ol>
+
+    <h3>Common Material Types</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Material Type</th>
+          <th>Typical Use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Specification Sheet</td>
+          <td>Official specifications and product parameters.</td>
+        </tr>
+        <tr>
+          <td>Brochures</td>
+          <td>Product introduction, customer communication, and sales preparation.</td>
+        </tr>
+        <tr>
+          <td>Flyers</td>
+          <td>Short promotional materials for events, handouts, or local marketing.</td>
+        </tr>
+        <tr>
+          <td>Official Photos</td>
+          <td>Official vehicle images for approved marketing and social media use.</td>
+        </tr>
+        <tr>
+          <td>Official Videos</td>
+          <td>Official video assets.</td>
+        </tr>
+        <tr>
+          <td>Social Media Videos</td>
+          <td>Video assets suitable for social media promotion.</td>
+        </tr>
+        <tr>
+          <td>Training Materials</td>
+          <td>Sales training, dealer training, and internal learning.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      If a Google Drive link does not open, it is usually a permission or link issue. Instead of repeatedly refreshing, submit a Broken link report from the Q&A / Request page.
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>5. How To Use General Materials</h2>
+    <p>General Materials are resources that are not tied to one specific vehicle, such as brand assets, logos, dealer guidelines, event materials, and showroom files.</p>
+
+    <ol class="steps">
+      <li>Click General Materials in the sidebar.</li>
+      <li>Search by category or keyword, such as Logo, Brand Assets, or Dealer Guidelines.</li>
+      <li>Review the material card, status, and description.</li>
+      <li>Click Open Folder.</li>
+      <li>View or download the needed files in Google Drive.</li>
+    </ol>
+
+    <h3>General Material Categories</h3>
+    <div class="grid">
+      <div class="card"><strong>Dealer Guidelines</strong>Dealer guidance and local marketing execution rules.</div>
+      <div class="card"><strong>Brand Assets</strong>Brand visuals and core brand resources.</div>
+      <div class="card"><strong>Logo</strong>Carloha logo files and related logo assets.</div>
+      <div class="card"><strong>Event Materials</strong>Materials for market events and activations.</div>
+      <div class="card"><strong>Showroom Materials</strong>Showroom display and in-store presentation resources.</div>
+      <div class="card"><strong>Holiday Campaigns</strong>Holiday campaign and promotion assets.</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>6. Understanding Material Status</h2>
+    <p>The material button tells you whether a resource can be opened immediately.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Meaning</th>
+          <th>What To Do</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ready</td>
+          <td>The material is available and normally has a Google Drive link.</td>
+          <td>Click Open or the material button to access Google Drive.</td>
+        </tr>
+        <tr>
+          <td>Coming Soon</td>
+          <td>The material is not available yet, or there is no active link.</td>
+          <td>Click Coming Soon to open the request page with related information prefilled.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>What To Do When You See Coming Soon</h3>
+    <ol class="steps">
+      <li>Click the Coming Soon button.</li>
+      <li>The site opens the Q&A / Request page.</li>
+      <li>Check whether the prefilled vehicle and material type are correct.</li>
+      <li>Add your name, email, market/dealer, purpose, and deadline.</li>
+      <li>Submit the request and wait for the marketing team to review it.</li>
+    </ol>
+  </section>
+
+  <section class="page">
+    <h2>7. How To Submit A Question Or Request</h2>
+    <p>Use the Q&A / Request page when you need new materials, find a broken link, have a product material question, or need marketing execution support.</p>
+
+    <h3>Which Request Type Should You Choose?</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Request Type</th>
+          <th>Use Case</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>New material request</td>
+          <td>A material is missing, or a Coming Soon material is needed urgently.</td>
+        </tr>
+        <tr>
+          <td>Broken link report</td>
+          <td>A Google Drive link does not open, has a permission issue, or points to the wrong file.</td>
+        </tr>
+        <tr>
+          <td>Product question</td>
+          <td>You have a question about specifications, images, videos, or brochure content.</td>
+        </tr>
+        <tr>
+          <td>Marketing execution question</td>
+          <td>You need support for events, showroom display, social media, or local promotion.</td>
+        </tr>
+        <tr>
+          <td>Other</td>
+          <td>Your question does not fit the categories above.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Submission Steps</h3>
+    <p>If you arrived from a Coming Soon button, some vehicle and material fields may already be prefilled. If you opened Q&A / Request from the sidebar, fill those fields manually when relevant.</p>
+    <ol class="steps">
+      <li>Click Q&A / Request in the sidebar.</li>
+      <li>Select a Request Type.</li>
+      <li>Select Urgency.</li>
+      <li>Enter your Name and Email.</li>
+      <li>Add WhatsApp, Market / Dealer, Vehicle, and Material Type when relevant.</li>
+      <li>In Request Details, explain what you need, how it will be used, and whether there is a deadline.</li>
+      <li>Click Submit Request.</li>
+    </ol>
+
+    <div class="note">
+      A useful request includes purpose, target material, and deadline. Example: Nigeria dealer needs English Tiggo 9 social media videos for a Facebook post this Friday.
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>8. How To Use Carloha AI</h2>
+    <p>Carloha AI is the assistant in the sidebar. It can use vehicle materials, general materials, and Carloha Wiki context to help you find information faster.</p>
+
+    <h3>You Can Ask Questions Like</h3>
+    <ul>
+      <li>Which Tiggo 9 materials are available?</li>
+      <li>Where can I find Himla materials?</li>
+      <li>Where can I find iCAUR V23 videos?</li>
+      <li>The Google Drive link does not open. What should I do?</li>
+      <li>How can I request new materials?</li>
+      <li>Where can I find dealer guidelines?</li>
+    </ul>
+
+    <h3>Steps</h3>
+    <ol class="steps">
+      <li>Click Carloha AI at the bottom of the sidebar.</li>
+      <li>Select a suggested prompt or type your own question.</li>
+      <li>Review the answer and any listed sources.</li>
+      <li>If AI creates a request draft, check whether the details are correct.</li>
+      <li>Complete the required fields in the draft card inside the AI sidebar, then confirm submission there.</li>
+    </ol>
+
+    <div class="note">
+      Carloha AI is a support tool. For pricing, specifications, launch timing, and external commitments, always confirm with the latest official materials and the marketing team.
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>9. Usage Guidelines</h2>
+    <p>Before downloading or sharing materials, review the Usage Guidelines page. The most important rules are:</p>
+
+    <ul class="checklist">
+      <li>Always use the latest version shown on the website.</li>
+      <li>Do not modify logos, brand visuals, or official product information without approval.</li>
+      <li>Confirm product specifications and prices before external sharing.</li>
+      <li>Dealers may use approved materials for local marketing and social media promotion.</li>
+      <li>If you are not sure whether a material can be used externally, submit a request or contact the marketing team first.</li>
+    </ul>
+
+    <h3>Checklist Before Use</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Check</th>
+          <th>What To Confirm</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Version</td>
+          <td>The material is the latest version shown on the website.</td>
+        </tr>
+        <tr>
+          <td>Market</td>
+          <td>The material is suitable for your country, region, or dealer use case.</td>
+        </tr>
+        <tr>
+          <td>Content</td>
+          <td>Vehicle specs, pricing, images, videos, and selling points are accurate.</td>
+        </tr>
+        <tr>
+          <td>Authorization</td>
+          <td>The material is approved for external sharing or social media use.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>10. Quick Troubleshooting</h2>
+
+    <h3>I Cannot Find A Material</h3>
+    <ul>
+      <li>Search by vehicle name from the Home page.</li>
+      <li>Check Vehicle Materials or General Materials.</li>
+      <li>Clear filters and search again.</li>
+      <li>If it is still missing, submit a New material request.</li>
+    </ul>
+
+    <h3>A Google Drive Link Does Not Open</h3>
+    <ul>
+      <li>Make sure you are using a Google account with access permission.</li>
+      <li>Check whether your network can access Google Drive.</li>
+      <li>Submit a Broken link report from Q&A / Request.</li>
+    </ul>
+
+    <h3>A Material Shows Coming Soon</h3>
+    <ul>
+      <li>This means the material is not available yet or has no active link.</li>
+      <li>Click Coming Soon and submit a request for the marketing team to follow up.</li>
+    </ul>
+
+    <h3>The Request Form Does Not Submit</h3>
+    <ul>
+      <li>Check required fields: name, email, request type, and request details.</li>
+      <li>Make sure the email format is valid.</li>
+      <li>If you submitted many times quickly, wait a moment and try again.</li>
+      <li>If it still does not work, contact the marketing team: Brad Hu, brad.hu@carloha.com.cn, WhatsApp +86 178 3066 5219.</li>
+    </ul>
+
+    <div class="footer">
+      Carloha Marketing Hub User Guide. This guide helps authorized users find, open, request, and use Carloha marketing materials correctly.
+    </div>
+  </section>
+</body>
+</html>
