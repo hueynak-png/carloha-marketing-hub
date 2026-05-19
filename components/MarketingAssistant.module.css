@@ -1,19 +1,27 @@
 .assistant {
-  display: grid;
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  width: min(420px, calc(100vw - 36px));
   gap: 12px;
-  margin-top: 14px;
+  margin-top: 0;
   font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
 .launcher {
   display: grid;
   gap: 2px;
-  width: 100%;
-  min-height: 58px;
-  padding: 12px 16px;
+  width: auto;
+  min-width: 172px;
+  min-height: 54px;
+  padding: 12px 18px;
   background: #ff6b1a;
   border: 0;
-  border-radius: 18px;
+  border-radius: 999px;
   box-shadow: 0 18px 40px rgba(148, 65, 20, 0.24);
   color: #ffffff;
   cursor: pointer;
@@ -300,19 +308,12 @@
 
 @media (max-width: 720px) {
   .assistant {
-    position: fixed;
     right: 14px;
     bottom: 14px;
-    z-index: 50;
-    display: flex;
-    flex-direction: column-reverse;
     width: min(390px, calc(100vw - 28px));
-    margin-top: 0;
   }
 
   .launcher {
-    align-self: flex-end;
-    width: auto;
     min-width: 160px;
   }
 

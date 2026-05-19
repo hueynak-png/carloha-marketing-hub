@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import MaterialButton from "./MaterialButton";
-import MarketingAssistant from "./MarketingAssistant";
 import useLanguage from "./useLanguage";
 import { buildSearchOptions } from "../lib/data.js";
 import { getLocalizedCopy } from "../lib/siteCopy.js";
@@ -117,12 +116,6 @@ export default function SearchBox({ items }) {
             ))}
           </select>
         </label>
-      </div>
-
-      <div className="searchAssistantRow">
-        <div className="searchAssistantWrap">
-          <MarketingAssistant />
-        </div>
       </div>
 
       {hasActiveFilters ? (
