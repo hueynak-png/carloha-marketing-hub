@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
-import { CONTACT, ASSISTANT_MODEL, CARLOHA_WIKI_URL } from "../../../lib/config";
-import { getGeneralMaterials, getVehicleMaterials } from "../../../lib/data";
+import { NextResponse } from "next/server.js";
+import { CONTACT, ASSISTANT_MODEL, CARLOHA_WIKI_URL } from "../../../lib/config.js";
+import { getGeneralMaterials, getVehicleMaterials } from "../../../lib/data.js";
+import { logError } from "../../../lib/logger.js";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 const MAX_MESSAGES = 12;
@@ -357,7 +358,7 @@ ${formatWikiContext(wikiEntries, lastUserMessage)}
     const { response, model, detail } = geminiResult;
 
     if (!response.ok) {
-      console.error("Gemini assistant request failed", {
+      logError("Gemini assistant request failed", {
         status: response.status,
         model,
         detail,
@@ -390,7 +391,10 @@ ${formatWikiContext(wikiEntries, lastUserMessage)}
       reply: parsed.reply,
       requestDraft: parsed.requestDraft || null,
     });
-  } catch {
+  } catch (error) {
+    logError("Assistant route failed", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.json({
       reply:
         language === "zh"

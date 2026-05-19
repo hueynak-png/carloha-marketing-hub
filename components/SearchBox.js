@@ -2,28 +2,12 @@
 import { useMemo, useState } from "react";
 import MaterialButton from "./MaterialButton";
 import useLanguage from "./useLanguage";
+import { getLocalizedCopy } from "../lib/siteCopy";
 import { translateValue } from "../lib/translations";
-
-const copy = {
-  EN: {
-    placeholder: "Search by vehicle or material type...",
-    results: "Search Results",
-    material: "Material",
-    noResults: "No matching materials found.",
-    open: "Open",
-  },
-  CN: {
-    placeholder: "按车型或资料类型搜索...",
-    results: "搜索结果",
-    material: "资料",
-    noResults: "没有找到匹配的资料。",
-    open: "打开",
-  },
-};
 
 export default function SearchBox({ items }) {
   const language = useLanguage();
-  const t = copy[language] || copy.EN;
+  const t = getLocalizedCopy("searchBox", language);
   const [q, setQ] = useState("");
   const results = useMemo(() => {
     const s = q.trim().toLowerCase();

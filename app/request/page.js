@@ -1,47 +1,36 @@
 import FaqSection from "../../components/FaqSection";
 import RequestForm from "../../components/RequestForm";
 import { CONTACT } from "../../lib/config";
+import { siteCopy } from "../../lib/siteCopy";
 
 export default function RequestPage() {
   return (
     <>
       <h1 className="pageTitle">
-        <span className="en">Q&A / Request</span>
-        <span className="cn">问题与需求</span>
+        <span className="en">{siteCopy.requestPage.title.EN}</span>
+        <span className="cn">{siteCopy.requestPage.title.CN}</span>
       </h1>
 
-      <p className="muted en">
-        Use this page to request new materials, report broken links, ask product questions,
-        or submit marketing execution questions.
-      </p>
+      <p className="muted en">{siteCopy.requestPage.intro.EN}</p>
 
-      <p className="muted cn">
-        你可以在这里提交新资料需求、反馈失效链接、询问产品资料或市场执行问题。
-      </p>
+      <p className="muted cn">{siteCopy.requestPage.intro.CN}</p>
 
       <section className="support-section highlight">
         <h2>
-          <span className="en">Marketing Support Request Form</span>
-          <span className="cn">市场支持需求表</span>
+          <span className="en">{siteCopy.requestPage.formTitle.EN}</span>
+          <span className="cn">{siteCopy.requestPage.formTitle.CN}</span>
         </h2>
 
-        <p className="en">
-          Please use this form to request new marketing materials, report broken links,
-          ask product-related questions, or submit marketing execution questions.
-          The marketing team will review your request and follow up if needed.
-        </p>
-        <p className="cn">
-          请使用此表单提交新市场资料需求、反馈失效链接、询问产品相关问题或提交市场执行问题。
-          市场团队会查看你的需求，并在需要时跟进。
-        </p>
+        <p className="en">{siteCopy.requestPage.formIntro.EN}</p>
+        <p className="cn">{siteCopy.requestPage.formIntro.CN}</p>
 
         <RequestForm />
       </section>
 
       <section className="support-section">
         <h2>
-          <span className="en">Contact</span>
-          <span className="cn">联系方式</span>
+          <span className="en">{siteCopy.requestPage.contactTitle.EN}</span>
+          <span className="cn">{siteCopy.requestPage.contactTitle.CN}</span>
         </h2>
 
         <p>
@@ -50,7 +39,7 @@ export default function RequestPage() {
 
         <div className="contact-list">
           <div className="contact-item">
-            <strong><span className="en">Email:</span><span className="cn">邮箱：</span></strong>
+            <strong><span className="en">{siteCopy.requestPage.email.EN}</span><span className="cn">{siteCopy.requestPage.email.CN}</span></strong>
             <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           </div>
 

@@ -1,6 +1,6 @@
-import Link from "next/link";
 import MaterialButton from "../../../components/MaterialButton";
 import { getVehicleMaterials, groupByVehicle, slugify } from "../../../lib/data";
+import { siteCopy } from "../../../lib/siteCopy";
 import { translateValue } from "../../../lib/translations";
 
 export async function generateStaticParams() {
@@ -18,10 +18,10 @@ export default async function VehicleDetail({ params }) {
   if (!vehicle) {
     return (
       <>
-        <h1><span className="en">Vehicle not found</span><span className="cn">未找到车型</span></h1>
+        <h1><span className="en">{siteCopy.vehicles.notFound.EN}</span><span className="cn">{siteCopy.vehicles.notFound.CN}</span></h1>
         <a href="/vehicles" className="back-btn">
-          <span className="en">← Back to Vehicle Materials</span>
-          <span className="cn">← 返回车型资料</span>
+          <span className="en">{siteCopy.vehicles.backToList.EN}</span>
+          <span className="cn">{siteCopy.vehicles.backToList.CN}</span>
         </a>
       </>
     );
@@ -43,8 +43,8 @@ export default async function VehicleDetail({ params }) {
           </p>
 
           <a href="/vehicles" className="back-btn">
-            <span className="en">← Back to Vehicle Materials</span>
-            <span className="cn">← 返回车型资料</span>
+            <span className="en">{siteCopy.vehicles.backToList.EN}</span>
+            <span className="cn">{siteCopy.vehicles.backToList.CN}</span>
           </a>
         </div>
 
@@ -53,15 +53,15 @@ export default async function VehicleDetail({ params }) {
             <img src={vehicle.image} alt={vehicle.vehicle} />
           ) : (
             <div className="imagePlaceholder">
-              <span className="en">Vehicle Image</span>
-              <span className="cn">车型图片</span>
+              <span className="en">{siteCopy.vehicles.imagePlaceholder.EN}</span>
+              <span className="cn">{siteCopy.vehicles.imagePlaceholder.CN}</span>
             </div>
           )}
         </div>
       </div>
 
       <section className="infoBox">
-        <h2><span className="en">Available Materials</span><span className="cn">可用资料</span></h2>
+        <h2><span className="en">{siteCopy.vehicles.availableMaterials.EN}</span><span className="cn">{siteCopy.vehicles.availableMaterials.CN}</span></h2>
         <div className="buttonGrid">
           {vehicle.items.map(item => (
             <MaterialButton
@@ -74,13 +74,8 @@ export default async function VehicleDetail({ params }) {
           ))}
         </div>
         <p className="muted">
-          <span className="en">
-            Files open in Google Drive. Access permission may be required for some
-            materials.
-          </span>
-          <span className="cn">
-            文件将在 Google Drive 中打开，部分资料可能需要访问权限。
-          </span>
+          <span className="en">{siteCopy.vehicles.driveNotice.EN}</span>
+          <span className="cn">{siteCopy.vehicles.driveNotice.CN}</span>
         </p>
       </section>
     </>

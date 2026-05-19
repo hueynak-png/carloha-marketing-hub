@@ -3,109 +3,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./MarketingAssistant.module.css";
 import useLanguage from "./useLanguage";
-
-const welcomeMessage = {
-  role: "assistant",
-  content:
-    "Hi, I am Marketing Assistant. Ask me about vehicle materials, broken links, or marketing support requests.",
-};
-
-const quickPromptPool = {
-  EN: [
-    "Which Tiggo 9 materials are available?",
-    "I need a brochure for Tiggo 9",
-    "Where can I find Himla materials?",
-    "Where can I find iCAUR V23 videos?",
-    "Which materials are available for Tiggo 4?",
-    "Where can I find official vehicle photos?",
-    "How do I report a broken link?",
-    "How can I request new materials?",
-    "The Google Drive link does not open",
-    "Where can I find dealer guidelines?"
-  ],
-  CN: [
-    "Tiggo 9 有哪些资料？",
-    "我需要 Tiggo 9 的手册",
-    "在哪里找 Himla 的资料？",
-    "iCAUR V23 的视频在哪里？",
-    "Tiggo 4 有哪些资料？",
-    "在哪里找官方车型图片？",
-    "如何反馈失效链接？",
-    "如何申请新资料？",
-    "Google Drive 链接打不开怎么办？",
-    "经销商指引在哪里？"
-  ]
-};
+import { getLocalizedCopy } from "../lib/siteCopy";
 
 function getRandomPrompts(pool = [], count = 3) {
   return [...pool].sort(() => Math.random() - 0.5).slice(0, count);
 }
-
-const copy = {
-  EN: {
-    launcherSmall: "Ask",
-    launcherTitle: "Marketing Assistant",
-    kicker: "Carloha AI",
-    title: "Marketing Assistant",
-    close: "Close assistant",
-    welcome:
-      "Hi, I am Marketing Assistant. Ask me about vehicle materials, broken links, or marketing support requests.",
-    quickPrompts: quickPromptPool.EN,
-    thinking: "Thinking...",
-    confirm: "Confirm request",
-    submit: "Submit Request",
-    submitting: "Submitting...",
-    missingFields: "Please provide name, email, request type, and details before submitting.",
-    placeholder: "Ask Marketing Assistant...",
-    send: "Send",
-    fallback: "I could not prepare an answer yet.",
-    busy: "Marketing Assistant is temporarily busy. Please try again later or submit the request form.",
-    submitted: "Request submitted. The marketing team will review it soon.",
-    submitError: "The request could not be submitted. Please try again later.",
-    labels: {
-      requestType: "Request Type",
-      name: "Name",
-      email: "Email",
-      whatsapp: "WhatsApp",
-      market: "Market / Dealer",
-      vehicle: "Vehicle",
-      materialType: "Material Type",
-      urgency: "Urgency",
-      message: "Details",
-    },
-  },
-  CN: {
-    launcherSmall: "咨询",
-    launcherTitle: "市场助手",
-    kicker: "Carloha AI",
-    title: "市场助手",
-    close: "关闭助手",
-    welcome: "你好，我是市场助手。你可以询问车型资料、失效链接或市场支持需求。",
-    quickPrompts: quickPromptPool.CN,
-    thinking: "正在思考...",
-    confirm: "确认需求",
-    submit: "提交需求",
-    submitting: "提交中...",
-    missingFields: "提交前请补充姓名、邮箱、需求类型和需求详情。",
-    placeholder: "询问市场助手...",
-    send: "发送",
-    fallback: "我暂时还没有整理出答案。",
-    busy: "市场助手暂时忙碌，请稍后再试，或直接提交需求表。",
-    submitted: "需求已提交，市场团队会尽快查看。",
-    submitError: "需求提交失败，请稍后再试。",
-    labels: {
-      requestType: "需求类型",
-      name: "姓名",
-      email: "邮箱",
-      whatsapp: "WhatsApp",
-      market: "市场 / 经销商",
-      vehicle: "车型",
-      materialType: "资料类型",
-      urgency: "紧急程度",
-      message: "详情",
-    },
-  },
-};
 
 function draftSummary(draft, labels) {
   return [
@@ -123,10 +25,14 @@ function draftSummary(draft, labels) {
 
 export default function MarketingAssistant() {
   const language = useLanguage();
-  const t = copy[language] || copy.EN;
+  const t = getLocalizedCopy("marketingAssistant", language);
   const randomizedQuickPrompts = useMemo(
     () => getRandomPrompts(t.quickPrompts, 3),
-    [language]
+    [t]
+  );
+  const welcomeMessage = useMemo(
+    () => ({ role: "assistant", content: t.welcome }),
+    [t]
   );
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([welcomeMessage]);
@@ -148,6 +54,16 @@ export default function MarketingAssistant() {
     if (!isOpen) return;
     panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [isOpen]);
+
+  useEffect(() => {
+    setMessages(current => {
+      if (!current.length) return [welcomeMessage];
+      if (current.length === 1 && current[0].role === "assistant") {
+        return [welcomeMessage];
+      }
+      return current;
+    });
+  }, [welcomeMessage]);
 
   function toggleAssistant() {
     setIsOpen(current => !current);
@@ -214,6 +130,7 @@ export default function MarketingAssistant() {
           materialType: requestDraft.materialType || "",
           urgency: requestDraft.urgency || "Normal",
           message: requestDraft.message || "",
+          language,
         }),
       });
       const result = await response.json();
@@ -236,7 +153,7 @@ export default function MarketingAssistant() {
         ...current,
         {
           role: "assistant",
-          content: language === "CN" ? t.submitError : error.message || t.submitError,
+          content: error.message || t.submitError,
         },
       ]);
       setStatus("idle");

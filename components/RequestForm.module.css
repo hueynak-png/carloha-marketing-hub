@@ -68,6 +68,14 @@
   color: #b42318;
 }
 
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 @media (max-width: 720px) {
   .formGrid {
     grid-template-columns: 1fr;
