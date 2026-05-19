@@ -21,18 +21,11 @@ function trackMaterialOpen(meta) {
 
 export default function MaterialButton({ link, status, label, cnLabel, analyticsMeta = null }) {
   const disabled = status === "Coming Soon" || !link || link === "Coming Soon";
-  const content = (
-    <>
-      <span className="en">{label}</span>
-      <span className="cn">{cnLabel || label}</span>
-    </>
-  );
   if (disabled) {
     return (
       <button className="materialButton disabled" disabled>
-        {content}
-        <span className="en"> · Coming Soon</span>
-        <span className="cn"> · 即将上线</span>
+        <span className="en">Coming Soon</span>
+        <span className="cn">即将上线</span>
       </button>
     );
   }
@@ -46,7 +39,8 @@ export default function MaterialButton({ link, status, label, cnLabel, analytics
         if (analyticsMeta) trackMaterialOpen(analyticsMeta);
       }}
     >
-      {content}
+      <span className="en">{label}</span>
+      <span className="cn">{cnLabel || label}</span>
     </a>
   );
 }
