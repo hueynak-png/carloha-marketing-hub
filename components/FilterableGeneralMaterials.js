@@ -80,6 +80,11 @@ export default function FilterableGeneralMaterials({ materials }) {
                     materialType: item["File Format"] || "Folder",
                     title: item.Title || item.Category,
                   }}
+                  requestMeta={{
+                    category: item.Category,
+                    materialType: item["File Format"] || item.Category,
+                    title: item.Title || item.Category,
+                  }}
                 />
               </div>
             </article>

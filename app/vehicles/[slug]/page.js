@@ -75,6 +75,11 @@ export default async function VehicleDetail({ params }) {
                 materialType: item["Material Type"],
                 title: item.Title || `${vehicle.vehicle} ${item["Material Type"]}`,
               }}
+              requestMeta={{
+                vehicle: vehicle.vehicle,
+                materialType: item["Material Type"],
+                title: item.Title || `${vehicle.vehicle} ${item["Material Type"]}`,
+              }}
             />
           ))}
         </div>

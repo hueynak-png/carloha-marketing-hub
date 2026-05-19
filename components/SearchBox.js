@@ -165,6 +165,12 @@ export default function SearchBox({ items }) {
                     materialType: item["Material Type"] || item["File Format"] || "",
                     title: item.Title || item.Category || item.Vehicle || "",
                   }}
+                  requestMeta={{
+                    vehicle: item.Vehicle || "",
+                    category: item.Category || "",
+                    materialType: item["Material Type"] || item["File Format"] || "",
+                    title: item.Title || item.Category || item.Vehicle || "",
+                  }}
                 />
               </div>
             );

@@ -461,10 +461,19 @@ body {
   background: var(--orange-dark);
 }
 
-.materialButton.disabled {
+.materialButton.disabled,
+.pendingRequestButton {
   background: #eeeeee;
   color: #999999;
-  cursor: not-allowed;
+}
+
+.pendingRequestButton {
+  cursor: pointer;
+}
+
+.pendingRequestButton:hover {
+  background: #ffe7d8;
+  color: var(--orange-dark);
 }
 
 .back-btn {

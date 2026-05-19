@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./RequestForm.module.css";
 import useLanguage from "./useLanguage";
 import { getLocalizedCopy } from "../lib/siteCopy";
@@ -24,6 +24,23 @@ export default function RequestForm({ vehicles = [], materialTypes = [] }) {
   const [form, setForm] = useState(initialState);
   const [status, setStatus] = useState("idle");
   const [feedback, setFeedback] = useState("");
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const nextForm = { ...initialState };
+    let hasPrefill = false;
+
+    ["requestType", "vehicle", "materialType", "message"].forEach(field => {
+      const value = searchParams.get(field);
+      if (!value) return;
+      nextForm[field] = value;
+      hasPrefill = true;
+    });
+
+    if (hasPrefill) {
+      setForm(current => ({ ...current, ...nextForm }));
+    }
+  }, []);
 
   function updateField(event) {
     const { name, value } = event.target;
