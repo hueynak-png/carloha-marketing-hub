@@ -56,7 +56,7 @@ export default function FilterableGeneralMaterials({ materials }) {
       {filteredMaterials.length ? (
         <div className="grid">
           {filteredMaterials.map(item => (
-            <article className="card" key={item.Category}>
+            <article className="card generalCard" key={item.Category}>
               <div className="cardBody">
                 <div className="eyebrow">
                   <span className="en">{item.Status}</span>

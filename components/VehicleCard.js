@@ -29,10 +29,17 @@ export default function VehicleCard({ vehicle }) {
           <span className="en">Official marketing materials for {vehicle.vehicle}.</span>
           <span className="cn">{vehicle.vehicle} 官方市场资料。</span>
         </p>
-        <p className="muted">
-          <span className="en">Last Updated: {lastUpdated}</span>
-          <span className="cn">最后更新：{lastUpdated}</span>
-        </p>
+        <div className="cardMeta">
+          <span>{status}</span>
+          <span>
+            <span className="en">Updated {lastUpdated}</span>
+            <span className="cn">更新 {lastUpdated}</span>
+          </span>
+          <span>
+            <span className="en">{vehicle.items?.length || 0} materials</span>
+            <span className="cn">{vehicle.items?.length || 0} 个资料</span>
+          </span>
+        </div>
         <Link className="primaryLink" href={`/vehicles/${slugify(vehicle.vehicle)}`}>
           <span className="en">Open Vehicle Page</span>
           <span className="cn">打开车型页面</span>

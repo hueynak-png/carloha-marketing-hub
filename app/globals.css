@@ -5,9 +5,12 @@
   --bg: #fff8f3;
   --panel: #ffffff;
   --text: #172033;
+  --text-soft: #334155;
   --muted: #707070;
   --line: #f0ded3;
   --cool-line: #d9dee8;
+  --cool-panel: #f8fafc;
+  --cool-accent: #2563eb;
 }
 
 * {
@@ -401,6 +404,21 @@ body {
   padding: 18px;
 }
 
+.generalCard {
+  display: flex;
+}
+
+.generalCard .cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.generalCard .materialButton {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
 .vehicleCard {
   display: flex;
   flex-direction: column;
@@ -425,6 +443,27 @@ body {
 .card p {
   color: var(--muted);
   line-height: 1.45;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 2px 0 16px;
+}
+
+.cardMeta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 4px 8px;
+  background: var(--cool-panel);
+  border: 1px solid var(--cool-line);
+  border-radius: 999px;
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .vehicleImage {
@@ -553,11 +592,57 @@ body {
   font-size: 16px;
 }
 
+.searchShortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.searchShortcuts button,
+.readyToggle {
+  min-height: 34px;
+  background: var(--cool-panel);
+  border: 1px solid var(--cool-line);
+  border-radius: 999px;
+  color: var(--text-soft);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.searchShortcuts button {
+  padding: 7px 11px;
+}
+
+.searchShortcuts button:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #1e3a8a;
+}
+
 .searchFilters {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-top: 14px;
+}
+
+.readyToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-top: 12px;
+  padding: 6px 11px 6px 8px;
+}
+
+.readyToggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--orange-action);
 }
 
 .searchFilters label {
@@ -580,6 +665,47 @@ body {
 
 .searchResults {
   margin-top: 14px;
+}
+
+.recommendedResults {
+  padding-top: 2px;
+}
+
+.recommendedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.recommendedCard {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  background: var(--cool-panel);
+  border: 1px solid var(--cool-line);
+  border-radius: 14px;
+}
+
+.recommendedCard strong {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.recommendedCard p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.recommendedCard .materialButton {
+  justify-self: start;
+  min-height: 32px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 12px;
 }
 
 .searchResultsHeader {
@@ -674,7 +800,7 @@ body {
 }
 
 .statValue {
-  color: #1f2933;
+  color: var(--text);
   font-size: 34px;
   font-weight: 900;
   line-height: 1;
@@ -1057,24 +1183,40 @@ html[data-lang="CN"] ul.en {
     width: 100%;
     min-width: 0;
     height: auto;
-    padding-bottom: 14px;
+    padding: 16px 18px 12px;
   }
 
-  .sidebarNav {
-    gap: 10px;
-    margin-bottom: 12px;
+  .brand {
+    gap: 3px;
+  }
+
+  .brand img {
+    width: 144px;
+  }
+
+  .brand span {
+    font-size: 16px;
+  }
+
+  .langToggle {
+    margin: 14px 0;
   }
 
   .sidebarNavLabel {
-    margin-bottom: 0;
+    display: none;
+  }
+
+  .sidebarNav {
+    gap: 8px;
+    margin: 0 0 10px;
   }
 
   .mobileHomeShortcut {
     position: relative;
     display: flex;
     align-items: center;
-    min-height: 48px;
-    padding: 10px 14px 10px 32px;
+    min-height: 42px;
+    padding: 8px 14px 8px 32px;
     overflow: hidden;
     background: linear-gradient(135deg, #fff8f3, #ffffff);
     border: 1px solid #f1d7c8;
@@ -1108,8 +1250,8 @@ html[data-lang="CN"] ul.en {
     justify-content: space-between;
     gap: 14px;
     width: 100%;
-    min-height: 56px;
-    padding: 11px 14px 11px 16px;
+    min-height: 50px;
+    padding: 9px 14px 9px 16px;
     background: linear-gradient(135deg, #fff8f3, #ffffff);
     border: 1px solid #f1d7c8;
     border-radius: 18px;
@@ -1147,8 +1289,8 @@ html[data-lang="CN"] ul.en {
     align-items: center;
     justify-content: center;
     flex: 0 0 auto;
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     background: var(--orange-action);
     border-radius: 999px;
     color: #ffffff;
@@ -1186,12 +1328,12 @@ html[data-lang="CN"] ul.en {
   }
 
   .mainContent {
-    padding: 20px;
+    padding: 18px;
   }
 
   .hero {
-    gap: 22px;
-    padding: 28px;
+    gap: 18px;
+    padding: 24px;
     border-radius: 24px;
   }
 
@@ -1201,11 +1343,11 @@ html[data-lang="CN"] ul.en {
   }
 
   .hero h1 {
-    font-size: 32px;
+    font-size: 30px;
   }
 
   .heroVisual {
-    height: 160px;
+    height: 150px;
   }
 
   .hero .primaryLink {
@@ -1242,6 +1384,26 @@ html[data-lang="CN"] ul.en {
 
   .searchFilters {
     grid-template-columns: 1fr;
+  }
+
+  .searchShortcuts {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .searchShortcuts button {
+    flex: 0 0 auto;
+  }
+
+  .recommendedGrid {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .recommendedCard {
+    flex: 0 0 220px;
   }
 
   .pageHeaderWithSearch {
