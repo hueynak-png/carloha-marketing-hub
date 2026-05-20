@@ -1,0 +1,4 @@
+interface:
+  display_name: "Carloha Marketing Hub Maintainer"
+  short_description: "Maintain the Carloha Marketing Hub repo."
+  default_prompt: "Use this skill to make safe, project-specific edits to the Carloha Marketing Hub Next.js repo."
