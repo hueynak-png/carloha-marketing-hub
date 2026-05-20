@@ -35,17 +35,18 @@
 8. 在 Vercel 项目中打开 Settings → Environment Variables，添加：
 
 ```bash
-NEXT_PUBLIC_VEHICLE_CSV_URL=你的 Vehicle Materials CSV 链接
-NEXT_PUBLIC_GENERAL_CSV_URL=你的 General Materials CSV 链接
+NEXT_PUBLIC_VEHICLE_MATERIALS_CSV=你的 Vehicle Materials CSV 链接
+NEXT_PUBLIC_GENERAL_MATERIALS_CSV=你的 General Materials CSV 链接
 ```
 
 9. 保存后到 Deployments 页面点击 Redeploy。
 
 ## 5. Request Form 和联系方式替换
-创建 Google Form 后，复制表单链接。在 GitHub 中编辑 `lib/config.js`：
+创建或更换 Request 表格/表单后，在 GitHub 中编辑 `lib/config.js`：
 
 ```js
 export const REQUEST_FORM_URL = "你的 Google Form 链接";
+export const REQUEST_FORM_EMBED_URL = "你的嵌入链接";
 export const CONTACT = {
   name: "Brad Hu",
   email: "你的邮箱",
@@ -53,7 +54,13 @@ export const CONTACT = {
 };
 ```
 
-提交修改后，Vercel 会自动重新部署。
+如果需要让网站内的 Request 表单直接写入 Google Sheet，请把 `docs/google-apps-script-request-form.js` 粘贴到目标 Google Sheet 的 Apps Script 中，部署为 Web app，并把 Web app URL 添加到 Vercel 环境变量：
+
+```bash
+REQUEST_FORM_SUBMIT_URL=你的 Apps Script Web app URL
+```
+
+提交修改或保存环境变量后，Vercel 会自动重新部署；如果没有自动部署，可在 Deployments 页面点击 Redeploy。
 
 ## 6. 每月维护流程
 1. 在 Google Drive 更新资料文件和文件夹。
@@ -67,4 +74,5 @@ export const CONTACT = {
 - 网站数据没更新：检查 CSV 是否发布，等待几分钟或 Redeploy。
 - Drive 链接打不开：检查 Google Drive 权限。
 - 按钮显示 Coming Soon：把 Google Sheets 里的 Status 改为 Ready，并补充链接。
-- Request 按钮打不开：确认 `REQUEST_FORM_URL` 已替换为 Google Form 链接。
+- Request 按钮打不开：确认 `REQUEST_FORM_URL` / `REQUEST_FORM_EMBED_URL` 已替换为正确链接。
+- Request 表单提交失败：确认 Vercel 中已配置 `REQUEST_FORM_SUBMIT_URL`，并且 Apps Script Web app 权限允许访问。

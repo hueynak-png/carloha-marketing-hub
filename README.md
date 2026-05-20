@@ -32,8 +32,8 @@ npm run dev
 The website works with built-in seed data first. After you publish Google Sheets tabs as CSV, add these environment variables in Vercel:
 
 ```bash
-NEXT_PUBLIC_VEHICLE_CSV_URL=your_vehicle_materials_csv_url
-NEXT_PUBLIC_GENERAL_CSV_URL=your_general_materials_csv_url
+NEXT_PUBLIC_VEHICLE_MATERIALS_CSV=your_vehicle_materials_csv_url
+NEXT_PUBLIC_GENERAL_MATERIALS_CSV=your_general_materials_csv_url
 ```
 
 If a CSV URL is empty or fails, the website uses the seed data in `lib/seedData.js`.
@@ -42,7 +42,8 @@ If a CSV URL is empty or fails, the website uses the seed data in `lib/seedData.
 
 - Replace `/public/logo.png` with the official PNG logo if needed.
 - Replace contact details in `lib/config.js`.
-- Replace `REQUEST_FORM_URL` in `lib/config.js` after creating the Google Form.
+- Replace `REQUEST_FORM_URL` and `REQUEST_FORM_EMBED_URL` in `lib/config.js` if the request sheet/form changes.
+- Add `REQUEST_FORM_SUBMIT_URL` in Vercel after deploying the Google Apps Script web app in `docs/google-apps-script-request-form.js`.
 - Add vehicle image links in the Google Sheet under `Vehicle Image`.
 - Replace the banner placeholder in `app/page.js` when a multi-vehicle image is ready.
 

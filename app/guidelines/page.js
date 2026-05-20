@@ -1,32 +1,63 @@
 import { siteCopy } from "../../lib/siteCopy";
+import Link from "next/link";
+
+function GuidelineCards({ language }) {
+  return (
+    <div className={`guidelinesGrid ${language === "EN" ? "en" : "cn"}`}>
+      {siteCopy.guidelines.rules[language].map((item, index) => (
+        <article className="guidelineCard" key={item.title}>
+          <div className="guidelineCardTop">
+            <span className="guidelineNumber">{String(index + 1).padStart(2, "0")}</span>
+            <span className="guidelineLabel">{item.label}</span>
+          </div>
+          <h3>{item.title}</h3>
+          <p>{item.detail}</p>
+        </article>
+      ))}
+    </div>
+  );
+}
 
 export default function GuidelinesPage() {
   return (
     <>
-      <h1 className="pageTitle">
-        <span className="en">{siteCopy.guidelines.title.EN}</span>
-        <span className="cn">{siteCopy.guidelines.title.CN}</span>
-      </h1>
-      <p className="muted en">{siteCopy.guidelines.intro.EN}</p>
-      <p className="muted cn">{siteCopy.guidelines.intro.CN}</p>
+      <section className="guidelinesHero">
+        <div>
+          <h1 className="pageTitle">
+            <span className="en">{siteCopy.guidelines.title.EN}</span>
+            <span className="cn">{siteCopy.guidelines.title.CN}</span>
+          </h1>
+          <p className="muted en">{siteCopy.guidelines.intro.EN}</p>
+          <p className="muted cn">{siteCopy.guidelines.intro.CN}</p>
+        </div>
+
+        <div className="guidelinesSummary en" aria-label="Guideline summary">
+          {siteCopy.guidelines.summary.EN.map(item => <span key={item}>{item}</span>)}
+        </div>
+        <div className="guidelinesSummary cn" aria-label="使用规范摘要">
+          {siteCopy.guidelines.summary.CN.map(item => <span key={item}>{item}</span>)}
+        </div>
+      </section>
 
       <section className="support-section highlight guidelines-section">
-        <h2><span className="en">{siteCopy.guidelines.rulesTitle.EN}</span><span className="cn">{siteCopy.guidelines.rulesTitle.CN}</span></h2>
+        <div className="guidelinesSectionHeader">
+          <h2><span className="en">{siteCopy.guidelines.rulesTitle.EN}</span><span className="cn">{siteCopy.guidelines.rulesTitle.CN}</span></h2>
+        </div>
 
-        <ul className="guidelines-list en">
-          {siteCopy.guidelines.rules.EN.map(item => (
-            <li key={item.lead}>
-              <strong>{item.lead}</strong>{item.tail}
-            </li>
-          ))}
-        </ul>
-        <ul className="guidelines-list cn">
-          {siteCopy.guidelines.rules.CN.map(item => (
-            <li key={item.lead}>
-              <strong>{item.lead}</strong>{item.tail}
-            </li>
-          ))}
-        </ul>
+        <GuidelineCards language="EN" />
+        <GuidelineCards language="CN" />
+      </section>
+
+      <section className="guidelinesRequestCallout">
+        <div>
+          <h2><span className="en">{siteCopy.guidelines.noteTitle.EN}</span><span className="cn">{siteCopy.guidelines.noteTitle.CN}</span></h2>
+          <p className="en">{siteCopy.guidelines.noteBody.EN}</p>
+          <p className="cn">{siteCopy.guidelines.noteBody.CN}</p>
+        </div>
+        <Link className="primaryLink" href="/request">
+          <span className="en">{siteCopy.guidelines.noteAction.EN}</span>
+          <span className="cn">{siteCopy.guidelines.noteAction.CN}</span>
+        </Link>
       </section>
     </>
   );
