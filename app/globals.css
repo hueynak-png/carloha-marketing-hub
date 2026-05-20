@@ -1063,9 +1063,8 @@ body {
 
 .guidelinesHero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
-  gap: 24px;
-  align-items: end;
+  gap: 10px;
+  align-items: start;
   max-width: 100%;
   min-width: 0;
   margin-bottom: 20px;
@@ -1077,26 +1076,6 @@ body {
   font-size: 17px;
   line-height: 1.6;
   overflow-wrap: break-word;
-}
-
-.guidelinesSummary {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.guidelinesSummary span {
-  min-width: 0;
-  min-height: 42px;
-  padding: 10px 12px;
-  background: #ffffff;
-  border: 1px solid #f1e1d6;
-  border-radius: 14px;
-  box-shadow: 0 8px 18px rgba(80, 40, 15, 0.035);
-  color: #9a3412;
-  font-size: 13px;
-  font-weight: 900;
-  line-height: 1.25;
 }
 
 .guidelines-section {
@@ -1238,17 +1217,14 @@ html[data-lang="CN"] ul.en {
   display: none;
 }
 
-.guidelinesSummary.cn,
 .guidelinesGrid.cn {
   display: none;
 }
 
-html[data-lang="CN"] .guidelinesSummary.en,
 html[data-lang="CN"] .guidelinesGrid.en {
   display: none;
 }
 
-html[data-lang="CN"] .guidelinesSummary.cn,
 html[data-lang="CN"] .guidelinesGrid.cn {
   display: grid;
 }
@@ -1515,7 +1491,6 @@ html[data-lang="CN"] .guidelinesGrid.cn {
   }
 
   .guidelinesHero {
-    grid-template-columns: 1fr;
     gap: 16px;
     width: calc(100vw - 36px);
     max-width: calc(100vw - 36px);
@@ -1523,16 +1498,6 @@ html[data-lang="CN"] .guidelinesGrid.cn {
 
   .guidelinesHero .muted {
     font-size: 15px;
-  }
-
-  .guidelinesSummary {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .guidelinesSummary span {
-    min-height: 38px;
-    padding: 9px 11px;
   }
 
   .guidelinesSectionHeader {

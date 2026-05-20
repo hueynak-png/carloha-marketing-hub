@@ -31,12 +31,6 @@ export default function GuidelinesPage() {
           <p className="muted cn">{siteCopy.guidelines.intro.CN}</p>
         </div>
 
-        <div className="guidelinesSummary en" aria-label="Guideline summary">
-          {siteCopy.guidelines.summary.EN.map(item => <span key={item}>{item}</span>)}
-        </div>
-        <div className="guidelinesSummary cn" aria-label="使用规范摘要">
-          {siteCopy.guidelines.summary.CN.map(item => <span key={item}>{item}</span>)}
-        </div>
       </section>
 
       <section className="support-section highlight guidelines-section">
