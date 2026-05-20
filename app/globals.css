@@ -1,11 +1,13 @@
 :root {
   --orange: #ff6b1a;
-  --orange-dark: #dd5612;
+  --orange-action: #c2410c;
+  --orange-dark: #9a3412;
   --bg: #fff8f3;
   --panel: #ffffff;
-  --text: #202020;
+  --text: #172033;
   --muted: #707070;
   --line: #f0ded3;
+  --cool-line: #d9dee8;
 }
 
 * {
@@ -81,7 +83,7 @@ body {
 }
 
 .langToggle .active {
-  background: var(--orange);
+  background: var(--orange-action);
   color: #ffffff;
   font-weight: 700;
 }
@@ -150,7 +152,7 @@ body {
   width: 4px;
   height: 30px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #ff8b47, #ff6b1a);
+  background: linear-gradient(180deg, #f97316, var(--orange-action));
   transform: translateY(-50%);
 }
 
@@ -214,8 +216,8 @@ body {
 }
 
 .sidebarNavItem.active .sidebarNavIndex {
-  background: #ff6b1a;
-  border-color: #ff6b1a;
+  background: var(--orange-action);
+  border-color: var(--orange-action);
   color: #ffffff;
 }
 
@@ -241,7 +243,7 @@ body {
 }
 
 .sidebarWikiLink strong {
-  color: var(--orange);
+  color: var(--orange-action);
   font-family: Georgia, "Times New Roman", serif;
   font-style: italic;
 }
@@ -276,7 +278,7 @@ body {
   gap: 28px;
   align-items: center;
   padding: 36px;
-  background: linear-gradient(135deg, #ffffff, #ffe7d8);
+  background: linear-gradient(135deg, #ffffff 0%, #fff5ee 58%, #ffe2d0 100%);
   border: 1px solid var(--line);
   border-radius: 28px;
 }
@@ -369,7 +371,7 @@ body {
 
 .compactSearch input:focus {
   outline: 3px solid #ffe1d1;
-  border-color: #ff6b1a;
+  border-color: var(--orange-action);
 }
 
 .emptyState {
@@ -461,7 +463,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 10px 14px;
-  background: var(--orange);
+  background: var(--orange-action);
   border: 0;
   border-radius: 12px;
   color: #ffffff;
@@ -844,7 +846,7 @@ body {
   width: 6px;
   height: 24px;
   margin-right: 12px;
-  background: var(--orange);
+  background: var(--orange-action);
   border-radius: 999px;
   vertical-align: -3px;
 }
@@ -864,7 +866,7 @@ body {
 }
 
 .support-section a:not(.primaryLink):hover {
-  color: var(--orange);
+  color: var(--orange-action);
 }
 
 .contact-list {
@@ -1033,6 +1035,10 @@ html[data-lang="CN"] .cn {
   display: inline;
 }
 
+html[data-lang="CN"] p.cn {
+  display: block;
+}
+
 html[data-lang="CN"] ul.cn {
   display: block;
 }
@@ -1051,6 +1057,7 @@ html[data-lang="CN"] ul.en {
     width: 100%;
     min-width: 0;
     height: auto;
+    padding-bottom: 14px;
   }
 
   .sidebarNav {
@@ -1086,7 +1093,7 @@ html[data-lang="CN"] ul.en {
     width: 4px;
     height: 24px;
     border-radius: 999px;
-    background: linear-gradient(180deg, #ff8b47, #ff6b1a);
+    background: linear-gradient(180deg, #f97316, var(--orange-action));
     transform: translateY(-50%);
   }
 
@@ -1142,7 +1149,7 @@ html[data-lang="CN"] ul.en {
     flex: 0 0 auto;
     width: 34px;
     height: 34px;
-    background: #ff6b1a;
+    background: var(--orange-action);
     border-radius: 999px;
     color: #ffffff;
     font-size: 20px;
@@ -1182,6 +1189,12 @@ html[data-lang="CN"] ul.en {
     padding: 20px;
   }
 
+  .hero {
+    gap: 22px;
+    padding: 28px;
+    border-radius: 24px;
+  }
+
   .hero,
   .detailHeader {
     grid-template-columns: 1fr;
@@ -1193,6 +1206,10 @@ html[data-lang="CN"] ul.en {
 
   .heroVisual {
     height: 160px;
+  }
+
+  .hero .primaryLink {
+    margin-top: 4px;
   }
 
   .detailHeader {
@@ -1271,6 +1288,6 @@ html[data-lang="CN"] ul.en {
   }
 
   .howToUseBox.showOnMobile {
-    display: block;
+    display: none;
   }
 }

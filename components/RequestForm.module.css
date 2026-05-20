@@ -51,7 +51,7 @@
 .requestForm select:focus,
 .requestForm textarea:focus {
   outline: 3px solid #ffe1d1;
-  border-color: var(--orange);
+  border-color: var(--orange-action);
 }
 
 .formActions {

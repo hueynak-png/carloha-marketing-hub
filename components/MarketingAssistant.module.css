@@ -19,7 +19,7 @@
   min-width: 172px;
   min-height: 54px;
   padding: 12px 18px;
-  background: #ff6b1a;
+  background: #c2410c;
   border: 0;
   border-radius: 999px;
   box-shadow: 0 18px 40px rgba(148, 65, 20, 0.24);
@@ -125,7 +125,7 @@
 
 .userMessage {
   justify-self: end;
-  background: #ff6b1a;
+  background: #c2410c;
   color: #ffffff;
 }
 
@@ -231,7 +231,7 @@
 .confirmButton {
   justify-self: start;
   padding: 10px 13px;
-  background: #ff6b1a;
+  background: #c2410c;
   border: 0;
   border-radius: 12px;
   color: #ffffff;
@@ -288,7 +288,7 @@
 
 .inputBar input:focus {
   outline: 3px solid #ffe1d1;
-  border-color: #ff6b1a;
+  border-color: #c2410c;
 }
 
 .inputBar button {
@@ -310,11 +310,33 @@
   .assistant {
     right: 14px;
     bottom: 14px;
+    width: auto;
+  }
+
+  .assistant.open {
     width: min(390px, calc(100vw - 28px));
   }
 
   .launcher {
-    min-width: 160px;
+    place-items: center;
+    width: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    padding: 0;
+    border-radius: 999px;
+    text-align: center;
+  }
+
+  .launcher::after {
+    content: "AI";
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+  }
+
+  .launcher span,
+  .launcher strong {
+    display: none;
   }
 
   .messages {

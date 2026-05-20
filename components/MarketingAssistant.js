@@ -174,7 +174,7 @@ export default function MarketingAssistant() {
   }
 
   return (
-    <div className={styles.assistant}>
+    <div className={`${styles.assistant} ${isOpen ? styles.open : ""}`}>
       <button className={styles.launcher} type="button" onClick={toggleAssistant} aria-label={t.launcherTitle}>
         <span>{t.launcherSmall}</span>
         <strong>{t.launcherTitle}</strong>
