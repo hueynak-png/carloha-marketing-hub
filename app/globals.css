@@ -452,7 +452,7 @@ body {
   margin: 2px 0 16px;
 }
 
-.cardMeta span {
+.cardMeta > span {
   display: inline-flex;
   align-items: center;
   min-height: 26px;
@@ -665,47 +665,6 @@ body {
 
 .searchResults {
   margin-top: 14px;
-}
-
-.recommendedResults {
-  padding-top: 2px;
-}
-
-.recommendedGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.recommendedCard {
-  display: grid;
-  gap: 6px;
-  padding: 12px;
-  background: var(--cool-panel);
-  border: 1px solid var(--cool-line);
-  border-radius: 14px;
-}
-
-.recommendedCard strong {
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.25;
-  overflow-wrap: anywhere;
-}
-
-.recommendedCard p {
-  margin: 0;
-  color: #64748b;
-  font-size: 12px;
-  line-height: 1.35;
-}
-
-.recommendedCard .materialButton {
-  justify-self: start;
-  min-height: 32px;
-  padding: 7px 10px;
-  border-radius: 10px;
-  font-size: 12px;
 }
 
 .searchResultsHeader {
@@ -1394,16 +1353,6 @@ html[data-lang="CN"] ul.en {
 
   .searchShortcuts button {
     flex: 0 0 auto;
-  }
-
-  .recommendedGrid {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 2px;
-  }
-
-  .recommendedCard {
-    flex: 0 0 220px;
   }
 
   .pageHeaderWithSearch {

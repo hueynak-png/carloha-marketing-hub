@@ -39,11 +39,7 @@ export default function SearchBox({ items }) {
 
   const options = useMemo(() => buildSearchOptions(items), [items]);
   const normalizedQuery = normalizeSearchTerm(q);
-  const hasActiveFilters = Boolean(normalizedQuery || scope || type || status || readyOnly);
-  const recommendedItems = useMemo(
-    () => items.filter(item => item.Status === "Ready").slice(0, 6),
-    [items]
-  );
+  const hasActiveFilters = Boolean(normalizedQuery || scope || type || status);
 
   const results = useMemo(() => {
     if (!hasActiveFilters) return [];
@@ -60,7 +56,7 @@ export default function SearchBox({ items }) {
         const matchesQuery = !normalizedQuery || aliasSource.includes(normalizedQuery);
         const matchesScope = !scope || itemScope === scope;
         const matchesType = !type || itemType === type;
-        const matchesStatus = readyOnly ? itemStatus === "Ready" : (!status || itemStatus === status);
+        const matchesStatus = (!status || itemStatus === status) && (!readyOnly || itemStatus === "Ready");
         return matchesQuery && matchesScope && matchesType && matchesStatus;
       })
       .slice(0, 12);
@@ -80,11 +76,6 @@ export default function SearchBox({ items }) {
     setType("");
     setStatus("");
     setReadyOnly(false);
-
-    if (nextFilter === "ready") {
-      setReadyOnly(true);
-      return;
-    }
 
     setType(nextFilter);
   }
@@ -145,9 +136,6 @@ export default function SearchBox({ items }) {
       </div>
 
       <div className="searchShortcuts" aria-label={language === "CN" ? "快捷筛选" : "Quick filters"}>
-        <button type="button" onClick={() => applyQuickFilter("ready")}>
-          {language === "CN" ? "仅看可用" : "Ready only"}
-        </button>
         <button type="button" onClick={() => applyQuickFilter("Brochures")}>
           {language === "CN" ? "手册" : "Brochures"}
         </button>
@@ -222,48 +210,6 @@ export default function SearchBox({ items }) {
           </div>
 
           {results.length ? results.map(renderResultRow) : <p>{t.noResults}</p>}
-        </div>
-      ) : recommendedItems.length ? (
-        <div className="searchResults recommendedResults">
-          <div className="searchResultsHeader">
-            <div>
-              <h3>{language === "CN" ? "常用资料" : "Recommended Materials"}</h3>
-              <p>{language === "CN" ? "可直接打开的热门资料入口" : "Ready-to-open shortcuts for common requests"}</p>
-            </div>
-          </div>
-          <div className="recommendedGrid">
-            {recommendedItems.map((item, idx) => {
-              const itemScope = item.Vehicle || item.Category;
-              const itemType = item["Material Type"] || item["File Format"] || t.material;
-              const localizedScope = language === "CN" ? translateValue(itemScope, itemScope) : itemScope;
-              const localizedType = language === "CN" ? translateValue(itemType, itemType) : itemType;
-
-              return (
-                <div className="recommendedCard" key={`${item.Title || itemScope}-${idx}`}>
-                  <strong>{item.Title || itemScope}</strong>
-                  <p>{localizedScope} · {localizedType}</p>
-                  <MaterialButton
-                    link={item["Google Drive Link"]}
-                    status={item.Status}
-                    label={t.open}
-                    cnLabel="打开"
-                    analyticsMeta={{
-                      vehicle: item.Vehicle || "",
-                      category: item.Category || "",
-                      materialType: item["Material Type"] || item["File Format"] || "",
-                      title: item.Title || item.Category || item.Vehicle || "",
-                    }}
-                    requestMeta={{
-                      vehicle: item.Vehicle || "",
-                      category: item.Category || "",
-                      materialType: item["Material Type"] || item["File Format"] || "",
-                      title: item.Title || item.Category || item.Vehicle || "",
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
         </div>
       ) : null}
     </section>
