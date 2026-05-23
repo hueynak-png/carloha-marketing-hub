@@ -903,7 +903,7 @@ body {
 
 .footerGrid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 32px;
   margin-bottom: 28px;
 }

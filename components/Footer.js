@@ -1,28 +1,25 @@
-import Link from "next/link";
+"use client";
+
 import { CONTACT } from "../lib/config";
+import useLanguage from "./useLanguage";
 
 export default function Footer() {
+  const language = useLanguage();
+  const isChinese = language === "CN";
+
   return (
     <footer className="globalFooter">
       <div className="footerGrid">
         <div className="footerBrand">
-          <strong className="en">Carloha Marketing Hub</strong>
-          <strong className="cn">Carloha 营销资料中心</strong>
-          <small className="en">Vehicle materials, brand assets &amp; dealer support for Carloha Nigeria.</small>
-          <small className="cn">Carloha Nigeria 车型资料、品牌素材与经销商支持平台。</small>
+          <strong>{isChinese ? "Carloha 营销资料中心" : "Carloha Marketing Hub"}</strong>
+          <small>
+            {isChinese
+              ? "Carloha Nigeria 车型资料、品牌素材与经销商支持平台。"
+              : "Vehicle materials, brand assets & dealer support for Carloha Nigeria."}
+          </small>
         </div>
         <div className="footerLinks">
-          <span className="footerLabel en">Quick Links</span>
-          <span className="footerLabel cn">快速链接</span>
-          <Link href="/">Home</Link>
-          <Link href="/vehicles">Vehicles</Link>
-          <Link href="/general">General Materials</Link>
-          <Link href="/request">Request</Link>
-          <Link href="/guidelines">Guidelines</Link>
-        </div>
-        <div className="footerLinks">
-          <span className="footerLabel en">Contact</span>
-          <span className="footerLabel cn">联系方式</span>
+          <span className="footerLabel">{isChinese ? "联系方式" : "Contact"}</span>
           <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           <a href={`https://wa.me/${CONTACT.whatsapp.replace(/[\s+]/g, "")}`} target="_blank" rel="noopener noreferrer">
             WhatsApp: {CONTACT.whatsapp}
@@ -30,8 +27,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footerBottom">
-        <span className="en">&copy; {new Date().getFullYear()} Carloha. All rights reserved.</span>
-        <span className="cn">&copy; {new Date().getFullYear()} Carloha 版权所有。</span>
+        <span>{isChinese ? `© ${new Date().getFullYear()} Carloha 版权所有。` : `© ${new Date().getFullYear()} Carloha. All rights reserved.`}</span>
       </div>
     </footer>
   );
