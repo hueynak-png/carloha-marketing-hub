@@ -1,5 +1,4 @@
 import "./globals.css";
-import { headers } from "next/headers";
 import PageTracker from "../components/PageTracker";
 import Sidebar from "../components/Sidebar";
 import LangSync from "../components/LangSync";
@@ -38,12 +37,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const hdrs = headers();
-  const acceptLang = hdrs.get("accept-language") || "";
-  const preferredLang = acceptLang.toLowerCase().includes("zh") ? "zh-CN" : "en";
-
   return (
-    <html lang={preferredLang}>
+    <html lang="en">
       <body>
         <LangSync />
         <PageTracker />
