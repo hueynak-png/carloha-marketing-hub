@@ -1,20 +1,55 @@
 import "./globals.css";
+import { headers } from "next/headers";
 import PageTracker from "../components/PageTracker";
 import Sidebar from "../components/Sidebar";
+import LangSync from "../components/LangSync";
+import Footer from "../components/Footer";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://carloha-marketing-hub.vercel.app";
 
 export const metadata = {
-  title: "Carloha Marketing Hub",
-  description: "Vehicle materials, brand assets, and dealer marketing support."
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Carloha Marketing Hub — Vehicle Materials & Dealer Marketing Support",
+    template: "%s | Carloha Marketing Hub",
+  },
+  description: "Vehicle materials, brand assets, and dealer marketing support for Carloha Nigeria. Browse Chery brochures, photos, training materials, and more.",
+  keywords: ["Carloha", "Chery", "Nigeria", "Tiggo", "SUV", "marketing", "dealer", "vehicle materials", "brochure"],
+  openGraph: {
+    title: "Carloha Marketing Hub",
+    description: "Vehicle materials, brand assets, and dealer marketing support for Carloha Nigeria.",
+    url: siteUrl,
+    siteName: "Carloha Marketing Hub",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Carloha Marketing Hub",
+    description: "Vehicle materials, brand assets, and dealer marketing support for Carloha Nigeria.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
 };
 
 export default function RootLayout({ children }) {
+  const hdrs = headers();
+  const acceptLang = hdrs.get("accept-language") || "";
+  const preferredLang = acceptLang.toLowerCase().includes("zh") ? "zh-CN" : "en";
+
   return (
-    <html lang="en">
+    <html lang={preferredLang}>
       <body>
+        <LangSync />
         <PageTracker />
         <div className="appShell">
           <Sidebar />
-          <main className="mainContent">{children}</main>
+          <main className="mainContent">{children}<Footer /></main>
         </div>
       </body>
     </html>

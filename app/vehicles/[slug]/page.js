@@ -8,6 +8,17 @@ export async function generateStaticParams() {
   return groupByVehicle(materials).map(v => ({ slug: slugify(v.vehicle) }));
 }
 
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const materials = await getVehicleMaterials();
+  const vehicle = groupByVehicle(materials).find(v => slugify(v.vehicle) === slug);
+  const name = vehicle?.vehicle || slug;
+  return {
+    title: `${name} — Vehicle Materials`,
+    description: `Official marketing materials for ${name}: brochures, photos, videos, and training assets. Carloha Nigeria.`,
+  };
+}
+
 export default async function VehicleDetail({ params }) {
   const { slug } = await params;
   const materials = await getVehicleMaterials();

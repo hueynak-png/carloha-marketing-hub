@@ -1,6 +1,11 @@
 import { siteCopy } from "../../lib/siteCopy";
 import Link from "next/link";
 
+export const metadata = {
+  title: "Usage Guidelines — Marketing Materials",
+  description: "Usage rules and guidelines for Carloha marketing materials. Learn how to properly use vehicle images, brand assets, and dealer resources.",
+};
+
 function GuidelineCards({ language }) {
   return (
     <div className={`guidelinesGrid ${language === "EN" ? "en" : "cn"}`}>

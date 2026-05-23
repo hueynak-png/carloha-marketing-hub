@@ -4,6 +4,11 @@ import { CONTACT } from "../../lib/config";
 import { getVehicleMaterials } from "../../lib/data.js";
 import { siteCopy } from "../../lib/siteCopy";
 
+export const metadata = {
+  title: "Q&A / Request — Material Support",
+  description: "Ask questions, report broken links, or request new marketing materials for Carloha Nigeria and Chery vehicles.",
+};
+
 export default async function RequestPage() {
   const materials = await getVehicleMaterials();
   const vehicles = [...new Set(materials.map(item => item.Vehicle).filter(Boolean))];

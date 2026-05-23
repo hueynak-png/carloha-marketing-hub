@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://carloha-marketing-hub.vercel.app/sitemap.xml

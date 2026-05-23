@@ -2,6 +2,11 @@ import Link from "next/link";
 import { getVehicleMaterials, latestVehicleUpdates, slugify } from "../../lib/data";
 import { siteCopy } from "../../lib/siteCopy";
 
+export const metadata = {
+  title: "Latest Updates — Recently Added Materials",
+  description: "Recently updated vehicle materials and marketing resources for Carloha Nigeria. Check the latest brochures, photos, and training assets.",
+};
+
 export default async function UpdatesPage() {
   const materials = await getVehicleMaterials();
   const updates = latestVehicleUpdates(materials, 20);
