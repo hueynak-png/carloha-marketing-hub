@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SearchBox from "../components/SearchBox";
+import OptimizedImage from "../components/OptimizedImage";
 import { getVehicleMaterials, getGeneralMaterials, getMaterialStats, latestVehicleUpdates } from "../lib/data.js";
 import { siteCopy } from "../lib/siteCopy";
 
@@ -21,12 +22,14 @@ export default async function Home() {
           </Link>
         </div>
         <div className="heroVisual">
-  <img
-    src="/banner/multi-vehicle-banner.webp.png"
-    alt="Carloha multi-vehicle banner"
-    className="heroBannerImage"
-  />
-</div>
+          <OptimizedImage
+            src="/banner/multi-vehicle-banner.png"
+            alt="Carloha multi-vehicle banner"
+            className="heroBannerImage"
+            sizes="(max-width: 860px) 100vw, 42vw"
+            priority
+          />
+        </div>
       </section>
       <SearchBox items={[...vehicleMaterials, ...generalMaterials]} />
       <div className="sectionHeader">
@@ -65,7 +68,7 @@ export default async function Home() {
           <article className="card vehicleCard" key={v.vehicle}>
             <div className="vehicleImage">
               {v.image ? (
-                <img src={v.image} alt={v.vehicle} />
+                <OptimizedImage src={v.image} alt={v.vehicle} sizes="(max-width: 860px) 100vw, 320px" />
               ) : (
                 <div className="imagePlaceholder">
                   <span className="en">Vehicle Image</span>

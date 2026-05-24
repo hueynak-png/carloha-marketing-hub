@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ListingSearchPanel from "./ListingSearchPanel";
 import MaterialButton from "./MaterialButton";
 import useLanguage from "./useLanguage";
 import { siteCopy } from "../lib/siteCopy";
@@ -43,14 +44,21 @@ export default function FilterableGeneralMaterials({ materials }) {
             {siteCopy.general.intro[language]}
           </p>
         </div>
-        <label className="compactSearch">
-          <span>{language === "CN" ? "搜索资料" : "Search materials"}</span>
-          <input
-            value={query}
-            onChange={event => setQuery(event.target.value)}
-            placeholder={language === "CN" ? "输入分类或资料类型..." : "Category or material type..."}
-          />
-        </label>
+        <ListingSearchPanel
+          language={language}
+          label={language === "CN" ? "搜索通用资料" : "Search general materials"}
+          value={query}
+          onChange={setQuery}
+          onClear={() => setQuery("")}
+          placeholder={language === "CN" ? "输入分类、资料类型或状态..." : "Category, material type, or status..."}
+          resultCount={filteredMaterials.length}
+          totalCount={materials.length}
+          quickFilters={[
+            { value: "Brand Assets", label: language === "CN" ? "品牌资产" : "Brand assets" },
+            { value: "Campaign", label: language === "CN" ? "活动" : "Campaign" },
+            { value: "Dealer", label: language === "CN" ? "经销商" : "Dealer" },
+          ]}
+        />
       </div>
 
       {filteredMaterials.length ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import OptimizedImage from "./OptimizedImage";
 import { slugify } from "../lib/data";
 import { translateValue } from "../lib/translations";
 import useLanguage from "./useLanguage";
@@ -14,7 +15,7 @@ export default function VehicleCard({ vehicle }) {
     <article className="card vehicleCard">
       <div className="vehicleImage">
         {vehicle.image ? (
-          <img src={vehicle.image} alt={vehicle.vehicle} />
+          <OptimizedImage src={vehicle.image} alt={vehicle.vehicle} sizes="(max-width: 860px) 100vw, 320px" />
         ) : (
           <div className="imagePlaceholder">
             <span className="en">Vehicle Image</span>

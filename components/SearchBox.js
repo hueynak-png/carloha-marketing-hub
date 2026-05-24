@@ -39,7 +39,7 @@ export default function SearchBox({ items }) {
 
   const options = useMemo(() => buildSearchOptions(items), [items]);
   const normalizedQuery = normalizeSearchTerm(q);
-  const hasActiveFilters = Boolean(normalizedQuery || scope || type || status);
+  const hasActiveFilters = Boolean(normalizedQuery || scope || type || status || readyOnly);
 
   const results = useMemo(() => {
     if (!hasActiveFilters) return [];

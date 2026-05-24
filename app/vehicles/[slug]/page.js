@@ -1,4 +1,5 @@
 import MaterialButton from "../../../components/MaterialButton";
+import OptimizedImage from "../../../components/OptimizedImage";
 import { getVehicleMaterials, groupByVehicle, slugify } from "../../../lib/data";
 import { siteCopy } from "../../../lib/siteCopy";
 import { translateValue } from "../../../lib/translations";
@@ -61,7 +62,7 @@ export default async function VehicleDetail({ params }) {
 
         <div className="vehicleImage card">
           {vehicle.image ? (
-            <img src={vehicle.image} alt={vehicle.vehicle} />
+            <OptimizedImage src={vehicle.image} alt={vehicle.vehicle} sizes="(max-width: 860px) 100vw, 420px" priority />
           ) : (
             <div className="imagePlaceholder">
               <span className="en">{siteCopy.vehicles.imagePlaceholder.EN}</span>

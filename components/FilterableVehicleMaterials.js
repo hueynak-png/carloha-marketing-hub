@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ListingSearchPanel from "./ListingSearchPanel";
 import VehicleCard from "./VehicleCard";
 import useLanguage from "./useLanguage";
 import { siteCopy } from "../lib/siteCopy";
@@ -46,14 +47,21 @@ export default function FilterableVehicleMaterials({ vehicles }) {
             {siteCopy.vehicles.intro[language]}
           </p>
         </div>
-        <label className="compactSearch">
-          <span>{language === "CN" ? "搜索车型" : "Search vehicles"}</span>
-          <input
-            value={query}
-            onChange={event => setQuery(event.target.value)}
-            placeholder={language === "CN" ? "输入车型或资料类型..." : "Vehicle or material type..."}
-          />
-        </label>
+        <ListingSearchPanel
+          language={language}
+          label={language === "CN" ? "搜索车型资料" : "Search vehicle materials"}
+          value={query}
+          onChange={setQuery}
+          onClear={() => setQuery("")}
+          placeholder={language === "CN" ? "输入车型、资料类型或状态..." : "Vehicle, material type, or status..."}
+          resultCount={filteredVehicles.length}
+          totalCount={vehicles.length}
+          quickFilters={[
+            { value: "Brochures", label: language === "CN" ? "手册" : "Brochures" },
+            { value: "Official Photos", label: language === "CN" ? "官方图片" : "Photos" },
+            { value: "Training Materials", label: language === "CN" ? "培训资料" : "Training" },
+          ]}
+        />
       </div>
 
       {filteredVehicles.length ? (

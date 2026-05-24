@@ -30,8 +30,8 @@ export default function LanguageToggle() {
   }, [lang, mounted]);
   return (
     <div className="langToggle" aria-label="Language switch">
-      <button className={lang === "EN" ? "active" : ""} onClick={() => setLang("EN")}>EN</button>
-      <button className={lang === "CN" ? "active" : ""} onClick={() => setLang("CN")}>中文</button>
+      <button type="button" aria-pressed={lang === "EN"} className={lang === "EN" ? "active" : ""} onClick={() => setLang("EN")}>EN</button>
+      <button type="button" aria-pressed={lang === "CN"} className={lang === "CN" ? "active" : ""} onClick={() => setLang("CN")}>中文</button>
     </div>
   );
 }
