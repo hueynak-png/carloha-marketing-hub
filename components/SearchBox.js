@@ -28,18 +28,25 @@ function highlightText(text = "", query = "") {
   );
 }
 
+function isReadyToOpen(item) {
+  const link = item["Google Drive Link"];
+  return item.Status === "Ready" && Boolean(link) && link !== "Coming Soon";
+}
+
 export default function SearchBox({ items }) {
   const language = useLanguage();
   const t = getLocalizedCopy("searchBox", language);
   const [q, setQ] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
   const [scope, setScope] = useState("");
   const [type, setType] = useState("");
   const [status, setStatus] = useState("");
   const [readyOnly, setReadyOnly] = useState(false);
 
   const options = useMemo(() => buildSearchOptions(items), [items]);
-  const normalizedQuery = normalizeSearchTerm(q);
-  const hasActiveFilters = Boolean(normalizedQuery || scope || type || status || readyOnly);
+  const normalizedQuery = normalizeSearchTerm(submittedQuery);
+  const hasActiveFilters = hasSearched && Boolean(normalizedQuery || scope || type || status || readyOnly);
 
   const results = useMemo(() => {
     if (!hasActiveFilters) return [];
@@ -56,7 +63,7 @@ export default function SearchBox({ items }) {
         const matchesQuery = !normalizedQuery || aliasSource.includes(normalizedQuery);
         const matchesScope = !scope || itemScope === scope;
         const matchesType = !type || itemType === type;
-        const matchesStatus = (!status || itemStatus === status) && (!readyOnly || itemStatus === "Ready");
+        const matchesStatus = (!status || itemStatus === status) && (!readyOnly || isReadyToOpen(item));
         return matchesQuery && matchesScope && matchesType && matchesStatus;
       })
       .slice(0, 12);
@@ -64,6 +71,8 @@ export default function SearchBox({ items }) {
 
   function clearFilters() {
     setQ("");
+    setSubmittedQuery("");
+    setHasSearched(false);
     setScope("");
     setType("");
     setStatus("");
@@ -72,6 +81,8 @@ export default function SearchBox({ items }) {
 
   function applyQuickFilter(nextFilter) {
     setQ("");
+    setSubmittedQuery("");
+    setHasSearched(true);
     setScope("");
     setType("");
     setStatus("");
@@ -80,12 +91,19 @@ export default function SearchBox({ items }) {
     setType(nextFilter);
   }
 
+  function submitSearch(event) {
+    event.preventDefault();
+    setSubmittedQuery(q);
+    setHasSearched(true);
+  }
+
   function renderResultRow(item, idx) {
     const itemScope = item.Vehicle || item.Category;
     const itemType = item["Material Type"] || item["File Format"] || t.material;
     const localizedScope = language === "CN" ? translateValue(itemScope, itemScope) : itemScope;
     const localizedType = language === "CN" ? translateValue(itemType, itemType) : itemType;
-    const statusLabel = language === "CN" ? translateValue(item.Status, item.Status) : item.Status;
+    const displayStatus = isReadyToOpen(item) ? item.Status : "Coming Soon";
+    const statusLabel = language === "CN" ? translateValue(displayStatus, displayStatus) : displayStatus;
 
     return (
       <div className="resultRow" key={`${item.Title || itemScope}-${idx}`}>
@@ -125,15 +143,18 @@ export default function SearchBox({ items }) {
 
   return (
     <section className="searchPanel">
-      <div className="searchInputWrap">
+      <form className="searchInputWrap" onSubmit={submitSearch}>
         <label className="searchLabel" htmlFor="material-search">{t.searchLabel}</label>
-        <input
-          id="material-search"
-          value={q}
-          onChange={event => setQ(event.target.value)}
-          placeholder={t.placeholder}
-        />
-      </div>
+        <div className="searchInputRow">
+          <input
+            id="material-search"
+            value={q}
+            onChange={event => setQ(event.target.value)}
+            placeholder={t.placeholder}
+          />
+          <button type="submit" className="searchSubmitButton">{t.searchAction}</button>
+        </div>
+      </form>
 
       <div className="searchShortcuts" aria-label={language === "CN" ? "快捷筛选" : "Quick filters"}>
         <button type="button" onClick={() => applyQuickFilter("Brochures")}>
@@ -199,10 +220,10 @@ export default function SearchBox({ items }) {
           <div className="searchResultsHeader">
             <div>
               <h3>{t.results}</h3>
-              <p>
-                {results.length} {t.resultsSummary}
-                {scope || type || status ? ` · ${t.filtersActive}` : ""}
-              </p>
+	              <p>
+	                {results.length} {t.resultsSummary}
+	                {scope || type || status || readyOnly ? ` · ${t.filtersActive}` : ""}
+	              </p>
             </div>
             <button type="button" className="searchClearButton" onClick={clearFilters}>
               {t.clearFilters}

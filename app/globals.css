@@ -637,12 +637,34 @@ body {
   font-weight: 700;
 }
 
+.searchInputRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+}
+
 .searchPanel input {
   width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   font-size: 16px;
+}
+
+.searchSubmitButton {
+  min-width: 112px;
+  padding: 0 18px;
+  background: var(--orange-action);
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.searchSubmitButton:hover {
+  background: var(--orange-dark);
 }
 
 .searchShortcuts {
@@ -1558,6 +1580,14 @@ html[data-lang="CN"] .guidelinesGrid.cn {
 
   .searchFilters {
     grid-template-columns: 1fr;
+  }
+
+  .searchInputRow {
+    grid-template-columns: 1fr;
+  }
+
+  .searchSubmitButton {
+    min-height: 44px;
   }
 
   .searchShortcuts {
