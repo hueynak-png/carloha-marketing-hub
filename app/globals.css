@@ -667,77 +667,6 @@ body {
   background: var(--orange-dark);
 }
 
-.searchShortcuts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.searchShortcuts button,
-.readyToggle {
-  min-height: 34px;
-  background: var(--cool-panel);
-  border: 1px solid var(--cool-line);
-  border-radius: var(--radius-pill);
-  color: var(--text-soft);
-  cursor: pointer;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.searchShortcuts button {
-  padding: 7px 11px;
-}
-
-.searchShortcuts button:hover {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #1e3a8a;
-}
-
-.searchFilters {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 14px;
-}
-
-.readyToggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  margin-top: 12px;
-  padding: 6px 11px 6px 8px;
-}
-
-.readyToggle input {
-  width: 16px;
-  height: 16px;
-  margin: 0;
-  accent-color: var(--orange-action);
-}
-
-.searchFilters label {
-  display: grid;
-  gap: 6px;
-  color: #4b5563;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.searchFilters select {
-  width: 100%;
-  padding: 11px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: #fffaf7;
-  color: var(--text);
-  font: inherit;
-}
-
 .searchResults {
   margin-top: 14px;
 }
@@ -1578,26 +1507,12 @@ html[data-lang="CN"] .guidelinesGrid.cn {
     gap: 4px;
   }
 
-  .searchFilters {
-    grid-template-columns: 1fr;
-  }
-
   .searchInputRow {
     grid-template-columns: 1fr;
   }
 
   .searchSubmitButton {
     min-height: 44px;
-  }
-
-  .searchShortcuts {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 2px;
-  }
-
-  .searchShortcuts button {
-    flex: 0 0 auto;
   }
 
   .pageHeaderWithSearch {
