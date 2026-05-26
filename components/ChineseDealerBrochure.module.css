@@ -243,14 +243,6 @@
   grid-column: span 3;
 }
 
-.smallImage {
-  grid-column: span 2;
-}
-
-.imageGrid .imageSlot:nth-last-child(-n + 3) {
-  grid-column: span 2;
-}
-
 .replaceButton {
   position: absolute;
   right: 10px;

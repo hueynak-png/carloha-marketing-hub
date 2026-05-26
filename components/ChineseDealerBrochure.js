@@ -96,8 +96,10 @@ export default function ChineseDealerBrochure() {
 
   const vehicleOptions = useMemo(() => Object.entries(brochureVehicles), []);
   const currentVehicle = vehicleStateById[selectedVehicleId];
-  const gridImages = currentVehicle.images.filter(image => image.id !== "hero");
   const heroImage = currentVehicle.images.find(image => image.id === "hero") || currentVehicle.images[0];
+  const gridImages = currentVehicle.images
+    .filter(image => image.id !== heroImage.id && image.src !== heroImage.src)
+    .slice(0, 6);
 
   function updateCurrentVehicle(updater) {
     setVehicleStateById(current => ({
@@ -222,11 +224,10 @@ export default function ChineseDealerBrochure() {
           </section>
 
           <section className={styles.imageGrid}>
-            {gridImages.map((image, index) => (
+            {gridImages.map(image => (
               <ImageSlot
                 key={image.id}
                 image={image}
-                className={index > 3 ? styles.smallImage : ""}
                 onReplace={replaceImage}
               />
             ))}
