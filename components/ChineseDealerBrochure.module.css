@@ -1,0 +1,362 @@
+.page {
+  min-height: 100vh;
+  padding: 24px 28px 48px;
+  background: #f4f5f7;
+  color: #101827;
+  font-family: Inter, "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  max-width: 1120px;
+  margin: 0 auto 24px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #dde3eb;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(16, 24, 39, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.controlGroup select {
+  min-width: 180px;
+  height: 40px;
+  padding: 0 38px 0 12px;
+  border: 1px solid #cad4e0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #101827;
+  font: inherit;
+}
+
+.downloadButton {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #f15a24;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(241, 90, 36, 0.22);
+}
+
+.downloadButton:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.previewRail {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+  padding: 8px 0 24px;
+}
+
+.a4Page {
+  position: relative;
+  flex: 0 0 auto;
+  width: 794px;
+  height: 1123px;
+  overflow: hidden;
+  padding: 44px 42px 38px;
+  background:
+    linear-gradient(135deg, rgba(255, 124, 28, 0.1), rgba(255, 255, 255, 0) 22%),
+    #ffffff;
+  box-shadow: 0 24px 70px rgba(16, 24, 39, 0.18);
+}
+
+.topAccent,
+.bottomAccent {
+  position: absolute;
+  pointer-events: none;
+}
+
+.topAccent {
+  top: 0;
+  left: 0;
+  width: 420px;
+  height: 24px;
+  background: #ff7a1a;
+  border-bottom-right-radius: 44px;
+}
+
+.bottomAccent {
+  right: 0;
+  bottom: 0;
+  width: 520px;
+  height: 24px;
+  background: #ff7a1a;
+  border-top-left-radius: 44px;
+}
+
+.header {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 210px;
+  align-items: start;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+
+.title {
+  display: block;
+  min-height: 76px;
+  color: #080d16;
+  font-size: 24px;
+  font-weight: 950;
+  line-height: 1.42;
+}
+
+.logo {
+  width: 210px;
+  height: auto;
+  margin-top: 6px;
+  object-fit: contain;
+}
+
+.heroRow {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.specCard {
+  display: grid;
+  align-content: stretch;
+  min-height: 318px;
+  padding: 14px 16px;
+  border: 1px solid #ffd6ad;
+  border-radius: 14px;
+  background: #fffaf5;
+  box-shadow: 0 8px 18px rgba(16, 24, 39, 0.12);
+}
+
+.specRow {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 55px;
+  border-bottom: 1px dashed #ffbf80;
+}
+
+.specRow:last-child {
+  border-bottom: 0;
+}
+
+.specMarker {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid #ff7a1a;
+  border-radius: 50%;
+  color: #f15a24;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.specCopy {
+  min-width: 0;
+  color: #121826;
+  font-size: 17px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.specLabel {
+  white-space: nowrap;
+}
+
+.specValue,
+.strongValue {
+  display: inline;
+  min-width: 40px;
+}
+
+.strongValue {
+  color: #ed1c24;
+  font-weight: 950;
+}
+
+.imageSlot {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f3f6f9;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+}
+
+.imageCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.sourceImage {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.heroImage {
+  height: 318px;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: 166px;
+  gap: 14px;
+}
+
+.imageGrid .imageSlot {
+  grid-column: span 3;
+}
+
+.smallImage {
+  grid-column: span 2;
+}
+
+.imageGrid .imageSlot:nth-last-child(-n + 3) {
+  grid-column: span 2;
+}
+
+.replaceButton {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(16, 24, 39, 0.86);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.imageSlot:hover .replaceButton,
+.imageSlot:focus-within .replaceButton {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fileInput {
+  display: none;
+}
+
+.editableText {
+  border-radius: 6px;
+  outline: 1px solid transparent;
+  transition: background 0.16s ease, outline-color 0.16s ease;
+  white-space: pre-wrap;
+}
+
+.editableText:hover,
+.editableText:focus {
+  background: rgba(255, 122, 26, 0.08);
+  outline-color: rgba(255, 122, 26, 0.38);
+}
+
+.exporting .replaceButton {
+  display: none;
+}
+
+.exporting .editableText {
+  background: transparent;
+  outline-color: transparent;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  .page {
+    min-height: auto;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .toolbar {
+    display: none;
+  }
+
+  .previewRail {
+    display: block;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .a4Page {
+    width: 210mm;
+    height: 297mm;
+    padding: 11.6mm 11.1mm 10mm;
+    box-shadow: none;
+    break-inside: avoid;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .replaceButton {
+    display: none;
+  }
+
+  .editableText {
+    background: transparent;
+    outline-color: transparent;
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding: 18px 12px 32px;
+  }
+
+  .toolbar {
+    position: static;
+    width: min(100%, 794px);
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .controlGroup {
+    justify-content: space-between;
+  }
+}

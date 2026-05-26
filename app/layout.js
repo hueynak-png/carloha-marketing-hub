@@ -1,8 +1,7 @@
 import "./globals.css";
+import AppShell from "../components/AppShell";
 import PageTracker from "../components/PageTracker";
-import Sidebar from "../components/Sidebar";
 import LangSync from "../components/LangSync";
-import Footer from "../components/Footer";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://carloha-marketing-hub.vercel.app";
 
@@ -42,10 +41,7 @@ export default function RootLayout({ children }) {
       <body>
         <LangSync />
         <PageTracker />
-        <div className="appShell">
-          <Sidebar />
-          <main className="mainContent">{children}<Footer /></main>
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
