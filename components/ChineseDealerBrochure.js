@@ -40,7 +40,19 @@ function EditableText({ value, className, onChange, multiline = false }) {
   );
 }
 
-function ImageSlot({ image, className, onReplace }) {
+function ImageSlot({
+  image,
+  className,
+  dragIndex,
+  dropIndex,
+  isDragging,
+  isDropTarget,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+  onReplace,
+}) {
   const inputRef = useRef(null);
 
   function handleFileChange(event) {
@@ -58,7 +70,14 @@ function ImageSlot({ image, className, onReplace }) {
   }
 
   return (
-    <figure className={`${styles.imageSlot} ${className || ""}`}>
+    <figure
+      className={`${styles.imageSlot} ${className || ""} ${isDragging ? styles.dragging : ""} ${isDropTarget ? styles.dropTarget : ""}`}
+      draggable
+      onDragStart={event => onDragStart(event, dragIndex)}
+      onDragOver={event => onDragOver(event, dropIndex)}
+      onDrop={event => onDrop(event, dropIndex)}
+      onDragEnd={onDragEnd}
+    >
       <span
         className={styles.imageCanvas}
         role="img"
@@ -66,6 +85,7 @@ function ImageSlot({ image, className, onReplace }) {
         style={{ backgroundImage: `url("${image.src}")` }}
       />
       <img className={styles.sourceImage} src={image.src} alt="" aria-hidden="true" />
+      <span className={styles.dragHint}>Drag</span>
       <button
         className={styles.replaceButton}
         type="button"
@@ -92,14 +112,15 @@ export default function ChineseDealerBrochure() {
     )
   ));
   const [isExporting, setIsExporting] = useState(false);
+  const [draggedImageIndex, setDraggedImageIndex] = useState(null);
+  const [dropTargetIndex, setDropTargetIndex] = useState(null);
   const brochureRef = useRef(null);
 
   const vehicleOptions = useMemo(() => Object.entries(brochureVehicles), []);
   const currentVehicle = vehicleStateById[selectedVehicleId];
-  const heroImage = currentVehicle.images.find(image => image.id === "hero") || currentVehicle.images[0];
-  const gridImages = currentVehicle.images
-    .filter(image => image.id !== heroImage.id && image.src !== heroImage.src)
-    .slice(0, 6);
+  const visibleImages = currentVehicle.images.slice(0, 7);
+  const heroImage = visibleImages[0];
+  const gridImages = visibleImages.slice(1);
 
   function updateCurrentVehicle(updater) {
     setVehicleStateById(current => ({
@@ -129,6 +150,48 @@ export default function ChineseDealerBrochure() {
         image.id === imageId ? { ...image, src } : image
       )),
     }));
+  }
+
+  function moveImage(fromIndex, toIndex) {
+    if (fromIndex === toIndex) return;
+
+    updateCurrentVehicle(vehicle => {
+      const images = [...vehicle.images];
+      const [movedImage] = images.splice(fromIndex, 1);
+      images.splice(toIndex, 0, movedImage);
+      return {
+        ...vehicle,
+        images,
+      };
+    });
+  }
+
+  function handleImageDragStart(event, index) {
+    setDraggedImageIndex(index);
+    setDropTargetIndex(index);
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", String(index));
+  }
+
+  function handleImageDragOver(event, index) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    setDropTargetIndex(index);
+  }
+
+  function handleImageDrop(event, index) {
+    event.preventDefault();
+    const fromIndex = Number(event.dataTransfer.getData("text/plain"));
+    if (Number.isInteger(fromIndex)) {
+      moveImage(fromIndex, index);
+    }
+    setDraggedImageIndex(null);
+    setDropTargetIndex(null);
+  }
+
+  function handleImageDragEnd() {
+    setDraggedImageIndex(null);
+    setDropTargetIndex(null);
   }
 
   async function downloadPdf() {
@@ -220,17 +283,40 @@ export default function ChineseDealerBrochure() {
               ))}
             </div>
 
-            <ImageSlot image={heroImage} className={styles.heroImage} onReplace={replaceImage} />
+            <ImageSlot
+              image={heroImage}
+              className={styles.heroImage}
+              dragIndex={0}
+              dropIndex={0}
+              isDragging={draggedImageIndex === 0}
+              isDropTarget={dropTargetIndex === 0 && draggedImageIndex !== null}
+              onDragStart={handleImageDragStart}
+              onDragOver={handleImageDragOver}
+              onDrop={handleImageDrop}
+              onDragEnd={handleImageDragEnd}
+              onReplace={replaceImage}
+            />
           </section>
 
           <section className={styles.imageGrid}>
-            {gridImages.map(image => (
+            {gridImages.map((image, index) => {
+              const imageIndex = index + 1;
+              return (
               <ImageSlot
                 key={image.id}
                 image={image}
+                dragIndex={imageIndex}
+                dropIndex={imageIndex}
+                isDragging={draggedImageIndex === imageIndex}
+                isDropTarget={dropTargetIndex === imageIndex && draggedImageIndex !== null}
+                onDragStart={handleImageDragStart}
+                onDragOver={handleImageDragOver}
+                onDrop={handleImageDrop}
+                onDragEnd={handleImageDragEnd}
                 onReplace={replaceImage}
               />
-            ))}
+              );
+            })}
           </section>
         </article>
       </section>

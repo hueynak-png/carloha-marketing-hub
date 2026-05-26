@@ -209,6 +209,23 @@
   border-radius: 12px;
   background: #f3f6f9;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+  cursor: grab;
+  transition: box-shadow 0.18s ease, opacity 0.18s ease, outline-color 0.18s ease, transform 0.18s ease;
+}
+
+.imageSlot:active {
+  cursor: grabbing;
+}
+
+.dragging {
+  opacity: 0.54;
+  transform: scale(0.99);
+}
+
+.dropTarget {
+  outline: 3px solid rgba(255, 122, 26, 0.7);
+  outline-offset: 4px;
+  box-shadow: 0 8px 24px rgba(241, 90, 36, 0.32);
 }
 
 .imageCanvas {
@@ -226,6 +243,30 @@
   height: 1px;
   opacity: 0;
   pointer-events: none;
+}
+
+.dragHint {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 2;
+  min-height: 30px;
+  padding: 7px 10px 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1f2937;
+  font-size: 12px;
+  font-weight: 850;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+
+.imageSlot:hover .dragHint,
+.imageSlot:focus-within .dragHint {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .heroImage {
@@ -286,6 +327,10 @@
 }
 
 .exporting .replaceButton {
+  display: none;
+}
+
+.exporting .dragHint {
   display: none;
 }
 
