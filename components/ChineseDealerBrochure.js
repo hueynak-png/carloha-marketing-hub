@@ -21,8 +21,11 @@ function cloneVehicle(vehicle) {
 }
 
 function EditableText({ value, className, onChange, multiline = false }) {
-  function handleInput(event) {
-    onChange(event.currentTarget.innerText);
+  function handleBlur(event) {
+    const nextValue = event.currentTarget.innerText;
+    if (nextValue !== value) {
+      onChange(nextValue);
+    }
   }
 
   return (
@@ -33,7 +36,7 @@ function EditableText({ value, className, onChange, multiline = false }) {
       aria-multiline={multiline}
       suppressContentEditableWarning
       spellCheck={false}
-      onInput={handleInput}
+      onBlur={handleBlur}
     >
       {value}
     </span>
@@ -205,25 +208,29 @@ export default function ChineseDealerBrochure() {
       import("jspdf"),
     ]);
 
-    const canvas = await html2canvas(brochureRef.current, {
-      backgroundColor: "#ffffff",
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      windowWidth: brochureRef.current.scrollWidth,
-      windowHeight: brochureRef.current.scrollHeight,
-    });
+    try {
+      const canvas = await html2canvas(brochureRef.current, {
+        backgroundColor: "#ffffff",
+        scale: 4,
+        useCORS: true,
+        allowTaint: true,
+        imageTimeout: 0,
+        windowWidth: brochureRef.current.scrollWidth,
+        windowHeight: brochureRef.current.scrollHeight,
+      });
 
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-      compress: true,
-    });
-    const imageData = canvas.toDataURL("image/jpeg", 0.96);
-    pdf.addImage(imageData, "JPEG", 0, 0, 210, 297);
-    pdf.save(`${currentVehicle.label || selectedVehicleId}-Chinese-Dealer-Brochure.pdf`);
-    setIsExporting(false);
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        compress: false,
+      });
+      const imageData = canvas.toDataURL("image/png");
+      pdf.addImage(imageData, "PNG", 0, 0, 210, 297, undefined, "FAST");
+      pdf.save(`${currentVehicle.label || selectedVehicleId}-Chinese-Dealer-Brochure.pdf`);
+    } finally {
+      setIsExporting(false);
+    }
   }
 
   return (
