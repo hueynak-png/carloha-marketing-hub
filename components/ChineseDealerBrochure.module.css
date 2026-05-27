@@ -116,8 +116,8 @@
 
 .pageShell {
   flex: 0 0 auto;
-  width: var(--preview-width, 794px);
-  height: var(--preview-height, 1123px);
+  width: 794px;
+  height: 1123px;
 }
 
 .a4Page {
@@ -478,8 +478,13 @@
     padding: 0 0 24px;
   }
 
+  .pageShell {
+    width: calc(100vw - 24px);
+    height: calc((100vw - 24px) * 1123 / 794);
+  }
+
   .a4Page {
-    transform: scale(var(--preview-scale, 1));
+    transform: scale(calc((100vw - 24px) / 794));
     transform-origin: top left;
   }
 

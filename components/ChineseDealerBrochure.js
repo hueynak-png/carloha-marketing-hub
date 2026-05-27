@@ -12,9 +12,6 @@ const specRows = [
   { key: "maintenance", label: "送免费保养", marker: "24X" },
 ];
 
-const pageWidth = 794;
-const pageHeight = 1123;
-
 function getSpecMarker(row, specs) {
   if (row.key === "tireSize") {
     const sizeMatch = specs.tireSize.match(/R\s*\d+/i);
@@ -26,13 +23,6 @@ function getSpecMarker(row, specs) {
   }
 
   return row.marker;
-}
-
-function getInitialPreviewScale() {
-  if (typeof window === "undefined") return 1;
-
-  const availableWidth = Math.max(320, window.innerWidth - 24);
-  return Math.min(1, availableWidth / pageWidth);
 }
 
 function isIOSDevice() {
@@ -245,7 +235,6 @@ export default function ChineseDealerBrochure() {
   const [pendingPdfShare, setPendingPdfShare] = useState(null);
   const [draggedImageIndex, setDraggedImageIndex] = useState(null);
   const [dropTargetIndex, setDropTargetIndex] = useState(null);
-  const [previewScale, setPreviewScale] = useState(getInitialPreviewScale);
   const brochureRef = useRef(null);
 
   const vehicleOptions = useMemo(() => Object.entries(brochureVehicles), []);
@@ -253,22 +242,6 @@ export default function ChineseDealerBrochure() {
   const visibleImages = currentVehicle.images.slice(0, 7);
   const heroImage = visibleImages[0];
   const gridImages = visibleImages.slice(1);
-
-  useEffect(() => {
-    function updatePreviewScale() {
-      const availableWidth = Math.max(320, window.innerWidth - 24);
-      setPreviewScale(Math.min(1, availableWidth / pageWidth));
-    }
-
-    updatePreviewScale();
-    window.addEventListener("resize", updatePreviewScale);
-    window.addEventListener("orientationchange", updatePreviewScale);
-
-    return () => {
-      window.removeEventListener("resize", updatePreviewScale);
-      window.removeEventListener("orientationchange", updatePreviewScale);
-    };
-  }, []);
 
   function updateCurrentVehicle(updater) {
     setVehicleStateById(current => ({
@@ -441,14 +414,7 @@ export default function ChineseDealerBrochure() {
       ) : null}
 
       <section className={styles.previewRail} aria-label="Chinese dealer brochure preview">
-        <div
-          className={styles.pageShell}
-          style={{
-            "--preview-scale": previewScale,
-            "--preview-width": `${pageWidth * previewScale}px`,
-            "--preview-height": `${pageHeight * previewScale}px`,
-          }}
-        >
+        <div className={styles.pageShell}>
           <article
             ref={brochureRef}
             className={`${styles.a4Page} ${isExporting ? styles.exporting : ""}`}
