@@ -44,6 +44,34 @@
   font: inherit;
 }
 
+.languageToggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  padding: 3px;
+  border: 1px solid #cad4e0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.languageToggle button {
+  min-width: 56px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.languageToggle .activeLanguage {
+  background: #101827;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(16, 24, 39, 0.16);
+}
+
 .downloadButton {
   min-height: 40px;
   padding: 0 16px;
@@ -466,6 +494,14 @@
   .controlGroup select {
     min-width: 0;
     width: min(48vw, 220px);
+  }
+
+  .languageToggle {
+    width: 100%;
+  }
+
+  .languageToggle button {
+    flex: 1 1 0;
   }
 
   .downloadButton {

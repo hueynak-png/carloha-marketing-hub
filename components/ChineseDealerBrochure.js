@@ -5,11 +5,11 @@ import { brochureVehicles, defaultBrochureVehicleId } from "../lib/chineseDealer
 import styles from "./ChineseDealerBrochure.module.css";
 
 const specRows = [
-  { key: "dimensions", label: "车身尺寸", marker: "MM" },
-  { key: "tireSize", label: "轮胎尺寸", marker: "R20" },
-  { key: "price", label: "售价", marker: "$" },
-  { key: "warranty", label: "质保", marker: "6Y" },
-  { key: "maintenance", label: "送免费保养", marker: "24X" },
+  { key: "dimensions", label: { CN: "车身尺寸", EN: "Dimensions" }, marker: "MM" },
+  { key: "tireSize", label: { CN: "轮胎尺寸", EN: "Tire Size" }, marker: "R20" },
+  { key: "price", label: { CN: "售价", EN: "Price" }, marker: "$" },
+  { key: "warranty", label: { CN: "质保", EN: "Warranty" }, marker: "6Y" },
+  { key: "maintenance", label: { CN: "送免费保养", EN: "Free Maintenance" }, marker: "24X" },
 ];
 
 function getSpecMarker(row, specs) {
@@ -47,7 +47,16 @@ function downloadBlob(blob, fileName) {
 function cloneVehicle(vehicle) {
   return {
     ...vehicle,
-    specs: { ...vehicle.specs },
+    copy: {
+      CN: {
+        title: vehicle.copy.CN.title,
+        specs: { ...vehicle.copy.CN.specs },
+      },
+      EN: {
+        title: vehicle.copy.EN.title,
+        specs: { ...vehicle.copy.EN.specs },
+      },
+    },
     images: vehicle.images.map(image => ({ ...image })),
   };
 }
@@ -226,6 +235,7 @@ function ImageSlot({
 
 export default function ChineseDealerBrochure() {
   const [selectedVehicleId, setSelectedVehicleId] = useState(defaultBrochureVehicleId);
+  const [brochureLanguage, setBrochureLanguage] = useState("CN");
   const [vehicleStateById, setVehicleStateById] = useState(() => (
     Object.fromEntries(
       Object.entries(brochureVehicles).map(([id, vehicle]) => [id, cloneVehicle(vehicle)]),
@@ -239,7 +249,8 @@ export default function ChineseDealerBrochure() {
 
   const vehicleOptions = useMemo(() => Object.entries(brochureVehicles), []);
   const currentVehicle = vehicleStateById[selectedVehicleId];
-  const visibleSpecRows = specRows.filter(row => currentVehicle.specs[row.key]);
+  const currentCopy = currentVehicle.copy[brochureLanguage];
+  const visibleSpecRows = specRows.filter(row => currentCopy.specs[row.key]);
   const visibleImages = currentVehicle.images.slice(0, 7);
   const heroImage = visibleImages[0];
   const gridImages = visibleImages.slice(1);
@@ -252,15 +263,30 @@ export default function ChineseDealerBrochure() {
   }
 
   function updateTitle(value) {
-    updateCurrentVehicle(vehicle => ({ ...vehicle, title: value }));
+    updateCurrentVehicle(vehicle => ({
+      ...vehicle,
+      copy: {
+        ...vehicle.copy,
+        [brochureLanguage]: {
+          ...vehicle.copy[brochureLanguage],
+          title: value,
+        },
+      },
+    }));
   }
 
   function updateSpec(key, value) {
     updateCurrentVehicle(vehicle => ({
       ...vehicle,
-      specs: {
-        ...vehicle.specs,
-        [key]: value,
+      copy: {
+        ...vehicle.copy,
+        [brochureLanguage]: {
+          ...vehicle.copy[brochureLanguage],
+          specs: {
+            ...vehicle.copy[brochureLanguage].specs,
+            [key]: value,
+          },
+        },
       },
     }));
   }
@@ -372,7 +398,7 @@ export default function ChineseDealerBrochure() {
       });
       const imageData = canvas.toDataURL("image/png");
       pdf.addImage(imageData, "PNG", 0, 0, 210, 297, undefined, "NONE");
-      const fileName = `${currentVehicle.label || selectedVehicleId}-Chinese-Dealer-Brochure.pdf`;
+      const fileName = `${currentVehicle.label || selectedVehicleId}-${brochureLanguage}-Dealer-Brochure.pdf`;
 
       if (isIOSDevice() && typeof File === "function") {
         const file = new File([pdf.output("blob")], fileName, { type: "application/pdf" });
@@ -402,6 +428,25 @@ export default function ChineseDealerBrochure() {
           </select>
         </div>
 
+        <div className={styles.languageToggle} aria-label="Brochure language">
+          <button
+            className={brochureLanguage === "CN" ? styles.activeLanguage : ""}
+            type="button"
+            onClick={() => setBrochureLanguage("CN")}
+            aria-pressed={brochureLanguage === "CN"}
+          >
+            中文
+          </button>
+          <button
+            className={brochureLanguage === "EN" ? styles.activeLanguage : ""}
+            type="button"
+            onClick={() => setBrochureLanguage("EN")}
+            aria-pressed={brochureLanguage === "EN"}
+          >
+            EN
+          </button>
+        </div>
+
         <button className={styles.downloadButton} type="button" onClick={downloadPdf} disabled={isExporting}>
           {isExporting ? "Preparing PDF..." : "Download PDF"}
         </button>
@@ -428,7 +473,7 @@ export default function ChineseDealerBrochure() {
 
           <header className={styles.header}>
             <EditableText
-              value={currentVehicle.title}
+              value={currentCopy.title}
               className={styles.title}
               multiline
               onChange={updateTitle}
@@ -440,11 +485,11 @@ export default function ChineseDealerBrochure() {
             <div className={styles.specCard}>
               {visibleSpecRows.map(row => (
                 <div className={styles.specRow} key={row.key}>
-                  <span className={styles.specMarker}>{getSpecMarker(row, currentVehicle.specs)}</span>
+                  <span className={styles.specMarker}>{getSpecMarker(row, currentCopy.specs)}</span>
                   <div className={styles.specCopy}>
-                    <span className={styles.specLabel}>{row.label}：</span>
+                    <span className={styles.specLabel}>{row.label[brochureLanguage]}{brochureLanguage === "CN" ? "：" : ": "}</span>
                     <EditableText
-                      value={currentVehicle.specs[row.key]}
+                      value={currentCopy.specs[row.key]}
                       className={row.key === "price" || row.key === "warranty" || row.key === "maintenance" ? styles.strongValue : styles.specValue}
                       multiline={row.key !== "dimensions" && row.key !== "tireSize"}
                       onChange={value => updateSpec(row.key, value)}
