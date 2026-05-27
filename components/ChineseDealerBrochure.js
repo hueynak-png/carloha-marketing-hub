@@ -239,6 +239,7 @@ export default function ChineseDealerBrochure() {
 
   const vehicleOptions = useMemo(() => Object.entries(brochureVehicles), []);
   const currentVehicle = vehicleStateById[selectedVehicleId];
+  const visibleSpecRows = specRows.filter(row => currentVehicle.specs[row.key]);
   const visibleImages = currentVehicle.images.slice(0, 7);
   const heroImage = visibleImages[0];
   const gridImages = visibleImages.slice(1);
@@ -437,7 +438,7 @@ export default function ChineseDealerBrochure() {
 
           <section className={styles.heroRow}>
             <div className={styles.specCard}>
-              {specRows.map(row => (
+              {visibleSpecRows.map(row => (
                 <div className={styles.specRow} key={row.key}>
                   <span className={styles.specMarker}>{getSpecMarker(row, currentVehicle.specs)}</span>
                   <div className={styles.specCopy}>
