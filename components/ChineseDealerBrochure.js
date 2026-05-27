@@ -5,11 +5,11 @@ import { brochureVehicles, defaultBrochureVehicleId } from "../lib/chineseDealer
 import styles from "./ChineseDealerBrochure.module.css";
 
 const specRows = [
-  { key: "dimensions", label: { CN: "车身尺寸", EN: "Dimensions" }, marker: "MM" },
-  { key: "tireSize", label: { CN: "轮胎尺寸", EN: "Tire Size" }, marker: "R20" },
+  { key: "dimensions", label: { CN: "车身尺寸", EN: "Size" }, marker: "MM" },
+  { key: "tireSize", label: { CN: "轮胎尺寸", EN: "Tires" }, marker: "R20" },
   { key: "price", label: { CN: "售价", EN: "Price" }, marker: "$" },
   { key: "warranty", label: { CN: "质保", EN: "Warranty" }, marker: "6Y" },
-  { key: "maintenance", label: { CN: "送免费保养", EN: "Free Maintenance" }, marker: "24X" },
+  { key: "maintenance", label: { CN: "送免费保养", EN: "Maintenance" }, marker: "24X" },
 ];
 
 function getSpecMarker(row, specs) {
@@ -466,7 +466,7 @@ export default function ChineseDealerBrochure() {
         >
           <article
             ref={brochureRef}
-            className={`${styles.a4Page} ${isExporting ? styles.exporting : ""}`}
+            className={`${styles.a4Page} ${brochureLanguage === "EN" ? styles.englishBrochure : ""} ${isExporting ? styles.exporting : ""}`}
           >
           <div className={styles.topAccent} />
           <div className={styles.bottomAccent} />
