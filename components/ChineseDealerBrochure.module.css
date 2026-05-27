@@ -62,12 +62,62 @@
   opacity: 0.72;
 }
 
+.savePrompt {
+  position: sticky;
+  top: 88px;
+  z-index: 19;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1120px;
+  margin: -8px auto 18px;
+  padding: 12px 14px;
+  border: 1px solid #ffd6ad;
+  border-radius: 8px;
+  background: #fffaf5;
+  box-shadow: 0 12px 30px rgba(16, 24, 39, 0.08);
+}
+
+.savePrompt span {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: #101827;
+  font-size: 13px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.savePrompt button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #101827;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.savePrompt button:last-child {
+  background: #e5e7eb;
+  color: #334155;
+}
+
 .previewRail {
   display: flex;
   justify-content: center;
   width: 100%;
   overflow-x: auto;
   padding: 8px 0 24px;
+}
+
+.pageShell {
+  flex: 0 0 auto;
+  width: var(--preview-width, 794px);
+  height: var(--preview-height, 1123px);
 }
 
 .a4Page {
@@ -355,9 +405,15 @@
     overflow: visible;
   }
 
+  .pageShell {
+    width: 210mm;
+    height: 297mm;
+  }
+
   .a4Page {
     width: 210mm;
     height: 297mm;
+    transform: none;
     padding: 11.6mm 11.1mm 10mm;
     box-shadow: none;
     break-inside: avoid;
@@ -378,16 +434,56 @@
 @media (max-width: 900px) {
   .page {
     padding: 18px 12px 32px;
+    overflow-x: hidden;
   }
 
   .toolbar {
     position: static;
-    width: min(100%, 794px);
+    width: 100%;
     align-items: stretch;
     flex-direction: column;
   }
 
+  .savePrompt {
+    position: static;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: -2px 0 18px;
+  }
+
+  .savePrompt span {
+    flex-basis: 100%;
+  }
+
+  .savePrompt button {
+    flex: 1 1 0;
+  }
+
   .controlGroup {
     justify-content: space-between;
+  }
+
+  .controlGroup select {
+    min-width: 0;
+    width: min(48vw, 220px);
+  }
+
+  .downloadButton {
+    width: 100%;
+  }
+
+  .previewRail {
+    justify-content: flex-start;
+    overflow: visible;
+    padding: 0 0 24px;
+  }
+
+  .a4Page {
+    transform: scale(var(--preview-scale, 1));
+    transform-origin: top left;
+  }
+
+  .pageShell .a4Page.exporting {
+    transform: none;
   }
 }

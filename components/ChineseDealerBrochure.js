@@ -12,6 +12,9 @@ const specRows = [
   { key: "maintenance", label: "送免费保养", marker: "24X" },
 ];
 
+const pageWidth = 794;
+const pageHeight = 1123;
+
 function getSpecMarker(row, specs) {
   if (row.key === "tireSize") {
     const sizeMatch = specs.tireSize.match(/R\s*\d+/i);
@@ -23,6 +26,32 @@ function getSpecMarker(row, specs) {
   }
 
   return row.marker;
+}
+
+function getInitialPreviewScale() {
+  if (typeof window === "undefined") return 1;
+
+  const availableWidth = Math.max(320, window.innerWidth - 24);
+  return Math.min(1, availableWidth / pageWidth);
+}
+
+function isIOSDevice() {
+  if (typeof navigator === "undefined") return false;
+
+  return /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function downloadBlob(blob, fileName) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 30000);
 }
 
 function cloneVehicle(vehicle) {
@@ -213,8 +242,10 @@ export default function ChineseDealerBrochure() {
     )
   ));
   const [isExporting, setIsExporting] = useState(false);
+  const [pendingPdfShare, setPendingPdfShare] = useState(null);
   const [draggedImageIndex, setDraggedImageIndex] = useState(null);
   const [dropTargetIndex, setDropTargetIndex] = useState(null);
+  const [previewScale, setPreviewScale] = useState(getInitialPreviewScale);
   const brochureRef = useRef(null);
 
   const vehicleOptions = useMemo(() => Object.entries(brochureVehicles), []);
@@ -222,6 +253,22 @@ export default function ChineseDealerBrochure() {
   const visibleImages = currentVehicle.images.slice(0, 7);
   const heroImage = visibleImages[0];
   const gridImages = visibleImages.slice(1);
+
+  useEffect(() => {
+    function updatePreviewScale() {
+      const availableWidth = Math.max(320, window.innerWidth - 24);
+      setPreviewScale(Math.min(1, availableWidth / pageWidth));
+    }
+
+    updatePreviewScale();
+    window.addEventListener("resize", updatePreviewScale);
+    window.addEventListener("orientationchange", updatePreviewScale);
+
+    return () => {
+      window.removeEventListener("resize", updatePreviewScale);
+      window.removeEventListener("orientationchange", updatePreviewScale);
+    };
+  }, []);
 
   function updateCurrentVehicle(updater) {
     setVehicleStateById(current => ({
@@ -295,9 +342,32 @@ export default function ChineseDealerBrochure() {
     setDropTargetIndex(null);
   }
 
+  async function sharePendingPdf() {
+    if (!pendingPdfShare) return;
+
+    if (navigator.canShare?.({ files: [pendingPdfShare.file] }) && navigator.share) {
+      try {
+        await navigator.share({
+          files: [pendingPdfShare.file],
+          title: pendingPdfShare.fileName,
+        });
+        setPendingPdfShare(null);
+      } catch (error) {
+        if (error?.name !== "AbortError") {
+          downloadBlob(pendingPdfShare.file, pendingPdfShare.fileName);
+        }
+      }
+      return;
+    }
+
+    downloadBlob(pendingPdfShare.file, pendingPdfShare.fileName);
+    setPendingPdfShare(null);
+  }
+
   async function downloadPdf() {
     if (!brochureRef.current) return;
 
+    setPendingPdfShare(null);
     setIsExporting(true);
     await waitForImages(brochureRef.current);
     await new Promise(resolve => window.requestAnimationFrame(resolve));
@@ -327,7 +397,15 @@ export default function ChineseDealerBrochure() {
       });
       const imageData = canvas.toDataURL("image/png");
       pdf.addImage(imageData, "PNG", 0, 0, 210, 297, undefined, "NONE");
-      pdf.save(`${currentVehicle.label || selectedVehicleId}-Chinese-Dealer-Brochure.pdf`);
+      const fileName = `${currentVehicle.label || selectedVehicleId}-Chinese-Dealer-Brochure.pdf`;
+
+      if (isIOSDevice() && typeof File === "function") {
+        const file = new File([pdf.output("blob")], fileName, { type: "application/pdf" });
+        setPendingPdfShare({ file, fileName });
+        return;
+      }
+
+      pdf.save(fileName);
     } finally {
       setIsExporting(false);
     }
@@ -354,11 +432,27 @@ export default function ChineseDealerBrochure() {
         </button>
       </div>
 
+      {pendingPdfShare ? (
+        <div className={styles.savePrompt} role="status">
+          <span>{pendingPdfShare.fileName}</span>
+          <button type="button" onClick={sharePendingPdf}>Save PDF</button>
+          <button type="button" onClick={() => setPendingPdfShare(null)}>Cancel</button>
+        </div>
+      ) : null}
+
       <section className={styles.previewRail} aria-label="Chinese dealer brochure preview">
-        <article
-          ref={brochureRef}
-          className={`${styles.a4Page} ${isExporting ? styles.exporting : ""}`}
+        <div
+          className={styles.pageShell}
+          style={{
+            "--preview-scale": previewScale,
+            "--preview-width": `${pageWidth * previewScale}px`,
+            "--preview-height": `${pageHeight * previewScale}px`,
+          }}
         >
+          <article
+            ref={brochureRef}
+            className={`${styles.a4Page} ${isExporting ? styles.exporting : ""}`}
+          >
           <div className={styles.topAccent} />
           <div className={styles.bottomAccent} />
 
@@ -425,7 +519,8 @@ export default function ChineseDealerBrochure() {
               );
             })}
           </section>
-        </article>
+          </article>
+        </div>
       </section>
     </main>
   );
