@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { brochureVehicles, defaultBrochureVehicleId } from "../lib/chineseDealerBrochureData";
 import styles from "./ChineseDealerBrochure.module.css";
 
@@ -11,6 +11,19 @@ const specRows = [
   { key: "warranty", label: "质保", marker: "6Y" },
   { key: "maintenance", label: "送免费保养", marker: "24X" },
 ];
+
+function getSpecMarker(row, specs) {
+  if (row.key === "tireSize") {
+    const sizeMatch = specs.tireSize.match(/R\s*\d+/i);
+    return sizeMatch ? sizeMatch[0].replace(/\s+/g, "").toUpperCase() : row.marker;
+  }
+
+  if (row.key === "maintenance" && specs.maintenance === "待确认") {
+    return "?";
+  }
+
+  return row.marker;
+}
 
 function cloneVehicle(vehicle) {
   return {
@@ -79,6 +92,65 @@ function ImageSlot({
   onReplace,
 }) {
   const inputRef = useRef(null);
+  const imageRef = useRef(null);
+  const slotRef = useRef(null);
+  const [slotSize, setSlotSize] = useState(null);
+  const [imageSize, setImageSize] = useState(null);
+
+  function updateImageSizeFromElement(element) {
+    if (!element?.naturalWidth || !element?.naturalHeight) return;
+
+    setImageSize({
+      width: element.naturalWidth,
+      height: element.naturalHeight,
+    });
+  }
+
+  useEffect(() => {
+    if (!slotRef.current) return undefined;
+
+    function updateSlotSize() {
+      const rect = slotRef.current.getBoundingClientRect();
+      setSlotSize({ width: rect.width, height: rect.height });
+    }
+
+    updateSlotSize();
+
+    if (typeof ResizeObserver !== "undefined") {
+      const observer = new ResizeObserver(updateSlotSize);
+      observer.observe(slotRef.current);
+      return () => observer.disconnect();
+    }
+
+    window.addEventListener("resize", updateSlotSize);
+    return () => window.removeEventListener("resize", updateSlotSize);
+  }, []);
+
+  useEffect(() => {
+    const imageElement = imageRef.current;
+    if (!imageElement) return undefined;
+    const handleLoad = () => updateImageSizeFromElement(imageElement);
+
+    updateImageSizeFromElement(imageElement);
+    imageElement.addEventListener("load", handleLoad);
+
+    return () => {
+      imageElement.removeEventListener("load", handleLoad);
+    };
+  }, [image.src]);
+
+  const coverImageStyle = useMemo(() => {
+    if (!slotSize || !imageSize || !slotSize.height || !imageSize.height) {
+      return { width: "100%", height: "100%" };
+    }
+
+    const slotAspect = slotSize.width / slotSize.height;
+    const imageAspect = imageSize.width / imageSize.height;
+
+    return imageAspect > slotAspect
+      ? { width: "auto", height: "100%" }
+      : { width: "100%", height: "auto" };
+  }, [imageSize, slotSize]);
 
   function handleFileChange(event) {
     const file = event.target.files?.[0];
@@ -96,6 +168,7 @@ function ImageSlot({
 
   return (
     <figure
+      ref={slotRef}
       className={`${styles.imageSlot} ${className || ""} ${isDragging ? styles.dragging : ""} ${isDropTarget ? styles.dropTarget : ""}`}
       draggable
       onDragStart={event => onDragStart(event, dragIndex)}
@@ -104,11 +177,14 @@ function ImageSlot({
       onDragEnd={onDragEnd}
     >
       <img
+        ref={imageRef}
         className={styles.imageCanvas}
         src={image.src}
         alt={image.label}
         decoding="async"
         draggable={false}
+        style={coverImageStyle}
+        onLoad={event => updateImageSizeFromElement(event.currentTarget)}
       />
       <span className={styles.dragHint}>Drag</span>
       <button
@@ -300,7 +376,7 @@ export default function ChineseDealerBrochure() {
             <div className={styles.specCard}>
               {specRows.map(row => (
                 <div className={styles.specRow} key={row.key}>
-                  <span className={styles.specMarker}>{row.marker}</span>
+                  <span className={styles.specMarker}>{getSpecMarker(row, currentVehicle.specs)}</span>
                   <div className={styles.specCopy}>
                     <span className={styles.specLabel}>{row.label}：</span>
                     <EditableText
