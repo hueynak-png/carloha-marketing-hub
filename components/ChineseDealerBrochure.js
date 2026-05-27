@@ -43,6 +43,28 @@ function EditableText({ value, className, onChange, multiline = false }) {
   );
 }
 
+async function waitForImages(root) {
+  const images = Array.from(root.querySelectorAll("img"));
+
+  await Promise.all(images.map(async image => {
+    if (image.complete && image.naturalWidth > 0) return;
+
+    if (typeof image.decode === "function") {
+      try {
+        await image.decode();
+        return;
+      } catch {
+        // Fall through to the load/error listeners for browsers that reject decode early.
+      }
+    }
+
+    await new Promise(resolve => {
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", resolve, { once: true });
+    });
+  }));
+}
+
 function ImageSlot({
   image,
   className,
@@ -81,13 +103,13 @@ function ImageSlot({
       onDrop={event => onDrop(event, dropIndex)}
       onDragEnd={onDragEnd}
     >
-      <span
+      <img
         className={styles.imageCanvas}
-        role="img"
-        aria-label={image.label}
-        style={{ backgroundImage: `url("${image.src}")` }}
+        src={image.src}
+        alt={image.label}
+        decoding="async"
+        draggable={false}
       />
-      <img className={styles.sourceImage} src={image.src} alt="" aria-hidden="true" />
       <span className={styles.dragHint}>Drag</span>
       <button
         className={styles.replaceButton}
@@ -201,6 +223,7 @@ export default function ChineseDealerBrochure() {
     if (!brochureRef.current) return;
 
     setIsExporting(true);
+    await waitForImages(brochureRef.current);
     await new Promise(resolve => window.requestAnimationFrame(resolve));
 
     const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
@@ -211,10 +234,11 @@ export default function ChineseDealerBrochure() {
     try {
       const canvas = await html2canvas(brochureRef.current, {
         backgroundColor: "#ffffff",
-        scale: 4,
+        scale: 5,
         useCORS: true,
         allowTaint: true,
         imageTimeout: 0,
+        logging: false,
         windowWidth: brochureRef.current.scrollWidth,
         windowHeight: brochureRef.current.scrollHeight,
       });
@@ -226,7 +250,7 @@ export default function ChineseDealerBrochure() {
         compress: false,
       });
       const imageData = canvas.toDataURL("image/png");
-      pdf.addImage(imageData, "PNG", 0, 0, 210, 297, undefined, "FAST");
+      pdf.addImage(imageData, "PNG", 0, 0, 210, 297, undefined, "NONE");
       pdf.save(`${currentVehicle.label || selectedVehicleId}-Chinese-Dealer-Brochure.pdf`);
     } finally {
       setIsExporting(false);
