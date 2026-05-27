@@ -508,13 +508,13 @@
 
 @media (min-width: 391px) and (max-width: 430px) {
   .a4Page {
-    transform: scale(0.51);
+    transform: scale(0.46);
   }
 }
 
 @media (min-width: 431px) and (max-width: 480px) {
   .a4Page {
-    transform: scale(0.57);
+    transform: scale(0.52);
   }
 }
 
