@@ -381,7 +381,7 @@ export default function ChineseDealerBrochure() {
     try {
       const canvas = await html2canvas(brochureRef.current, {
         backgroundColor: "#ffffff",
-        scale: 5,
+        scale: 4,
         useCORS: true,
         allowTaint: true,
         imageTimeout: 0,
@@ -394,10 +394,10 @@ export default function ChineseDealerBrochure() {
         orientation: "portrait",
         unit: "mm",
         format: "a4",
-        compress: false,
+        compress: true,
       });
-      const imageData = canvas.toDataURL("image/png");
-      pdf.addImage(imageData, "PNG", 0, 0, 210, 297, undefined, "NONE");
+      const imageData = canvas.toDataURL("image/jpeg", 0.9);
+      pdf.addImage(imageData, "JPEG", 0, 0, 210, 297, undefined, "MEDIUM");
       const fileName = `${currentVehicle.label || selectedVehicleId}-${brochureLanguage}-Dealer-Brochure.pdf`;
 
       if (isIOSDevice() && typeof File === "function") {
