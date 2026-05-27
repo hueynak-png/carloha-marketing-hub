@@ -342,6 +342,7 @@ export default function ChineseDealerBrochure() {
 
     setPendingPdfShare(null);
     setIsExporting(true);
+    await new Promise(resolve => window.requestAnimationFrame(resolve));
     await waitForImages(brochureRef.current);
     await new Promise(resolve => window.requestAnimationFrame(resolve));
 
@@ -414,7 +415,9 @@ export default function ChineseDealerBrochure() {
       ) : null}
 
       <section className={styles.previewRail} aria-label="Chinese dealer brochure preview">
-        <div className={styles.pageShell}>
+        <div
+          className={`${styles.pageShell} ${isExporting ? styles.exportingShell : ""}`}
+        >
           <article
             ref={brochureRef}
             className={`${styles.a4Page} ${isExporting ? styles.exporting : ""}`}

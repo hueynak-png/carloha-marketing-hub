@@ -480,15 +480,58 @@
 
   .pageShell {
     width: calc(100vw - 24px);
-    height: calc((100vw - 24px) * 1123 / 794);
+    max-width: 794px;
+    height: auto;
+    aspect-ratio: 794 / 1123;
   }
 
   .a4Page {
-    transform: scale(calc((100vw - 24px) / 794));
+    transform: scale(0.46);
     transform-origin: top left;
   }
 
-  .pageShell .a4Page.exporting {
+  .exportingShell {
+    width: 794px;
+    height: 1123px;
+  }
+
+  .exportingShell .a4Page {
     transform: none;
+  }
+}
+
+@media (max-width: 359px) {
+  .a4Page {
+    transform: scale(0.42);
+  }
+}
+
+@media (min-width: 391px) and (max-width: 430px) {
+  .a4Page {
+    transform: scale(0.51);
+  }
+}
+
+@media (min-width: 431px) and (max-width: 480px) {
+  .a4Page {
+    transform: scale(0.57);
+  }
+}
+
+@media (min-width: 481px) and (max-width: 600px) {
+  .a4Page {
+    transform: scale(0.72);
+  }
+}
+
+@media (min-width: 601px) and (max-width: 760px) {
+  .a4Page {
+    transform: scale(0.9);
+  }
+}
+
+@media (min-width: 761px) and (max-width: 900px) {
+  .a4Page {
+    transform: scale(1);
   }
 }
