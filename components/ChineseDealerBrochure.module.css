@@ -595,6 +595,12 @@
   object-fit: initial;
 }
 
+/* Arrizo5 car fills more of its image frame than other vehicles —
+   scale it down visually so the perceived size matches siblings */
+.promotionVehicle:nth-child(5) .imageCanvas {
+  transform: translate(-50%, -50%) scale(0.85);
+}
+
 .promotionDetails {
   display: flex;
   min-width: 0;
