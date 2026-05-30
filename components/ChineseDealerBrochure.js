@@ -16,6 +16,36 @@ const specRows = [
   { key: "maintenance", label: { CN: "送免费保养", EN: "Maintenance" }, marker: "24X" },
 ];
 
+const promotionLabels = {
+  specsTitle: { CN: "车辆亮点", EN: "SPECIFICATIONS" },
+  price: { CN: "原价", EN: "PRICE" },
+  promoPrice: { CN: "促销 / 预订价", EN: "PROMO / PRE ORDER" },
+};
+
+function getLocalizedValue(value, language) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value[language] ?? value.EN ?? value.CN ?? "";
+  }
+
+  return value ?? "";
+}
+
+function setLocalizedValue(value, language, nextValue) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return { ...value, [language]: nextValue };
+  }
+
+  return { EN: value ?? "", CN: value ?? "", [language]: nextValue };
+}
+
+function cloneLocalizedValue(value) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return { ...value };
+  }
+
+  return value;
+}
+
 function getSpecMarker(row, specs) {
   if (row.key === "tireSize") {
     const sizeMatch = specs.tireSize.match(/R\s*\d+/i);
@@ -68,10 +98,21 @@ function cloneVehicle(vehicle) {
 function clonePromotionBrochure(brochure) {
   return {
     ...brochure,
-    footerNotes: [...brochure.footerNotes],
+    heading: cloneLocalizedValue(brochure.heading),
+    subheading: cloneLocalizedValue(brochure.subheading),
+    footerNotes: brochure.footerNotes.map(note => cloneLocalizedValue(note)),
+    contactLabel: cloneLocalizedValue(brochure.contactLabel),
+    contactValue: cloneLocalizedValue(brochure.contactValue),
+    locations: cloneLocalizedValue(brochure.locations),
+    website: cloneLocalizedValue(brochure.website),
     vehicles: brochure.vehicles.map(vehicle => ({
       ...vehicle,
+      name: cloneLocalizedValue(vehicle.name),
+      specs: cloneLocalizedValue(vehicle.specs),
+      price: cloneLocalizedValue(vehicle.price),
+      promoPrice: cloneLocalizedValue(vehicle.promoPrice),
       image: { ...vehicle.image },
+      brandLogo: vehicle.brandLogo ? { ...vehicle.brandLogo } : undefined,
     })),
   };
 }
@@ -123,6 +164,7 @@ async function waitForImages(root) {
 
 function ImageSlot({
   image,
+  overlayLogo,
   className,
   dragIndex,
   dropIndex,
@@ -237,6 +279,14 @@ function ImageSlot({
         style={coverImageStyle}
         onLoad={event => updateImageSizeFromElement(event.currentTarget)}
       />
+      {overlayLogo ? (
+        <img
+          className={styles.promoImageLogo}
+          src={overlayLogo.src}
+          alt={overlayLogo.alt}
+          draggable={false}
+        />
+      ) : null}
       {draggable ? <span className={styles.dragHint}>Drag</span> : null}
       <button
         className={styles.replaceButton}
@@ -256,16 +306,16 @@ function ImageSlot({
   );
 }
 
-function PromotionTemplate({ brochure, onUpdate, onReplaceImage }) {
+function PromotionTemplate({ brochure, language, onUpdate, onReplaceImage }) {
   function updateField(key, value) {
-    onUpdate(current => ({ ...current, [key]: value }));
+    onUpdate(current => ({ ...current, [key]: setLocalizedValue(current[key], language, value) }));
   }
 
   function updateVehicle(vehicleId, key, value) {
     onUpdate(current => ({
       ...current,
       vehicles: current.vehicles.map(vehicle => (
-        vehicle.id === vehicleId ? { ...vehicle, [key]: value } : vehicle
+        vehicle.id === vehicleId ? { ...vehicle, [key]: setLocalizedValue(vehicle[key], language, value) } : vehicle
       )),
     }));
   }
@@ -274,7 +324,7 @@ function PromotionTemplate({ brochure, onUpdate, onReplaceImage }) {
     onUpdate(current => ({
       ...current,
       footerNotes: current.footerNotes.map((note, noteIndex) => (
-        noteIndex === index ? value : note
+        noteIndex === index ? setLocalizedValue(note, language, value) : note
       )),
     }));
   }
@@ -286,8 +336,8 @@ function PromotionTemplate({ brochure, onUpdate, onReplaceImage }) {
       <div className={styles.promotionSideGlow} />
       <header className={styles.promotionHeader}>
         <img className={styles.promotionLogo} src={brochure.logo} alt="Carloha logo" />
-        <EditableText value={brochure.subheading} className={styles.promotionSubheading} onChange={value => updateField("subheading", value)} />
-        <EditableText value={brochure.heading} className={styles.promotionHeading} onChange={value => updateField("heading", value)} />
+        <EditableText value={getLocalizedValue(brochure.subheading, language)} className={styles.promotionSubheading} onChange={value => updateField("subheading", value)} />
+        <EditableText value={getLocalizedValue(brochure.heading, language)} className={styles.promotionHeading} onChange={value => updateField("heading", value)} />
       </header>
 
       <section className={styles.promotionVehicleList}>
@@ -295,20 +345,20 @@ function PromotionTemplate({ brochure, onUpdate, onReplaceImage }) {
           <article className={styles.promotionVehicle} key={vehicle.id}>
             <div className={styles.promotionVisual}>
               <span className={styles.promotionVehicleNumber}>{String(index + 1).padStart(2, "0")}</span>
-              <EditableText value={vehicle.name} className={styles.promotionVehicleName} onChange={value => updateVehicle(vehicle.id, "name", value)} />
-              <ImageSlot image={vehicle.image} className={styles.promotionVehicleImage} onReplace={onReplaceImage} draggable={false} fit="contain" />
+              <EditableText value={getLocalizedValue(vehicle.name, language)} className={styles.promotionVehicleName} onChange={value => updateVehicle(vehicle.id, "name", value)} />
+              <ImageSlot image={vehicle.image} overlayLogo={vehicle.brandLogo} className={styles.promotionVehicleImage} onReplace={onReplaceImage} draggable={false} fit="contain" />
             </div>
             <div className={styles.promotionDetails}>
-              <strong className={styles.promotionSpecsTitle}>SPECIFICATIONS</strong>
-              <EditableText value={vehicle.specs} className={styles.promotionSpecs} multiline onChange={value => updateVehicle(vehicle.id, "specs", value)} />
+              <strong className={styles.promotionSpecsTitle}>{promotionLabels.specsTitle[language]}</strong>
+              <EditableText value={getLocalizedValue(vehicle.specs, language)} className={styles.promotionSpecs} multiline onChange={value => updateVehicle(vehicle.id, "specs", value)} />
               <div className={styles.promotionPrices}>
                 <div>
-                  <span>PRICE</span>
-                  <EditableText value={vehicle.price} className={styles.promotionPrice} onChange={value => updateVehicle(vehicle.id, "price", value)} />
+                  <span>{promotionLabels.price[language]}</span>
+                  <EditableText value={getLocalizedValue(vehicle.price, language)} className={styles.promotionPrice} onChange={value => updateVehicle(vehicle.id, "price", value)} />
                 </div>
                 <div>
-                  <span>PROMO / PRE ORDER</span>
-                  <EditableText value={vehicle.promoPrice} className={styles.promotionPromoPrice} onChange={value => updateVehicle(vehicle.id, "promoPrice", value)} />
+                  <span>{promotionLabels.promoPrice[language]}</span>
+                  <EditableText value={getLocalizedValue(vehicle.promoPrice, language)} className={styles.promotionPromoPrice} onChange={value => updateVehicle(vehicle.id, "promoPrice", value)} />
                 </div>
               </div>
             </div>
@@ -320,17 +370,17 @@ function PromotionTemplate({ brochure, onUpdate, onReplaceImage }) {
         <div>
           <ul className={styles.promotionNotes}>
             {brochure.footerNotes.map((note, index) => (
-              <li key={index}><EditableText value={note} onChange={value => updateFooterNote(index, value)} /></li>
+              <li key={index}><EditableText value={getLocalizedValue(note, language)} onChange={value => updateFooterNote(index, value)} /></li>
             ))}
           </ul>
           <div className={styles.promotionContact}>
-            <EditableText value={brochure.contactLabel} className={styles.promotionContactLabel} onChange={value => updateField("contactLabel", value)} />
-            <EditableText value={brochure.contactValue} className={styles.promotionContactValue} onChange={value => updateField("contactValue", value)} />
+            <EditableText value={getLocalizedValue(brochure.contactLabel, language)} className={styles.promotionContactLabel} onChange={value => updateField("contactLabel", value)} />
+            <EditableText value={getLocalizedValue(brochure.contactValue, language)} className={styles.promotionContactValue} onChange={value => updateField("contactValue", value)} />
           </div>
         </div>
         <div className={styles.promotionLocations}>
-          <EditableText value={brochure.locations} multiline onChange={value => updateField("locations", value)} />
-          <EditableText value={brochure.website} className={styles.promotionWebsite} onChange={value => updateField("website", value)} />
+          <EditableText value={getLocalizedValue(brochure.locations, language)} multiline onChange={value => updateField("locations", value)} />
+          <EditableText value={getLocalizedValue(brochure.website, language)} className={styles.promotionWebsite} onChange={value => updateField("website", value)} />
         </div>
       </footer>
       <div className={styles.promotionBottomBar} />
@@ -548,22 +598,20 @@ export default function ChineseDealerBrochure() {
           </select>
         </div>
 
-        {templateId === "singleVehicle" ? (
-        <div className={styles.controlGroup}>
+        <div className={`${styles.controlGroup} ${templateId === "singleVehicle" ? "" : styles.hiddenControl}`} aria-hidden={templateId !== "singleVehicle"}>
           <label htmlFor="brochureVehicle">Model</label>
           <select
             id="brochureVehicle"
             value={selectedVehicleId}
             onChange={event => setSelectedVehicleId(event.target.value)}
+            tabIndex={templateId === "singleVehicle" ? undefined : -1}
           >
             {vehicleOptions.map(([id, vehicle]) => (
               <option key={id} value={id}>{vehicle.label}</option>
             ))}
           </select>
         </div>
-        ) : null}
 
-        {templateId === "singleVehicle" ? (
         <div className={styles.languageToggle} aria-label="Brochure language">
           <button
             className={brochureLanguage === "CN" ? styles.activeLanguage : ""}
@@ -582,7 +630,6 @@ export default function ChineseDealerBrochure() {
             EN
           </button>
         </div>
-        ) : null}
 
         <button className={styles.downloadButton} type="button" onClick={downloadPdf} disabled={isExporting}>
           {isExporting ? "Preparing PDF..." : "Download PDF"}
@@ -605,6 +652,7 @@ export default function ChineseDealerBrochure() {
             {templateId === "promotionList" ? (
               <PromotionTemplate
                 brochure={promotionBrochure}
+                language={brochureLanguage}
                 onUpdate={setPromotionBrochure}
                 onReplaceImage={replacePromotionImage}
               />
