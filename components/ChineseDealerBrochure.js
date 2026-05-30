@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { brochureVehicles, defaultBrochureVehicleId } from "../lib/chineseDealerBrochureData";
+import {
+  brochureVehicles,
+  defaultBrochureVehicleId,
+  promotionBrochureDefaults,
+} from "../lib/chineseDealerBrochureData";
 import styles from "./ChineseDealerBrochure.module.css";
 
 const specRows = [
@@ -58,6 +62,17 @@ function cloneVehicle(vehicle) {
       },
     },
     images: vehicle.images.map(image => ({ ...image })),
+  };
+}
+
+function clonePromotionBrochure(brochure) {
+  return {
+    ...brochure,
+    footerNotes: [...brochure.footerNotes],
+    vehicles: brochure.vehicles.map(vehicle => ({
+      ...vehicle,
+      image: { ...vehicle.image },
+    })),
   };
 }
 
@@ -118,6 +133,8 @@ function ImageSlot({
   onDrop,
   onDragEnd,
   onReplace,
+  draggable = true,
+  fit = "cover",
 }) {
   const inputRef = useRef(null);
   const imageRef = useRef(null);
@@ -175,10 +192,16 @@ function ImageSlot({
     const slotAspect = slotSize.width / slotSize.height;
     const imageAspect = imageSize.width / imageSize.height;
 
+    if (fit === "contain") {
+      return imageAspect > slotAspect
+        ? { width: "100%", height: "auto" }
+        : { width: "auto", height: "100%" };
+    }
+
     return imageAspect > slotAspect
       ? { width: "auto", height: "100%" }
       : { width: "100%", height: "auto" };
-  }, [imageSize, slotSize]);
+  }, [fit, imageSize, slotSize]);
 
   function handleFileChange(event) {
     const file = event.target.files?.[0];
@@ -198,11 +221,11 @@ function ImageSlot({
     <figure
       ref={slotRef}
       className={`${styles.imageSlot} ${className || ""} ${isDragging ? styles.dragging : ""} ${isDropTarget ? styles.dropTarget : ""}`}
-      draggable
-      onDragStart={event => onDragStart(event, dragIndex)}
-      onDragOver={event => onDragOver(event, dropIndex)}
-      onDrop={event => onDrop(event, dropIndex)}
-      onDragEnd={onDragEnd}
+      draggable={draggable}
+      onDragStart={draggable ? event => onDragStart(event, dragIndex) : undefined}
+      onDragOver={draggable ? event => onDragOver(event, dropIndex) : undefined}
+      onDrop={draggable ? event => onDrop(event, dropIndex) : undefined}
+      onDragEnd={draggable ? onDragEnd : undefined}
     >
       <img
         ref={imageRef}
@@ -214,7 +237,7 @@ function ImageSlot({
         style={coverImageStyle}
         onLoad={event => updateImageSizeFromElement(event.currentTarget)}
       />
-      <span className={styles.dragHint}>Drag</span>
+      {draggable ? <span className={styles.dragHint}>Drag</span> : null}
       <button
         className={styles.replaceButton}
         type="button"
@@ -233,7 +256,90 @@ function ImageSlot({
   );
 }
 
+function PromotionTemplate({ brochure, onUpdate, onReplaceImage }) {
+  function updateField(key, value) {
+    onUpdate(current => ({ ...current, [key]: value }));
+  }
+
+  function updateVehicle(vehicleId, key, value) {
+    onUpdate(current => ({
+      ...current,
+      vehicles: current.vehicles.map(vehicle => (
+        vehicle.id === vehicleId ? { ...vehicle, [key]: value } : vehicle
+      )),
+    }));
+  }
+
+  function updateFooterNote(index, value) {
+    onUpdate(current => ({
+      ...current,
+      footerNotes: current.footerNotes.map((note, noteIndex) => (
+        noteIndex === index ? value : note
+      )),
+    }));
+  }
+
+  return (
+    <article className={`${styles.a4Page} ${styles.promotionPage}`}>
+      <div className={styles.promotionWatermark} />
+      <div className={styles.promotionTopRibbon} />
+      <div className={styles.promotionSideGlow} />
+      <header className={styles.promotionHeader}>
+        <img className={styles.promotionLogo} src={brochure.logo} alt="Carloha logo" />
+        <EditableText value={brochure.subheading} className={styles.promotionSubheading} onChange={value => updateField("subheading", value)} />
+        <EditableText value={brochure.heading} className={styles.promotionHeading} onChange={value => updateField("heading", value)} />
+      </header>
+
+      <section className={styles.promotionVehicleList}>
+        {brochure.vehicles.map((vehicle, index) => (
+          <article className={styles.promotionVehicle} key={vehicle.id}>
+            <div className={styles.promotionVisual}>
+              <span className={styles.promotionVehicleNumber}>{String(index + 1).padStart(2, "0")}</span>
+              <EditableText value={vehicle.name} className={styles.promotionVehicleName} onChange={value => updateVehicle(vehicle.id, "name", value)} />
+              <ImageSlot image={vehicle.image} className={styles.promotionVehicleImage} onReplace={onReplaceImage} draggable={false} fit="contain" />
+            </div>
+            <div className={styles.promotionDetails}>
+              <strong className={styles.promotionSpecsTitle}>SPECIFICATIONS</strong>
+              <EditableText value={vehicle.specs} className={styles.promotionSpecs} multiline onChange={value => updateVehicle(vehicle.id, "specs", value)} />
+              <div className={styles.promotionPrices}>
+                <div>
+                  <span>PRICE</span>
+                  <EditableText value={vehicle.price} className={styles.promotionPrice} onChange={value => updateVehicle(vehicle.id, "price", value)} />
+                </div>
+                <div>
+                  <span>PROMO / PRE ORDER</span>
+                  <EditableText value={vehicle.promoPrice} className={styles.promotionPromoPrice} onChange={value => updateVehicle(vehicle.id, "promoPrice", value)} />
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <footer className={styles.promotionFooter}>
+        <div>
+          <ul className={styles.promotionNotes}>
+            {brochure.footerNotes.map((note, index) => (
+              <li key={index}><EditableText value={note} onChange={value => updateFooterNote(index, value)} /></li>
+            ))}
+          </ul>
+          <div className={styles.promotionContact}>
+            <EditableText value={brochure.contactLabel} className={styles.promotionContactLabel} onChange={value => updateField("contactLabel", value)} />
+            <EditableText value={brochure.contactValue} className={styles.promotionContactValue} onChange={value => updateField("contactValue", value)} />
+          </div>
+        </div>
+        <div className={styles.promotionLocations}>
+          <EditableText value={brochure.locations} multiline onChange={value => updateField("locations", value)} />
+          <EditableText value={brochure.website} className={styles.promotionWebsite} onChange={value => updateField("website", value)} />
+        </div>
+      </footer>
+      <div className={styles.promotionBottomBar} />
+    </article>
+  );
+}
+
 export default function ChineseDealerBrochure() {
+  const [templateId, setTemplateId] = useState("singleVehicle");
   const [selectedVehicleId, setSelectedVehicleId] = useState(defaultBrochureVehicleId);
   const [brochureLanguage, setBrochureLanguage] = useState("CN");
   const [vehicleStateById, setVehicleStateById] = useState(() => (
@@ -241,6 +347,7 @@ export default function ChineseDealerBrochure() {
       Object.entries(brochureVehicles).map(([id, vehicle]) => [id, cloneVehicle(vehicle)]),
     )
   ));
+  const [promotionBrochure, setPromotionBrochure] = useState(() => clonePromotionBrochure(promotionBrochureDefaults));
   const [isExporting, setIsExporting] = useState(false);
   const [pendingPdfShare, setPendingPdfShare] = useState(null);
   const [draggedImageIndex, setDraggedImageIndex] = useState(null);
@@ -296,6 +403,17 @@ export default function ChineseDealerBrochure() {
       ...vehicle,
       images: vehicle.images.map(image => (
         image.id === imageId ? { ...image, src } : image
+      )),
+    }));
+  }
+
+  function replacePromotionImage(imageId, src) {
+    setPromotionBrochure(current => ({
+      ...current,
+      vehicles: current.vehicles.map(vehicle => (
+        vehicle.image.id === imageId
+          ? { ...vehicle, image: { ...vehicle.image, src } }
+          : vehicle
       )),
     }));
   }
@@ -390,15 +508,18 @@ export default function ChineseDealerBrochure() {
         windowHeight: brochureRef.current.scrollHeight,
       });
 
+      const pdfHeight = templateId === "promotionList" ? 474 : 297;
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
-        format: "a4",
+        format: [210, pdfHeight],
         compress: true,
       });
       const imageData = canvas.toDataURL("image/jpeg", 0.9);
-      pdf.addImage(imageData, "JPEG", 0, 0, 210, 297, undefined, "MEDIUM");
-      const fileName = `${currentVehicle.label || selectedVehicleId}-${brochureLanguage}-Dealer-Brochure.pdf`;
+      pdf.addImage(imageData, "JPEG", 0, 0, 210, pdfHeight, undefined, "MEDIUM");
+      const fileName = templateId === "promotionList"
+        ? "Carloha-Promotion-List-Dealer-Brochure.pdf"
+        : `${currentVehicle.label || selectedVehicleId}-${brochureLanguage}-Dealer-Brochure.pdf`;
 
       if (isIOSDevice() && typeof File === "function") {
         const file = new File([pdf.output("blob")], fileName, { type: "application/pdf" });
@@ -416,6 +537,19 @@ export default function ChineseDealerBrochure() {
     <main className={styles.page}>
       <div className={styles.toolbar}>
         <div className={styles.controlGroup}>
+          <label htmlFor="brochureTemplate">Template</label>
+          <select
+            id="brochureTemplate"
+            value={templateId}
+            onChange={event => setTemplateId(event.target.value)}
+          >
+            <option value="singleVehicle">Single Vehicle</option>
+            <option value="promotionList">Promotion List</option>
+          </select>
+        </div>
+
+        {templateId === "singleVehicle" ? (
+        <div className={styles.controlGroup}>
           <label htmlFor="brochureVehicle">Model</label>
           <select
             id="brochureVehicle"
@@ -427,7 +561,9 @@ export default function ChineseDealerBrochure() {
             ))}
           </select>
         </div>
+        ) : null}
 
+        {templateId === "singleVehicle" ? (
         <div className={styles.languageToggle} aria-label="Brochure language">
           <button
             className={brochureLanguage === "CN" ? styles.activeLanguage : ""}
@@ -446,6 +582,7 @@ export default function ChineseDealerBrochure() {
             EN
           </button>
         </div>
+        ) : null}
 
         <button className={styles.downloadButton} type="button" onClick={downloadPdf} disabled={isExporting}>
           {isExporting ? "Preparing PDF..." : "Download PDF"}
@@ -462,79 +599,81 @@ export default function ChineseDealerBrochure() {
 
       <section className={styles.previewRail} aria-label="Chinese dealer brochure preview">
         <div
-          className={`${styles.pageShell} ${isExporting ? styles.exportingShell : ""}`}
+          className={`${styles.pageShell} ${templateId === "promotionList" ? styles.promotionPageShell : ""} ${isExporting ? styles.exportingShell : ""}`}
         >
-          <article
-            ref={brochureRef}
-            className={`${styles.a4Page} ${brochureLanguage === "EN" ? styles.englishBrochure : ""} ${isExporting ? styles.exporting : ""}`}
-          >
-          <div className={styles.topAccent} />
-          <div className={styles.bottomAccent} />
-
-          <header className={styles.header}>
-            <EditableText
-              value={currentCopy.title}
-              className={styles.title}
-              multiline
-              onChange={updateTitle}
-            />
-            <img className={styles.logo} src={currentVehicle.logo} alt="Chery Carloha logo" />
-          </header>
-
-          <section className={styles.heroRow}>
-            <div className={styles.specCard}>
-              {visibleSpecRows.map(row => (
-                <div className={styles.specRow} key={row.key}>
-                  <span className={styles.specMarker}>{getSpecMarker(row, currentCopy.specs)}</span>
-                  <div className={styles.specCopy}>
-                    <span className={styles.specLabel}>{row.label[brochureLanguage]}{brochureLanguage === "CN" ? "：" : ": "}</span>
-                    <EditableText
-                      value={currentCopy.specs[row.key]}
-                      className={row.key === "price" || row.key === "warranty" || row.key === "maintenance" ? styles.strongValue : styles.specValue}
-                      multiline={row.key !== "dimensions" && row.key !== "tireSize"}
-                      onChange={value => updateSpec(row.key, value)}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <ImageSlot
-              image={heroImage}
-              className={styles.heroImage}
-              dragIndex={0}
-              dropIndex={0}
-              isDragging={draggedImageIndex === 0}
-              isDropTarget={dropTargetIndex === 0 && draggedImageIndex !== null}
-              onDragStart={handleImageDragStart}
-              onDragOver={handleImageDragOver}
-              onDrop={handleImageDrop}
-              onDragEnd={handleImageDragEnd}
-              onReplace={replaceImage}
-            />
-          </section>
-
-          <section className={styles.imageGrid}>
-            {gridImages.map((image, index) => {
-              const imageIndex = index + 1;
-              return (
-              <ImageSlot
-                key={image.id}
-                image={image}
-                dragIndex={imageIndex}
-                dropIndex={imageIndex}
-                isDragging={draggedImageIndex === imageIndex}
-                isDropTarget={dropTargetIndex === imageIndex && draggedImageIndex !== null}
-                onDragStart={handleImageDragStart}
-                onDragOver={handleImageDragOver}
-                onDrop={handleImageDrop}
-                onDragEnd={handleImageDragEnd}
-                onReplace={replaceImage}
+          <div ref={brochureRef} className={isExporting ? styles.exporting : ""}>
+            {templateId === "promotionList" ? (
+              <PromotionTemplate
+                brochure={promotionBrochure}
+                onUpdate={setPromotionBrochure}
+                onReplaceImage={replacePromotionImage}
               />
-              );
-            })}
-          </section>
-          </article>
+            ) : (
+              <article className={`${styles.a4Page} ${brochureLanguage === "EN" ? styles.englishBrochure : ""}`}>
+                <div className={styles.topAccent} />
+                <div className={styles.bottomAccent} />
+
+                <header className={styles.header}>
+                  <EditableText value={currentCopy.title} className={styles.title} multiline onChange={updateTitle} />
+                  <img className={styles.logo} src={currentVehicle.logo} alt="Chery Carloha logo" />
+                </header>
+
+                <section className={styles.heroRow}>
+                  <div className={styles.specCard}>
+                    {visibleSpecRows.map(row => (
+                      <div className={styles.specRow} key={row.key}>
+                        <span className={styles.specMarker}>{getSpecMarker(row, currentCopy.specs)}</span>
+                        <div className={styles.specCopy}>
+                          <span className={styles.specLabel}>{row.label[brochureLanguage]}{brochureLanguage === "CN" ? "：" : ": "}</span>
+                          <EditableText
+                            value={currentCopy.specs[row.key]}
+                            className={row.key === "price" || row.key === "warranty" || row.key === "maintenance" ? styles.strongValue : styles.specValue}
+                            multiline={row.key !== "dimensions" && row.key !== "tireSize"}
+                            onChange={value => updateSpec(row.key, value)}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <ImageSlot
+                    image={heroImage}
+                    className={styles.heroImage}
+                    dragIndex={0}
+                    dropIndex={0}
+                    isDragging={draggedImageIndex === 0}
+                    isDropTarget={dropTargetIndex === 0 && draggedImageIndex !== null}
+                    onDragStart={handleImageDragStart}
+                    onDragOver={handleImageDragOver}
+                    onDrop={handleImageDrop}
+                    onDragEnd={handleImageDragEnd}
+                    onReplace={replaceImage}
+                  />
+                </section>
+
+                <section className={styles.imageGrid}>
+                  {gridImages.map((image, index) => {
+                    const imageIndex = index + 1;
+                    return (
+                      <ImageSlot
+                        key={image.id}
+                        image={image}
+                        dragIndex={imageIndex}
+                        dropIndex={imageIndex}
+                        isDragging={draggedImageIndex === imageIndex}
+                        isDropTarget={dropTargetIndex === imageIndex && draggedImageIndex !== null}
+                        onDragStart={handleImageDragStart}
+                        onDragOver={handleImageDragOver}
+                        onDrop={handleImageDrop}
+                        onDragEnd={handleImageDragEnd}
+                        onReplace={replaceImage}
+                      />
+                    );
+                  })}
+                </section>
+              </article>
+            )}
+          </div>
         </div>
       </section>
     </main>
