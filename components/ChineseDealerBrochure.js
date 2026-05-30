@@ -662,7 +662,7 @@ export default function ChineseDealerBrochure() {
                 <div className={styles.bottomAccent} />
 
                 <header className={styles.header}>
-                  <EditableText value={currentCopy.title} className={styles.title} multiline onChange={updateTitle} />
+                  <EditableText value={currentCopy.title} className={`${styles.title} ${selectedVehicleId !== "tiggo9" ? styles.compactTitle : ""}`} multiline onChange={updateTitle} />
                   <img className={styles.logo} src={currentVehicle.logo} alt="Chery Carloha logo" />
                 </header>
 
