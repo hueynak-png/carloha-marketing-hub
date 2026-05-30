@@ -177,6 +177,7 @@ function ImageSlot({
   onReplace,
   draggable = true,
   fit = "cover",
+  imageShiftY = 0,
 }) {
   const inputRef = useRef(null);
   const imageRef = useRef(null);
@@ -234,16 +235,26 @@ function ImageSlot({
     const slotAspect = slotSize.width / slotSize.height;
     const imageAspect = imageSize.width / imageSize.height;
 
+    let baseStyle;
+
     if (fit === "contain") {
-      return imageAspect > slotAspect
+      baseStyle = imageAspect > slotAspect
         ? { width: "100%", height: "auto" }
         : { width: "auto", height: "100%" };
+    } else {
+      baseStyle = imageAspect > slotAspect
+        ? { width: "auto", height: "100%" }
+        : { width: "100%", height: "auto" };
     }
 
-    return imageAspect > slotAspect
-      ? { width: "auto", height: "100%" }
-      : { width: "100%", height: "auto" };
-  }, [fit, imageSize, slotSize]);
+    if (imageShiftY !== 0) {
+      const yPercent = -50 - imageShiftY * 100;
+      const scale = 1 + imageShiftY * 2.2;
+      return { ...baseStyle, transform: `translate(-50%, ${yPercent}%) scale(${scale})` };
+    }
+
+    return baseStyle;
+  }, [fit, imageSize, slotSize, imageShiftY]);
 
   function handleFileChange(event) {
     const file = event.target.files?.[0];
@@ -686,6 +697,7 @@ export default function ChineseDealerBrochure() {
 
                   <ImageSlot
                     image={heroImage}
+                    imageShiftY={heroImage.shiftY ?? 0}
                     className={styles.heroImage}
                     dragIndex={0}
                     dropIndex={0}
@@ -706,6 +718,7 @@ export default function ChineseDealerBrochure() {
                       <ImageSlot
                         key={image.id}
                         image={image}
+                        imageShiftY={image.shiftY ?? 0}
                         dragIndex={imageIndex}
                         dropIndex={imageIndex}
                         isDragging={draggedImageIndex === imageIndex}
