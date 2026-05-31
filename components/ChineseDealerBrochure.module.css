@@ -237,7 +237,7 @@
 .specCard {
   display: grid;
   align-content: stretch;
-  min-height: 318px;
+  min-height: 360px;
   padding: 14px 16px;
   border: 1px solid rgba(255, 154, 82, 0.35);
   border-radius: 14px;
@@ -375,7 +375,7 @@
 }
 
 .heroImage {
-  height: 318px;
+  height: 360px;
 }
 
 .imageGrid {
