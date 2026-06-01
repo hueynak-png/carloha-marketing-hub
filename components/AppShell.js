@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
+import MarketingAssistant from "./MarketingAssistant";
 
 const standaloneRoutes = new Set(["/chinese-dealer-brochure"]);
 
@@ -21,6 +22,7 @@ export default function AppShell({ children }) {
         {children}
         <Footer />
       </main>
+      <MarketingAssistant />
     </div>
   );
 }

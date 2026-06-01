@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LanguageToggle from "./LanguageToggle";
-import MarketingAssistant from "./MarketingAssistant";
 import useLanguage from "./useLanguage";
 import { CARLOHA_WIKI_URL } from "../lib/config";
 import { siteCopy } from "../lib/siteCopy";
@@ -135,7 +134,6 @@ export default function Sidebar() {
         </ul>
       </section>
 
-      <MarketingAssistant />
     </aside>
   );
 }
