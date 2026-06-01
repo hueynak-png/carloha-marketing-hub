@@ -56,11 +56,6 @@ export default function FilterableVehicleMaterials({ vehicles }) {
           placeholder={language === "CN" ? "输入车型、资料类型或状态..." : "Vehicle, material type, or status..."}
           resultCount={filteredVehicles.length}
           totalCount={vehicles.length}
-          quickFilters={[
-            { value: "Brochures", label: language === "CN" ? "手册" : "Brochures" },
-            { value: "Official Photos", label: language === "CN" ? "官方图片" : "Photos" },
-            { value: "Training Materials", label: language === "CN" ? "培训资料" : "Training" },
-          ]}
         />
       </div>
 

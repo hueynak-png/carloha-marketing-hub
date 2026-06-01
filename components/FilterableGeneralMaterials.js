@@ -53,11 +53,6 @@ export default function FilterableGeneralMaterials({ materials }) {
           placeholder={language === "CN" ? "输入分类、资料类型或状态..." : "Category, material type, or status..."}
           resultCount={filteredMaterials.length}
           totalCount={materials.length}
-          quickFilters={[
-            { value: "Brand Assets", label: language === "CN" ? "品牌资产" : "Brand assets" },
-            { value: "Campaign", label: language === "CN" ? "活动" : "Campaign" },
-            { value: "Dealer", label: language === "CN" ? "经销商" : "Dealer" },
-          ]}
         />
       </div>
 
