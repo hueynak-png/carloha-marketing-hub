@@ -227,6 +227,27 @@
   object-fit: contain;
 }
 
+.warrantyTagline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 7px 18px;
+  border: 1px solid rgba(241, 90, 36, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 248, 242, 0.85);
+  color: #334155;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.4px;
+}
+
+.warrantyHighlight {
+  color: #f15a24;
+  font-size: 20px;
+  font-weight: 950;
+}
+
 .heroRow {
   display: grid;
   grid-template-columns: 290px minmax(0, 1fr);

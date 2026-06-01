@@ -677,6 +677,16 @@ export default function ChineseDealerBrochure() {
                   <img className={styles.logo} src={currentVehicle.logo} alt="Chery Carloha logo" />
                 </header>
 
+                {selectedVehicleId !== "himla" ? (
+                  <div className={styles.warrantyTagline}>
+                    {brochureLanguage === "CN" ? (
+                      <><span className={styles.warrantyHighlight}>6</span>年质保  ·  <span className={styles.warrantyHighlight}>6</span>年免费保养  ·  <span className={styles.warrantyHighlight}>7</span>天维修承诺</>
+                    ) : (
+                      <><span className={styles.warrantyHighlight}>6</span>-year warranty  ·  <span className={styles.warrantyHighlight}>6</span>-year free service  ·  <span className={styles.warrantyHighlight}>7</span>-day repair promise</>
+                    )}
+                  </div>
+                ) : null}
+
                 <section className={styles.heroRow}>
                   <div className={styles.specCard}>
                     {visibleSpecRows.map(row => (
