@@ -24,18 +24,13 @@ export default function ListingSearchPanel({
         />
       </label>
 
-      <div className="listingSearchMeta">
-        <span>
-          {language === "CN"
-            ? `显示 ${resultCount} / ${totalCount} 项`
-            : `Showing ${resultCount} of ${totalCount}`}
-        </span>
-        {hasQuery ? (
+      {hasQuery ? (
+        <div className="listingSearchMeta">
           <button type="button" onClick={onClear}>
             {language === "CN" ? "清空" : "Clear"}
           </button>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
 
       {quickFilters.length ? (
         <div className="searchShortcuts listingSearchShortcuts" aria-label={language === "CN" ? "快捷筛选" : "Quick filters"}>
