@@ -49,7 +49,10 @@ function cloneLocalizedValue(value) {
 function getSpecMarker(row, specs) {
   if (row.key === "tireSize") {
     const sizeMatch = specs.tireSize.match(/R\s*\d+/i);
-    return sizeMatch ? sizeMatch[0].replace(/\s+/g, "").toUpperCase() : row.marker;
+    if (sizeMatch) return sizeMatch[0].replace(/\s+/g, "").toUpperCase();
+
+    const inchMatch = specs.tireSize.match(/(\d{2})\s*(?:-?\s*inch|英寸)/i);
+    return inchMatch ? `${inchMatch[1]}IN` : row.marker;
   }
 
   if (row.key === "maintenance" && specs.maintenance === "待确认") {
