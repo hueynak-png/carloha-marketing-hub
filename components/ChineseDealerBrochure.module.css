@@ -1,66 +1,287 @@
 .page {
   min-height: 100vh;
   padding: 24px 28px 48px;
-  background: #f4f5f7;
+  background: #f3f5f8;
   color: #101827;
   font-family: Inter, "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+  overflow-x: hidden;
 }
 
-.toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
+.appBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
-  max-width: 1120px;
-  margin: 0 auto 24px;
-  padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.94);
+  gap: 28px;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 18px 20px;
   border: 1px solid #dde3eb;
-  border-radius: 8px;
-  box-shadow: 0 12px 30px rgba(16, 24, 39, 0.08);
-  backdrop-filter: blur(14px);
+  border-top: 3px solid #f15a24;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 5px 18px rgba(16, 24, 39, 0.05);
 }
 
-.controlGroup {
+.appBarCopy {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 22px;
+  min-width: 0;
+}
+
+.appBarCopy h1 {
+  margin: 2px 0 3px;
+  color: #101827;
+  font-size: clamp(20px, 2vw, 26px);
+  line-height: 1.15;
+}
+
+.appBarCopy p {
+  margin: 0;
   color: #475569;
   font-size: 13px;
+  line-height: 1.45;
+}
+
+.appBarCopy .productLabel,
+.panelEyebrow {
+  color: #d94e1d;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  padding-right: 22px;
+  border-right: 1px solid #e4e8ee;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+
+.backLink span {
+  color: #f15a24;
+  font-size: 18px;
+}
+
+.backLink:hover {
+  color: #d94e1d;
+}
+
+.backLink:active {
+  color: #ad3d16;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  max-width: 1360px;
+  margin: 14px auto;
+  padding: 0 8px;
+  list-style: none;
+}
+
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.steps li:not(:last-child)::after {
+  width: clamp(24px, 5vw, 68px);
+  height: 1px;
+  margin: 0 14px;
+  background: #cfd6df;
+  content: "";
+}
+
+.steps li > span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  border: 1px solid #f2a17f;
+  border-radius: 50%;
+  background: #fff7f2;
+  color: #d94e1d;
+  font-weight: 900;
+}
+
+.steps strong {
+  color: #334155;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(276px, 292px) minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.settingsPanel,
+.previewPanel {
+  border: 1px solid #dde3eb;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 5px 18px rgba(16, 24, 39, 0.045);
+}
+
+.settingsPanel {
+  position: sticky;
+  top: 20px;
+  padding: 22px;
+}
+
+.settingsHeader h2,
+.previewHeader h2 {
+  margin: 3px 0 0;
+  color: #101827;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.settingsIntro,
+.previewDescription {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.settingsSection {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #e4e8ee;
+}
+
+.editSection {
+  border-top-color: #efd6ca;
+}
+
+.editSection .sectionHeading > span {
+  border-color: #f0c9b8;
+  background: #fff8f4;
+  color: #b9552f;
+}
+
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sectionHeading h3 {
+  margin: 0;
+  color: #273449;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.sectionHeading p {
+  margin: 4px 0 0;
+  color: #7a8799;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.sectionHeading > span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 22px;
+  flex: 0 0 auto;
+  border: 1px solid #e1e6ed;
+  border-radius: 7px;
+  background: #f8fafc;
+  color: #8b96a6;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.settingsFields {
+  display: grid;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.controlGroup,
+.languageField {
+  display: grid;
+  gap: 7px;
+}
+
+.controlGroup label,
+.controlLabel {
+  color: #475569;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .controlGroup select {
-  min-width: 180px;
-  height: 40px;
+  width: 100%;
+  height: 44px;
   padding: 0 38px 0 12px;
   border: 1px solid #cad4e0;
-  border-radius: 8px;
+  border-radius: 9px;
   background: #ffffff;
   color: #101827;
-  font: inherit;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
 }
 
-.hiddenControl {
-  visibility: hidden;
-  pointer-events: none;
+.controlGroup select:hover {
+  border-color: #9eabbc;
+  background-color: #fbfcfd;
+}
+
+.controlGroup select:focus-visible {
+  border-color: #e96738;
+  box-shadow: 0 0 0 3px rgba(241, 90, 36, 0.12);
+}
+
+.languageToggle button:focus-visible,
+.downloadButton:focus-visible,
+.backLink:focus-visible,
+.savePrompt button:focus-visible,
+.replaceButton:focus-visible {
+  outline: 3px solid rgba(241, 90, 36, 0.22);
+  outline-offset: 2px;
 }
 
 .languageToggle {
-  display: inline-flex;
-  flex: 0 0 auto;
+  display: flex;
+  width: 100%;
   padding: 3px;
   border: 1px solid #cad4e0;
-  border-radius: 8px;
+  border-radius: 9px;
   background: #f8fafc;
 }
 
 .languageToggle button {
-  min-width: 56px;
-  min-height: 34px;
+  flex: 1 1 0;
+  min-height: 36px;
   padding: 0 12px;
   border: 0;
   border-radius: 6px;
@@ -69,12 +290,22 @@
   font-size: 13px;
   font-weight: 900;
   cursor: pointer;
+  transition: color 0.16s ease, background-color 0.16s ease, transform 0.12s ease;
+}
+
+.languageToggle button:hover:not(.activeLanguage) {
+  background: #edf1f5;
+  color: #273449;
+}
+
+.languageToggle button:active {
+  transform: translateY(1px);
 }
 
 .languageToggle .activeLanguage {
-  background: #101827;
+  background: #253044;
   color: #ffffff;
-  box-shadow: 0 6px 14px rgba(16, 24, 39, 0.16);
+  box-shadow: 0 1px 3px rgba(16, 24, 39, 0.12);
 }
 
 .downloadButton {
@@ -87,23 +318,184 @@
   font-size: 14px;
   font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 10px 18px rgba(241, 90, 36, 0.22);
+  box-shadow: 0 4px 10px rgba(241, 90, 36, 0.18);
+  transition: background-color 0.16s ease, box-shadow 0.16s ease, transform 0.12s ease;
+}
+
+.downloadButton:hover:not(:disabled) {
+  background: #dc4e1d;
+  box-shadow: 0 6px 14px rgba(241, 90, 36, 0.22);
+}
+
+.downloadButton:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .downloadButton:disabled {
   cursor: wait;
   opacity: 0.72;
+  box-shadow: none;
+}
+
+.activeCanvas {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid #f0c9b8;
+  border-radius: 9px;
+  background: #fff9f6;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  margin-top: 5px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #e95a26;
+  box-shadow: 0 0 0 2px rgba(233, 90, 38, 0.16);
+}
+
+.activeCanvas > div {
+  display: grid;
+  min-width: 0;
+}
+
+.activeCanvas small {
+  color: #8b5b47;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.activeCanvas strong {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #273449;
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activeCanvas > div > span {
+  margin-top: 2px;
+  color: #7a8799;
+  font-size: 10px;
+}
+
+.editModes {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.editMode {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 1px solid #e4e8ee;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.editMode > span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #f2f4f7;
+  color: #46546a;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.editMode > div {
+  display: grid;
+  gap: 2px;
+}
+
+.editMode strong {
+  color: #334155;
+  font-size: 11px;
+}
+
+.editMode small {
+  color: #7a8799;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.instructions {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #e4e8ee;
+}
+
+.instructionsHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.instructionsHeading h3 {
+  margin: 0;
+  color: #596579;
+  font-size: 11px;
+}
+
+.instructionsHeading span {
+  color: #9aa3b1;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.instructions ul {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0 0;
+  padding: 0;
+  color: #7a8799;
+  font-size: 10px;
+  line-height: 1.45;
+  list-style: none;
+}
+
+.instructions li {
+  position: relative;
+  padding-left: 15px;
+}
+
+.instructions li::before {
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #a8b0bd;
+  content: "";
 }
 
 .savePrompt {
-  position: sticky;
-  top: 88px;
+  position: relative;
   z-index: 19;
   display: flex;
   align-items: center;
   gap: 10px;
-  max-width: 1120px;
-  margin: -8px auto 18px;
+  max-width: 1360px;
+  margin: 0 auto 14px;
   padding: 12px 14px;
   border: 1px solid #ffd6ad;
   border-radius: 8px;
@@ -132,6 +524,15 @@
   font-size: 12px;
   font-weight: 900;
   cursor: pointer;
+  transition: background-color 0.16s ease, transform 0.12s ease;
+}
+
+.savePrompt button:hover {
+  background: #29364a;
+}
+
+.savePrompt button:active {
+  transform: translateY(1px);
 }
 
 .savePrompt button:last-child {
@@ -139,12 +540,69 @@
   color: #334155;
 }
 
+.savePrompt button:last-child:hover {
+  background: #d8dde4;
+}
+
+.previewPanel {
+  min-width: 0;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.previewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #dfe4eb;
+}
+
+.previewMeta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 auto;
+}
+
+.editingBadge,
+.dimensionBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid #dfe4eb;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #5e6b7e;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.editingBadge {
+  border-color: #f0c9b8;
+  background: #fff8f4;
+  color: #9b4929;
+}
+
+.editingBadge i {
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #e95a26;
+}
+
 .previewRail {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   width: 100%;
   overflow-x: auto;
-  padding: 8px 0 24px;
+  padding: 24px;
+  background: #e8ecf1;
 }
 
 .pageShell {
@@ -437,6 +895,14 @@
   transform: translateY(0);
 }
 
+.replaceButton:hover {
+  background: #101827;
+}
+
+.replaceButton:active {
+  transform: translateY(1px);
+}
+
 .fileInput {
   display: none;
 }
@@ -452,6 +918,11 @@
 .editableText:focus {
   background: rgba(255, 122, 26, 0.08);
   outline-color: rgba(255, 122, 26, 0.38);
+}
+
+.editableText:focus-visible {
+  outline: 2px solid rgba(241, 90, 36, 0.62);
+  outline-offset: 2px;
 }
 
 .promotionPageShell,
@@ -851,8 +1322,25 @@
     background: #ffffff;
   }
 
-  .toolbar {
+  .appBar,
+  .steps,
+  .settingsPanel,
+  .previewHeader,
+  .savePrompt {
     display: none;
+  }
+
+  .workspace {
+    display: block;
+    max-width: none;
+  }
+
+  .previewPanel {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #ffffff;
+    box-shadow: none;
   }
 
   .previewRail {
@@ -870,6 +1358,7 @@
     width: 210mm;
     height: 297mm;
     transform: none;
+    zoom: 1;
     padding: 11.6mm 11.1mm 10mm;
     box-shadow: none;
     break-inside: avoid;
@@ -896,17 +1385,40 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1220px) {
   .page {
     padding: 18px 12px 32px;
     overflow-x: hidden;
   }
 
-  .toolbar {
-    position: static;
+  .appBar {
+    flex-wrap: wrap;
     width: 100%;
-    align-items: stretch;
-    flex-direction: column;
+  }
+
+  .appBarCopy {
+    flex: 1 1 600px;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .settingsPanel {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+
+  .settingsHeader,
+  .instructions {
+    grid-column: 1 / -1;
+  }
+
+  .settingsFields {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }
 
   .savePrompt {
@@ -924,47 +1436,32 @@
     flex: 1 1 0;
   }
 
-  .controlGroup {
-    justify-content: space-between;
-  }
-
   .controlGroup select {
-    min-width: 0;
-    width: min(48vw, 220px);
-  }
-
-  .languageToggle {
-    width: 100%;
-  }
-
-  .languageToggle button {
-    flex: 1 1 0;
-  }
-
-  .downloadButton {
     width: 100%;
   }
 
   .previewRail {
-    justify-content: flex-start;
-    overflow: visible;
-    padding: 0 0 24px;
+    --preview-zoom: 1;
+    --control-zoom: 1;
+    justify-content: center;
+    overflow: hidden;
+    padding: 18px;
   }
 
   .pageShell {
-    width: calc(100vw - 24px);
-    max-width: 794px;
-    height: auto;
-    aspect-ratio: 794 / 1123;
+    display: inline-block;
+    width: fit-content;
+    max-width: none;
+    height: fit-content;
   }
 
   .promotionPageShell {
-    aspect-ratio: 794 / 1792;
+    height: fit-content;
   }
 
   .a4Page {
-    transform: scale(0.46);
-    transform-origin: top left;
+    transform: none;
+    zoom: var(--preview-zoom);
   }
 
   .exportingShell {
@@ -978,41 +1475,205 @@
 
   .exportingShell .a4Page {
     transform: none;
+    zoom: 1;
+  }
+
+  .replaceButton {
+    min-height: 40px;
+    padding: 0 10px;
+    font-size: 11px;
+    opacity: 1;
+    transform: none;
+    zoom: var(--control-zoom);
+  }
+
+  .dragHint {
+    opacity: 1;
+    transform: none;
   }
 }
 
-@media (max-width: 359px) {
-  .a4Page {
-    transform: scale(0.42);
+@media (max-width: 650px) {
+  .appBar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .appBarCopy {
+    align-items: flex-start;
+    flex: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .backLink {
+    width: 100%;
+    padding: 0 0 11px;
+    border-right: 0;
+    border-bottom: 1px solid #e4e8ee;
+  }
+
+  .downloadButton {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    padding: 0;
+  }
+
+  .steps li {
+    position: relative;
+    align-items: center;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .steps li:not(:last-child)::after {
+    position: absolute;
+    top: 12px;
+    left: calc(50% + 18px);
+    width: calc(100% - 36px);
+    margin: 0;
+  }
+
+  .steps strong {
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .settingsFields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settingsPanel {
+    display: block;
+  }
+
+  .previewHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .previewMeta {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .editingBadge {
+    flex: 1 1 auto;
+  }
+
+  .previewRail {
+    padding: 12px;
+  }
+
+  .replaceButton {
+    width: 40px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0;
+  }
+
+  .replaceButton::after {
+    font-size: 20px;
+    font-weight: 750;
+    line-height: 1;
+    content: "+";
+  }
+
+  .dragHint {
+    display: none;
   }
 }
 
-@media (min-width: 391px) and (max-width: 430px) {
-  .a4Page {
-    transform: scale(0.46);
+@media (max-width: 340px) {
+  .previewRail {
+    --preview-zoom: 0.34;
+    --control-zoom: 2.94;
   }
 }
 
-@media (min-width: 431px) and (max-width: 480px) {
-  .a4Page {
-    transform: scale(0.52);
+@media (min-width: 341px) and (max-width: 380px) {
+  .previewRail {
+    --preview-zoom: 0.36;
+    --control-zoom: 2.78;
   }
 }
 
-@media (min-width: 481px) and (max-width: 600px) {
-  .a4Page {
-    transform: scale(0.72);
+@media (min-width: 381px) and (max-width: 430px) {
+  .previewRail {
+    --preview-zoom: 0.42;
+    --control-zoom: 2.38;
   }
 }
 
-@media (min-width: 601px) and (max-width: 760px) {
-  .a4Page {
-    transform: scale(0.9);
+@media (min-width: 431px) and (max-width: 520px) {
+  .previewRail {
+    --preview-zoom: 0.48;
+    --control-zoom: 2.08;
   }
 }
 
-@media (min-width: 761px) and (max-width: 900px) {
-  .a4Page {
-    transform: scale(1);
+@media (min-width: 521px) and (max-width: 600px) {
+  .previewRail {
+    --preview-zoom: 0.59;
+    --control-zoom: 1.69;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 650px) {
+  .previewRail {
+    --preview-zoom: 0.69;
+    --control-zoom: 1.45;
+  }
+}
+
+@media (min-width: 651px) and (max-width: 700px) {
+  .previewRail {
+    --preview-zoom: 0.74;
+    --control-zoom: 1.35;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 740px) {
+  .previewRail {
+    --preview-zoom: 0.8;
+    --control-zoom: 1.25;
+  }
+}
+
+@media (min-width: 741px) and (max-width: 800px) {
+  .previewRail {
+    --preview-zoom: 0.85;
+    --control-zoom: 1.18;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 870px) {
+  .previewRail {
+    --preview-zoom: 0.93;
+    --control-zoom: 1.08;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backLink,
+  .controlGroup select,
+  .languageToggle button,
+  .downloadButton,
+  .savePrompt button,
+  .imageSlot,
+  .dragHint,
+  .replaceButton,
+  .editableText {
+    transition: none;
   }
 }

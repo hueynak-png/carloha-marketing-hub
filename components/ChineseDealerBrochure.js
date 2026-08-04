@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import {
   brochureVehicles,
   defaultBrochureVehicleId,
@@ -120,7 +121,7 @@ function clonePromotionBrochure(brochure) {
   };
 }
 
-function EditableText({ value, className, onChange, multiline = false }) {
+function EditableText({ value, className, onChange, multiline = false, ariaLabel = "Editable brochure text" }) {
   function handleBlur(event) {
     const nextValue = event.currentTarget.innerText;
     if (nextValue !== value) {
@@ -133,6 +134,7 @@ function EditableText({ value, className, onChange, multiline = false }) {
       className={`${styles.editableText} ${className || ""}`}
       contentEditable
       role="textbox"
+      aria-label={ariaLabel}
       aria-multiline={multiline}
       suppressContentEditableWarning
       spellCheck={false}
@@ -305,9 +307,10 @@ function ImageSlot({
       <button
         className={styles.replaceButton}
         type="button"
+        aria-label={`Replace ${image.label} image`}
         onClick={() => inputRef.current?.click()}
       >
-        Replace Image
+        Replace
       </button>
       <input
         ref={inputRef}
@@ -350,8 +353,8 @@ function PromotionTemplate({ brochure, language, onUpdate, onReplaceImage }) {
       <div className={styles.promotionSideGlow} />
       <header className={styles.promotionHeader}>
         <img className={styles.promotionLogo} src={brochure.logo} alt="Carloha logo" />
-        <EditableText value={getLocalizedValue(brochure.subheading, language)} className={styles.promotionSubheading} onChange={value => updateField("subheading", value)} />
-        <EditableText value={getLocalizedValue(brochure.heading, language)} className={styles.promotionHeading} onChange={value => updateField("heading", value)} />
+        <EditableText value={getLocalizedValue(brochure.subheading, language)} ariaLabel="Promotion list subheading" className={styles.promotionSubheading} onChange={value => updateField("subheading", value)} />
+        <EditableText value={getLocalizedValue(brochure.heading, language)} ariaLabel="Promotion list heading" className={styles.promotionHeading} onChange={value => updateField("heading", value)} />
       </header>
 
       <section className={styles.promotionVehicleList}>
@@ -359,20 +362,20 @@ function PromotionTemplate({ brochure, language, onUpdate, onReplaceImage }) {
           <article className={styles.promotionVehicle} key={vehicle.id}>
             <div className={styles.promotionVisual}>
               <span className={styles.promotionVehicleNumber}>{String(index + 1).padStart(2, "0")}</span>
-              <EditableText value={getLocalizedValue(vehicle.name, language)} className={styles.promotionVehicleName} onChange={value => updateVehicle(vehicle.id, "name", value)} />
+              <EditableText value={getLocalizedValue(vehicle.name, language)} ariaLabel={`${vehicle.image.label} model name`} className={styles.promotionVehicleName} onChange={value => updateVehicle(vehicle.id, "name", value)} />
               <ImageSlot image={vehicle.image} overlayLogo={vehicle.brandLogo} className={styles.promotionVehicleImage} onReplace={onReplaceImage} draggable={false} fit="contain" />
             </div>
             <div className={styles.promotionDetails}>
               <strong className={styles.promotionSpecsTitle}>{promotionLabels.specsTitle[language]}</strong>
-              <EditableText value={getLocalizedValue(vehicle.specs, language)} className={styles.promotionSpecs} multiline onChange={value => updateVehicle(vehicle.id, "specs", value)} />
+              <EditableText value={getLocalizedValue(vehicle.specs, language)} ariaLabel={`${vehicle.image.label} specification`} className={styles.promotionSpecs} multiline onChange={value => updateVehicle(vehicle.id, "specs", value)} />
               <div className={styles.promotionPrices}>
                 <div>
                   <span>{promotionLabels.price[language]}</span>
-                  <EditableText value={getLocalizedValue(vehicle.price, language)} className={styles.promotionPrice} onChange={value => updateVehicle(vehicle.id, "price", value)} />
+                  <EditableText value={getLocalizedValue(vehicle.price, language)} ariaLabel={`${vehicle.image.label} price`} className={styles.promotionPrice} onChange={value => updateVehicle(vehicle.id, "price", value)} />
                 </div>
                 <div>
                   <span>{promotionLabels.promoPrice[language]}</span>
-                  <EditableText value={getLocalizedValue(vehicle.promoPrice, language)} className={styles.promotionPromoPrice} onChange={value => updateVehicle(vehicle.id, "promoPrice", value)} />
+                  <EditableText value={getLocalizedValue(vehicle.promoPrice, language)} ariaLabel={`${vehicle.image.label} promotional price`} className={styles.promotionPromoPrice} onChange={value => updateVehicle(vehicle.id, "promoPrice", value)} />
                 </div>
               </div>
             </div>
@@ -384,17 +387,17 @@ function PromotionTemplate({ brochure, language, onUpdate, onReplaceImage }) {
         <div>
           <ul className={styles.promotionNotes}>
             {brochure.footerNotes.map((note, index) => (
-              <li key={index}><EditableText value={getLocalizedValue(note, language)} onChange={value => updateFooterNote(index, value)} /></li>
+              <li key={index}><EditableText value={getLocalizedValue(note, language)} ariaLabel={`Promotion list footer note ${index + 1}`} onChange={value => updateFooterNote(index, value)} /></li>
             ))}
           </ul>
           <div className={styles.promotionContact}>
-            <EditableText value={getLocalizedValue(brochure.contactLabel, language)} className={styles.promotionContactLabel} onChange={value => updateField("contactLabel", value)} />
-            <EditableText value={getLocalizedValue(brochure.contactValue, language)} className={styles.promotionContactValue} onChange={value => updateField("contactValue", value)} />
+            <EditableText value={getLocalizedValue(brochure.contactLabel, language)} ariaLabel="Promotion list contact label" className={styles.promotionContactLabel} onChange={value => updateField("contactLabel", value)} />
+            <EditableText value={getLocalizedValue(brochure.contactValue, language)} ariaLabel="Promotion list contact value" className={styles.promotionContactValue} onChange={value => updateField("contactValue", value)} />
           </div>
         </div>
         <div className={styles.promotionLocations}>
-          <EditableText value={getLocalizedValue(brochure.locations, language)} multiline onChange={value => updateField("locations", value)} />
-          <EditableText value={getLocalizedValue(brochure.website, language)} className={styles.promotionWebsite} onChange={value => updateField("website", value)} />
+          <EditableText value={getLocalizedValue(brochure.locations, language)} ariaLabel="Promotion list locations" multiline onChange={value => updateField("locations", value)} />
+          <EditableText value={getLocalizedValue(brochure.website, language)} ariaLabel="Promotion list website" className={styles.promotionWebsite} onChange={value => updateField("website", value)} />
         </div>
       </footer>
       <div className={styles.promotionBottomBar} />
@@ -425,6 +428,12 @@ export default function ChineseDealerBrochure() {
   const visibleImages = currentVehicle.images.slice(0, 7);
   const heroImage = visibleImages[0];
   const gridImages = visibleImages.slice(1);
+  const isSingleVehicle = templateId === "singleVehicle";
+  const templateLabel = isSingleVehicle ? "Standard Brochure" : "Promotion List";
+  const languageLabel = brochureLanguage === "CN" ? "中文" : "English";
+  const activeCanvasLabel = isSingleVehicle
+    ? `${currentVehicle.label} · ${languageLabel}`
+    : `${templateLabel} · ${languageLabel}`;
 
   function updateCurrentVehicle(updater) {
     setVehicleStateById(current => ({
@@ -599,56 +608,34 @@ export default function ChineseDealerBrochure() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.toolbar}>
-        <div className={styles.controlGroup}>
-          <label htmlFor="brochureTemplate">Template</label>
-          <select
-            id="brochureTemplate"
-            value={templateId}
-            onChange={event => setTemplateId(event.target.value)}
-          >
-            <option value="singleVehicle">Single Vehicle</option>
-            <option value="promotionList">Promotion List</option>
-          </select>
+      <header className={styles.appBar}>
+        <div className={styles.appBarCopy}>
+          <Link className={styles.backLink} href="/">
+            <span aria-hidden="true">←</span>
+            Back to Marketing Hub
+          </Link>
+          <div>
+            <p className={styles.productLabel}>Carloha Marketing Hub</p>
+            <h1>Chinese Dealer Brochure</h1>
+            <p>Customize text and images, then export a ready-to-share PDF.</p>
+          </div>
         </div>
-
-        <div className={`${styles.controlGroup} ${templateId === "singleVehicle" ? "" : styles.hiddenControl}`} aria-hidden={templateId !== "singleVehicle"}>
-          <label htmlFor="brochureVehicle">Model</label>
-          <select
-            id="brochureVehicle"
-            value={selectedVehicleId}
-            onChange={event => setSelectedVehicleId(event.target.value)}
-            tabIndex={templateId === "singleVehicle" ? undefined : -1}
-          >
-            {vehicleOptions.map(([id, vehicle]) => (
-              <option key={id} value={id}>{vehicle.label}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className={styles.languageToggle} aria-label="Brochure language">
-          <button
-            className={brochureLanguage === "CN" ? styles.activeLanguage : ""}
-            type="button"
-            onClick={() => setBrochureLanguage("CN")}
-            aria-pressed={brochureLanguage === "CN"}
-          >
-            中文
-          </button>
-          <button
-            className={brochureLanguage === "EN" ? styles.activeLanguage : ""}
-            type="button"
-            onClick={() => setBrochureLanguage("EN")}
-            aria-pressed={brochureLanguage === "EN"}
-          >
-            EN
-          </button>
-        </div>
-
         <button className={styles.downloadButton} type="button" onClick={downloadPdf} disabled={isExporting}>
           {isExporting ? "Preparing PDF..." : "Download PDF"}
         </button>
-      </div>
+      </header>
+
+      <ol className={styles.steps} aria-label={brochureLanguage === "CN" ? "制作步骤" : "Creation steps"}>
+        {(brochureLanguage === "CN"
+          ? ["选择模板", "编辑文字和图片", "下载 PDF"]
+          : ["Select template", "Edit text and images", "Download PDF"]
+        ).map((step, index) => (
+          <li key={step}>
+            <span>{index + 1}</span>
+            <strong>{step}</strong>
+          </li>
+        ))}
+      </ol>
 
       {pendingPdfShare ? (
         <div className={styles.savePrompt} role="status">
@@ -658,25 +645,166 @@ export default function ChineseDealerBrochure() {
         </div>
       ) : null}
 
-      <section className={styles.previewRail} aria-label="Chinese dealer brochure preview">
-        <div
-          className={`${styles.pageShell} ${templateId === "promotionList" ? styles.promotionPageShell : ""} ${isExporting ? styles.exportingShell : ""}`}
-        >
-          <div ref={brochureRef} className={isExporting ? styles.exporting : ""}>
-            {templateId === "promotionList" ? (
-              <PromotionTemplate
-                brochure={promotionBrochure}
-                language={brochureLanguage}
-                onUpdate={setPromotionBrochure}
-                onReplaceImage={replacePromotionImage}
-              />
-            ) : (
-              <article className={`${styles.a4Page} ${brochureLanguage === "EN" ? styles.englishBrochure : ""}`}>
+      <div className={styles.workspace}>
+        <aside className={styles.settingsPanel} aria-labelledby="brochureSettingsTitle">
+          <div className={styles.settingsHeader}>
+            <p className={styles.panelEyebrow}>{brochureLanguage === "CN" ? "宣传单设置" : "Brochure setup"}</p>
+            <h2 id="brochureSettingsTitle">Settings</h2>
+            <p className={styles.settingsIntro}>
+              {brochureLanguage === "CN"
+                ? "先选择宣传单格式，再直接编辑右侧画布。"
+                : "Choose the brochure format, then edit directly on the canvas."}
+            </p>
+          </div>
+
+          <section className={styles.settingsSection} aria-labelledby="brochureBasicsTitle">
+            <div className={styles.sectionHeading}>
+              <div>
+                <h3 id="brochureBasicsTitle">{brochureLanguage === "CN" ? "基础设置" : "Basics"}</h3>
+                <p>{brochureLanguage === "CN" ? "选择模板、车型与语言。" : "Select the template, model and language."}</p>
+              </div>
+              <span aria-hidden="true">01</span>
+            </div>
+
+            <div className={styles.settingsFields}>
+              <div className={styles.controlGroup}>
+                <label htmlFor="brochureTemplate">Template</label>
+                <select
+                  id="brochureTemplate"
+                  value={templateId}
+                  onChange={event => setTemplateId(event.target.value)}
+                >
+                  <option value="singleVehicle">Standard Brochure</option>
+                  <option value="promotionList">Promotion List</option>
+                </select>
+              </div>
+
+              {isSingleVehicle ? (
+                <div className={styles.controlGroup}>
+                  <label htmlFor="brochureVehicle">Model</label>
+                  <select
+                    id="brochureVehicle"
+                    value={selectedVehicleId}
+                    onChange={event => setSelectedVehicleId(event.target.value)}
+                  >
+                    {vehicleOptions.map(([id, vehicle]) => (
+                      <option key={id} value={id}>{vehicle.label}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : null}
+
+              <div className={styles.languageField}>
+                <span className={styles.controlLabel}>Language</span>
+                <div className={styles.languageToggle} aria-label="Brochure language">
+                  <button
+                    className={brochureLanguage === "CN" ? styles.activeLanguage : ""}
+                    type="button"
+                    onClick={() => setBrochureLanguage("CN")}
+                    aria-pressed={brochureLanguage === "CN"}
+                  >
+                    中文
+                  </button>
+                  <button
+                    className={brochureLanguage === "EN" ? styles.activeLanguage : ""}
+                    type="button"
+                    onClick={() => setBrochureLanguage("EN")}
+                    aria-pressed={brochureLanguage === "EN"}
+                  >
+                    EN
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className={`${styles.settingsSection} ${styles.editSection}`} aria-labelledby="brochureEditTitle">
+            <div className={styles.sectionHeading}>
+              <div>
+                <h3 id="brochureEditTitle">{brochureLanguage === "CN" ? "编辑内容" : "Edit content"}</h3>
+                <p>{brochureLanguage === "CN" ? "所有修改都在预览画布中完成。" : "Make all content changes directly on the preview."}</p>
+              </div>
+              <span aria-hidden="true">02</span>
+            </div>
+
+            <div className={styles.activeCanvas} aria-live="polite">
+              <span className={styles.statusDot} aria-hidden="true" />
+              <div>
+                <small>{brochureLanguage === "CN" ? "当前画布" : "Active canvas"}</small>
+                <strong>{activeCanvasLabel}</strong>
+                <span>{templateLabel}</span>
+              </div>
+            </div>
+
+            <div className={styles.editModes}>
+              <div className={styles.editMode}>
+                <span aria-hidden="true">Aa</span>
+                <div>
+                  <strong>{brochureLanguage === "CN" ? "文字" : "Text"}</strong>
+                  <small>{brochureLanguage === "CN" ? "点击画布中的文字直接编辑" : "Click text on the canvas to edit"}</small>
+                </div>
+              </div>
+              <div className={styles.editMode}>
+                <span aria-hidden="true">IMG</span>
+                <div>
+                  <strong>{brochureLanguage === "CN" ? "图片" : "Images"}</strong>
+                  <small>{brochureLanguage === "CN" ? "替换图片或拖动调整顺序" : "Replace images or drag to reorder"}</small>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className={styles.instructions} aria-labelledby="brochureInstructionsTitle">
+            <div className={styles.instructionsHeading}>
+              <h3 id="brochureInstructionsTitle">{brochureLanguage === "CN" ? "使用说明" : "Instructions"}</h3>
+              <span>{brochureLanguage === "CN" ? "辅助" : "Help"}</span>
+            </div>
+            <ul>
+              {(brochureLanguage === "CN"
+                ? ["点击文字直接编辑", "拖动图片调整顺序", "点击“替换图片”上传自己的图片", "刷新页面即可恢复默认内容"]
+                : ["Click text to edit", "Drag images to reorder", "Use Replace Image to upload your own image", "Refresh the page to restore the default content"]
+              ).map(instruction => <li key={instruction}>{instruction}</li>)}
+            </ul>
+          </section>
+        </aside>
+
+        <section className={styles.previewPanel} aria-labelledby="brochurePreviewTitle">
+          <div className={styles.previewHeader}>
+            <div>
+              <p className={styles.panelEyebrow}>{brochureLanguage === "CN" ? "画布工作区" : "Canvas workspace"}</p>
+              <h2 id="brochurePreviewTitle">Preview</h2>
+              <p className={styles.previewDescription}>
+                {brochureLanguage === "CN" ? "点击文字或图片开始编辑。" : "Click any text or image to start editing."}
+              </p>
+            </div>
+            <div className={styles.previewMeta}>
+              <span className={styles.editingBadge}>
+                <i aria-hidden="true" />
+                {brochureLanguage === "CN" ? `正在编辑 ${isSingleVehicle ? currentVehicle.label : "Promotion List"}` : `Editing ${isSingleVehicle ? currentVehicle.label : "Promotion List"}`}
+              </span>
+              <span className={styles.dimensionBadge}>{templateId === "promotionList" ? "210 × 474 mm" : "A4 · 210 × 297 mm"}</span>
+            </div>
+          </div>
+
+          <div className={styles.previewRail} aria-label={`${templateLabel} preview canvas`}>
+            <div
+              className={`${styles.pageShell} ${templateId === "promotionList" ? styles.promotionPageShell : ""} ${isExporting ? styles.exportingShell : ""}`}
+            >
+              <div ref={brochureRef} className={isExporting ? styles.exporting : ""}>
+                {templateId === "promotionList" ? (
+                  <PromotionTemplate
+                    brochure={promotionBrochure}
+                    language={brochureLanguage}
+                    onUpdate={setPromotionBrochure}
+                    onReplaceImage={replacePromotionImage}
+                  />
+                ) : (
+                  <article className={`${styles.a4Page} ${brochureLanguage === "EN" ? styles.englishBrochure : ""}`}>
                 <div className={styles.topAccent} />
                 <div className={styles.bottomAccent} />
 
                 <header className={styles.header}>
-                  <EditableText value={currentCopy.title} className={`${styles.title} ${selectedVehicleId !== "tiggo9" ? styles.compactTitle : ""}`} multiline onChange={updateTitle} />
+                  <EditableText value={currentCopy.title} ariaLabel="Brochure title" className={`${styles.title} ${selectedVehicleId !== "tiggo9" ? styles.compactTitle : ""}`} multiline onChange={updateTitle} />
                   <img className={styles.logo} src={currentVehicle.logo} alt="Chery Carloha logo" />
                 </header>
 
@@ -699,6 +827,7 @@ export default function ChineseDealerBrochure() {
                           <span className={styles.specLabel}>{row.label[brochureLanguage]}{brochureLanguage === "CN" ? "：" : ": "}</span>
                           <EditableText
                             value={currentCopy.specs[row.key]}
+                            ariaLabel={`${row.label[brochureLanguage]} value`}
                             className={row.key === "price" || row.key === "warranty" || row.key === "maintenance" ? styles.strongValue : styles.specValue}
                             multiline={row.key !== "dimensions" && row.key !== "tireSize"}
                             onChange={value => updateSpec(row.key, value)}
@@ -745,11 +874,13 @@ export default function ChineseDealerBrochure() {
                     );
                   })}
                 </section>
-              </article>
-            )}
+                  </article>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }
